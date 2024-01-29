@@ -95,7 +95,7 @@ public class PlayerMovement : MonoBehaviour
         if (scanner != null)
         {
             if(!scanner.getScannerMode()){
-                        MyInput();
+                MyInput();
             }
         }
         else
@@ -111,6 +111,11 @@ public class PlayerMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
-        MovePlayer();
+        if (scanner != null)
+        {
+            if(!scanner.getScannerMode()){
+                MovePlayer();
+            }
+        }
     }
 }
