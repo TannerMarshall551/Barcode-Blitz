@@ -23,6 +23,7 @@ public class PlayerMovement : MonoBehaviour
     bool grounded;
 
     public Transform orientation;
+    public ScannerMovement scanner;
 
     float horizontalInput;
     float verticalInput;
@@ -55,6 +56,8 @@ public class PlayerMovement : MonoBehaviour
     private void MovePlayer()
     {
         moveDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;
+
+        transform.rotation = orientation.rotation;
 
         if(grounded)
             rb.AddForce(moveDirection.normalized * moveSpeed * 10f, ForceMode.Force);
@@ -89,7 +92,16 @@ public class PlayerMovement : MonoBehaviour
     {
         grounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * .5f + .2f, whatIsGround);
 
-        MyInput();
+        if (scanner != null)
+        {
+            if(!scanner.getScannerMode()){
+                MyInput();
+            }
+        }
+        else
+        {
+            Debug.LogWarning("Scanner reference is null. Make sure to assign it in the inspector.");
+        }
 
         if (grounded)
             rb.drag = groundDrag;
@@ -99,6 +111,11 @@ public class PlayerMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
-        MovePlayer();
+        if (scanner != null)
+        {
+            if(!scanner.getScannerMode()){
+                MovePlayer();
+            }
+        }
     }
 }
