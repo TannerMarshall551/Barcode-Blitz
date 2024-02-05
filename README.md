@@ -12,3 +12,7 @@ JUMP - Space
 TOGGLE SCANNER - E
 
 PICKUP/DROP - Left Click or Q
+
+SPRINT - Left Shift
+
+CROUCH - Left Control
