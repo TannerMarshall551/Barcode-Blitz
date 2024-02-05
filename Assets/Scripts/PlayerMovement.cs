@@ -24,7 +24,7 @@ public class PlayerMovement : MonoBehaviour
     bool grounded;
 
     [Header("Sprinting")]
-    public float sprintSpeedMultiplier = 1.5f; // How much faster the player moves while sprinting
+    public float sprintSpeedMultiplier = 2.0f; // How much faster the player moves while sprinting
     public KeyCode sprintKey = KeyCode.LeftShift;
 
     [Header("Crouching")]
