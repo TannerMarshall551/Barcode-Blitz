@@ -13,14 +13,17 @@ public class PlayerCam : MonoBehaviour
     float xRotation;
     float yRotation;
 
-    public float cameraScannerModeAngle = 65f;
+    public float cameraScannerModeAngle = 45f;
     public float cameraRotationSpeed = 20f;
+
+    public bool showMouse = false;
+    public bool lockMouse = true;
 
     void Start()
     {
         //lock mouse in center of screen and invisible
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
+        Cursor.lockState = lockMouse ? CursorLockMode.Locked : CursorLockMode.None;
+        Cursor.visible = showMouse;
     }
 
     // Update is called once per frame
@@ -41,17 +44,26 @@ public class PlayerCam : MonoBehaviour
 
                 transform.rotation = Quaternion.Euler(xRotation, yRotation, 0);
                 orientation.rotation = Quaternion.Euler(0, yRotation, 0);
+
+                showMouse = false;
+                lockMouse = true;
             }
             // Don't allow camera movement when in scanner mode
             else{
                 // Angle camera to look at scanner
                 StartCoroutine(RotateObject());
+                
+                showMouse = true;
+                lockMouse = false;
             }
         }
         else
         {
             Debug.LogWarning("Scanner reference is null. Make sure to assign it in the inspector.");
         }
+
+        Cursor.lockState = lockMouse ? CursorLockMode.Locked : CursorLockMode.None;
+        Cursor.visible = showMouse;
     }
 
     IEnumerator RotateObject()

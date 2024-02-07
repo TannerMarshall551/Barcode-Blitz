@@ -13,6 +13,7 @@ public class PlayerMovement : MonoBehaviour
     public float jumpCooldown;
     public float airMultiplier;
     bool readyToJump = true;
+    private float originalMoveSpeed;
 
     [Header("Keybinds")]
     public KeyCode jumpKey = KeyCode.Space;
@@ -21,6 +22,18 @@ public class PlayerMovement : MonoBehaviour
     public float playerHeight;
     public LayerMask whatIsGround;
     bool grounded;
+
+    [Header("Sprinting")]
+    public float sprintSpeedMultiplier = 2.0f; // How much faster the player moves while sprinting
+    public KeyCode sprintKey = KeyCode.LeftShift;
+
+    [Header("Crouching")]
+    public float crouchSpeedMultiplier = 0.5f; // Movement speed while crouching
+    public KeyCode crouchKey = KeyCode.LeftControl;
+    public float crouchHeight = 0.5f; // Adjusted height when crouching
+    private float standingHeight; // Original height of the player
+    private bool isCrouching = false;
+
 
     public Transform orientation;
     public ScannerMovement scanner;
@@ -36,6 +49,8 @@ public class PlayerMovement : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         rb.freezeRotation = true;
+        standingHeight = rb.transform.localScale.y; // Assuming the player's height is determined by scale
+        originalMoveSpeed = moveSpeed; // Store the original movement speed
     }
 
     private void MyInput()
@@ -51,6 +66,23 @@ public class PlayerMovement : MonoBehaviour
 
             Invoke(nameof(ResetJump), jumpCooldown);
         }
+
+        // Sprinting input
+        if(Input.GetKey(sprintKey) && !isCrouching) // Prevent sprinting while crouching
+        {
+            moveSpeed = originalMoveSpeed * sprintSpeedMultiplier;
+        }
+        else if (!isCrouching) // Reset to original speed if not crouching
+        {
+            moveSpeed = originalMoveSpeed;
+        }
+
+        // Crouching input handled in ToggleCrouch()
+        if(Input.GetKeyDown(crouchKey))
+        {
+            ToggleCrouch();
+        }
+            
     }
 
     private void MovePlayer()
@@ -86,6 +118,23 @@ public class PlayerMovement : MonoBehaviour
     {
         readyToJump = true;
     }
+
+    private void ToggleCrouch()
+    {
+        isCrouching = !isCrouching;
+
+        if (isCrouching)
+        {
+            rb.transform.localScale = new Vector3(rb.transform.localScale.x, crouchHeight, rb.transform.localScale.z);
+            moveSpeed *= crouchSpeedMultiplier;
+        }
+        else
+        {
+            rb.transform.localScale = new Vector3(rb.transform.localScale.x, standingHeight, rb.transform.localScale.z);
+            moveSpeed = originalMoveSpeed;
+        }
+    }
+
 
     
     void Update()
