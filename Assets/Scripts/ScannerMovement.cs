@@ -2,11 +2,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
+/*  
+class for managing the motion of the scanner from its default 
+position in the player's hand to being help up in front of the
+player's face
+*/
 public class ScannerMovement : MonoBehaviour
 {
 
-    public bool isScannerMode = false;
-    private bool isMoving = false;
+    public bool isScannerMode = false; // if the scanner is up or down (false is down)
+    private bool isMoving = false; // if the scanner is moving between positions
 
     public Animator anim;
     private float animSpeed;
@@ -17,7 +23,7 @@ public class ScannerMovement : MonoBehaviour
         anim = GetComponent<Animator>();
         animSpeed = anim.speed;
 
-        anim.speed = 0f;
+        anim.speed = 0f; // stopping the animation while disabled
         anim.Play("RaiseLowerScanner");
     }
 
