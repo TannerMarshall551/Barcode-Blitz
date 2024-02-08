@@ -9,6 +9,9 @@ public class PlayerPickupDrop : MonoBehaviour
     [SerializeField] private Transform objectGrabPointTransform;
 
     private ObjectGrabbable objectGrabbable;
+    public bool isHolding = false;
+
+    public GameObject boxBeingHeld;
     // Update is called once per frame
     void Update()
     {
@@ -22,6 +25,8 @@ public class PlayerPickupDrop : MonoBehaviour
                     if (raycastHit.transform.TryGetComponent(out objectGrabbable))
                     {
                         objectGrabbable.Grab(objectGrabPointTransform);
+                        isHolding = true;
+                        boxBeingHeld = objectGrabbable.gameObject;
                     }
                 }
             }
@@ -29,6 +34,8 @@ public class PlayerPickupDrop : MonoBehaviour
             {
                 objectGrabbable.Drop();
                 objectGrabbable = null;
+                isHolding = false;
+                boxBeingHeld = null;
             }
         }
     }
