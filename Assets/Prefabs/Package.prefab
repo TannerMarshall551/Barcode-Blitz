@@ -185,6 +185,8 @@ GameObject:
   - component: {fileID: 8862793829287636157}
   - component: {fileID: 5934104342423252952}
   - component: {fileID: 256213527120861008}
+  - component: {fileID: 8828730825540804882}
+  - component: {fileID: 5395789336445147030}
   m_Layer: 0
   m_Name: BarcodeLabel
   m_TagString: Untagged
@@ -272,6 +274,31 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!65 &8828730825540804882
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7228802433879937492}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 10, y: 1.4233059e-13, z: 10.000002}
+  m_Center: {x: 0, y: 0, z: 0.00000047683716}
+--- !u!114 &5395789336445147030
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7228802433879937492}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 80f9d260ef5b44a30bd7ebbc3fcc5950, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7431740574273481602
 GameObject:
   m_ObjectHideFlags: 0
