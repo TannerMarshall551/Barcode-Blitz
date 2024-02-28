@@ -9,6 +9,11 @@ public class UUIDScanning : MonoBehaviour
 {
     void Update()
     {
+        // Prevent cursor from dissappearing on click – set to always visible
+        Cursor.visible = true;
+        // 'Unlock' cursor so it can be moved freely on screen
+        Cursor.lockState = CursorLockMode.None;
+
         // Check left mouse button clicked
         if (Input.GetMouseButtonDown(0)) // 0 is number for left mouse
         {
