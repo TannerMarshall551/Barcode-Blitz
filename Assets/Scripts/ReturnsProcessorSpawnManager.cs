@@ -5,16 +5,20 @@ using UnityEngine;
 public class ReturnsProcessorSpawnManager : MonoBehaviour
 {
     public GameObject package, smallPackage, bigPackage;
+    public GameObject conveyorPoint;
 
     public float spawnRate = 2f;
 
     float nextSpawn = 0f;
 
     int whatToSpawn;
+    GameObject newBox;
+    public float speed;
+    private bool arrived;
 
 
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         
     }
@@ -29,17 +33,33 @@ public class ReturnsProcessorSpawnManager : MonoBehaviour
             switch(whatToSpawn)
             {
                 case 1:
-                    Instantiate(smallPackage, transform.position, Quaternion.identity);
+                    newBox = (GameObject)GameObject.Instantiate(smallPackage, transform.position, Quaternion.identity);
+                    arrived = false;
                     break;
                 case 2:
-                    Instantiate(package, transform.position, Quaternion.identity);
+                    newBox = (GameObject)GameObject.Instantiate(package, transform.position, Quaternion.identity);
+                    arrived = false;
                     break;
                 case 3:
-                    Instantiate(bigPackage, transform.position, Quaternion.identity);
+                    newBox = (GameObject)GameObject.Instantiate(bigPackage, transform.position, Quaternion.identity);
+                    arrived = false;
                     break;
             }
+            ObjectGrabbable objRemove = newBox.GetComponent<ObjectGrabbable>();
+            if (objRemove != null)
+                Destroy(objRemove);
 
             nextSpawn = Time.time + spawnRate;
         }
+        if (newBox.transform.position.x > 0 && !arrived)
+        {
+            newBox.transform.position = Vector3.MoveTowards(newBox.transform.position, conveyorPoint.transform.position, speed * Time.deltaTime);
+        }
+        else
+        {
+            arrived = true;
+            newBox.AddComponent<ObjectGrabbable>();
+        }
+        
     }
 }
