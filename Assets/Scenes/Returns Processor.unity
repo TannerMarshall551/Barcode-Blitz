@@ -501,7 +501,9 @@ MonoBehaviour:
   package: {fileID: 1595974316835080746, guid: 09717e63d7d44614895307ae709f0ef7, type: 3}
   smallPackage: {fileID: 8030516636087988813, guid: 34b027912fd5d214fba9452014c12cd8, type: 3}
   bigPackage: {fileID: 2016354548845494017, guid: 8807c5d0cbb4fcb4892f3d94e2cf1505, type: 3}
+  conveyorPoint: {fileID: 2002694416}
   spawnRate: 10
+  speed: 1
 --- !u!4 &1215887250
 Transform:
   m_ObjectHideFlags: 0
@@ -510,7 +512,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1215887248}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.03, y: 1.901, z: 2.614}
+  m_LocalPosition: {x: 5.178, y: 1.835, z: 2.614}
   m_LocalScale: {x: 1, y: 1, z: -0.83368}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -902,6 +904,37 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
+--- !u!1 &2002694416
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2002694417}
+  m_Layer: 0
+  m_Name: ConveyorPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2002694417
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2002694416}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -2.282, y: 1.365, z: 2.614}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 10
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &2145031526
 PrefabInstance:
   m_ObjectHideFlags: 0

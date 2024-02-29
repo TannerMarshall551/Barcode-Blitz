@@ -32,10 +32,16 @@ public class SmoothRotation : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.R) && isHolding)
         {
             if (rotationModeActive)
+            {
                 rotationModeActive = false;
+                Cursor.visible = false;
+                Cursor.lockState = CursorLockMode.Locked;
+            }
             else
             {
                 rotationModeActive = true;
+                Cursor.visible = true;
+                Cursor.lockState = CursorLockMode.None;
                 objectToRotate.transform.rotation = Quaternion.Euler(0f, objectToRotate.transform.eulerAngles.y, 0f);
             }
         }
@@ -43,6 +49,8 @@ public class SmoothRotation : MonoBehaviour
         if (!isHolding)
         {
             rotationModeActive = false;
+            Cursor.visible = false;
+            Cursor.lockState = CursorLockMode.Locked;
         }
 
         if (rotationModeActive)
