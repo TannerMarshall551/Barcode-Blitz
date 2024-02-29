@@ -9,10 +9,16 @@ LOOK - Mouse
 
 JUMP - Space
 
+SPRINT - Left Shift
+
+CROUCH - Left Control
+
 TOGGLE SCANNER - E
 
 PICKUP/DROP - Left Click or Q
 
-SPRINT - Left Shift
+SCAN LABEL - Right Click (maybe add another key bind?)
 
-CROUCH - Left Control
+ENTER ROTATION MODE - R
+
+ROTATE BOX (WHILE IN ROTATION MODE) - WASD
