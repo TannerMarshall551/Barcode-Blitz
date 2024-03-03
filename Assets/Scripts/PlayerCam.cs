@@ -19,6 +19,15 @@ public class PlayerCam : MonoBehaviour
     public bool showMouse = false;
     public bool lockMouse = true;
 
+    [SerializeField] GameObject player;
+    private SmoothRotation smoothRotation;
+    private bool rotationModeActive;
+
+    private void Awake()
+    {
+        smoothRotation = player.GetComponent<SmoothRotation>();
+    }
+
     void Start()
     {
         //lock mouse in center of screen and invisible
@@ -29,10 +38,13 @@ public class PlayerCam : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        rotationModeActive = smoothRotation.rotationModeActive;
+
         if (scanner != null)
         {
             // Allow mouse to move camera when not in scanner mode
-            if(!scanner.getScannerMode()){
+            if(!scanner.getScannerMode() && !rotationModeActive)
+            {
                 //get mouse input
                 float mouseX = Input.GetAxisRaw("Mouse X") * Time.deltaTime * sensX;
                 float mouseY = Input.GetAxisRaw("Mouse Y") * Time.deltaTime * sensY;
@@ -49,7 +61,8 @@ public class PlayerCam : MonoBehaviour
                 lockMouse = true;
             }
             // Don't allow camera movement when in scanner mode
-            else{
+            else if (!rotationModeActive)
+            {
                 // Angle camera to look at scanner
                 StartCoroutine(RotateObject());
                 
@@ -62,8 +75,8 @@ public class PlayerCam : MonoBehaviour
             Debug.LogWarning("Scanner reference is null. Make sure to assign it in the inspector.");
         }
 
-        Cursor.lockState = lockMouse ? CursorLockMode.Locked : CursorLockMode.None;
-        Cursor.visible = showMouse;
+        //Cursor.lockState = lockMouse ? CursorLockMode.Locked : CursorLockMode.None;
+        //Cursor.visible = showMouse;
     }
 
     IEnumerator RotateObject()
