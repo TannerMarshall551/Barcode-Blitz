@@ -45,6 +45,14 @@ public class PlayerMovement : MonoBehaviour
 
     Rigidbody rb;
 
+    private SmoothRotation smoothRotation;
+    private bool rotationModeActive;
+
+    private void Awake()
+    {
+        smoothRotation = GetComponent<SmoothRotation>();
+    }
+
     void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -58,7 +66,7 @@ public class PlayerMovement : MonoBehaviour
         horizontalInput = Input.GetAxisRaw("Horizontal");
         verticalInput = Input.GetAxisRaw("Vertical");
 
-        if(Input.GetKey(jumpKey) && readyToJump && grounded)
+        if(Input.GetKey(jumpKey) && readyToJump && grounded &&!rotationModeActive)
         {
             readyToJump = false;
 
@@ -139,11 +147,14 @@ public class PlayerMovement : MonoBehaviour
     
     void Update()
     {
+        rotationModeActive = smoothRotation.rotationModeActive;
+
         grounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * .5f + .2f, whatIsGround);
 
         if (scanner != null)
         {
-            if(!scanner.getScannerMode()){
+            if(!scanner.getScannerMode())
+            {
                 MyInput();
             }
         }
@@ -162,7 +173,7 @@ public class PlayerMovement : MonoBehaviour
     {
         if (scanner != null)
         {
-            if(!scanner.getScannerMode()){
+            if(!scanner.getScannerMode() && !rotationModeActive){
                 MovePlayer();
             }
         }
