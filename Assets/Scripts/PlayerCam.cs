@@ -75,8 +75,8 @@ public class PlayerCam : MonoBehaviour
             Debug.LogWarning("Scanner reference is null. Make sure to assign it in the inspector.");
         }
 
-        //Cursor.lockState = lockMouse ? CursorLockMode.Locked : CursorLockMode.None;
-        //Cursor.visible = showMouse;
+        // Cursor.lockState = lockMouse ? CursorLockMode.Locked : CursorLockMode.None;
+        // Cursor.visible = showMouse;
     }
 
     IEnumerator RotateObject()

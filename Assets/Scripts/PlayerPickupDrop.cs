@@ -9,6 +9,8 @@ public class PlayerPickupDrop : MonoBehaviour
     [SerializeField] private Transform objectGrabPointTransform;
 
     private ObjectGrabbable objectGrabbable;
+    
+    private float pickupDistance = 2f;
 
     public bool isHolding = false;
 
@@ -21,19 +23,40 @@ public class PlayerPickupDrop : MonoBehaviour
         {
             if (objectGrabbable == null)
             {
-                float pickupDistance = 2f;
                 if (Physics.Raycast(playerCameraTransform.position, playerCameraTransform.forward, out RaycastHit raycastHit, pickupDistance))
                 {
                     if (raycastHit.transform.TryGetComponent(out objectGrabbable))
                     {
-                        objectGrabbable.Grab(objectGrabPointTransform);
-                        isHolding = true;
-                        boxBeingHeld = objectGrabbable.gameObject;
+                        if(objectGrabbable.CanGrab()){
+                            objectGrabbable.Grab(objectGrabPointTransform);
+                            isHolding = true;
+                            boxBeingHeld = objectGrabbable.gameObject;
+                        }
+                        else{
+                            objectGrabbable = null;
+                        }
+
                     }
                 }
             }
-            else
+            else if(objectGrabbable.HastDropZones())
             {
+                Collider heldObjectCollider = boxBeingHeld.GetComponent<Collider>();
+                heldObjectCollider.enabled = false;
+                if (Physics.Raycast(playerCameraTransform.position, playerCameraTransform.forward, out RaycastHit raycastHit, pickupDistance))
+                {
+                    GameObject hitObject = raycastHit.transform.gameObject;
+                    if(objectGrabbable.GetDropZones().Contains(hitObject))
+                    {
+                        objectGrabbable.Drop(hitObject);
+                        objectGrabbable = null;
+                        isHolding = false;
+                        boxBeingHeld = null;
+                    }
+                }
+                heldObjectCollider.enabled = true;
+            }
+            else{
                 objectGrabbable.Drop();
                 objectGrabbable = null;
                 isHolding = false;
@@ -42,3 +65,4 @@ public class PlayerPickupDrop : MonoBehaviour
         }
     }
 }
+               
