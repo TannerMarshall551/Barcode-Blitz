@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 
-public class ShelfSpawner : MonoBehaviour
+public class OrderPackerItemManager : MonoBehaviour
 {
     public GameObject[] objectsToSpawn; // Array of object prefabs to spawn
     public GameObject[] dropZones; // Array of spawn points for shelf 1
@@ -16,6 +16,10 @@ public class ShelfSpawner : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        
+    }
+
+    public void SpawnObjectsOnShelf(){
         SpawnObjectsOnShelf(dropZones);
     }
 
@@ -89,6 +93,27 @@ public class ShelfSpawner : MonoBehaviour
             }
             else{
                 Debug.LogWarning("Invalid DropZone");
+            }
+        }
+    }
+
+    public List<GameObject> GetAllItems(){
+        List<GameObject> allItems = new List<GameObject>();
+
+        if(itemHolder != null){
+            for(int i=0; i< itemHolder.transform.childCount; i++){
+                allItems.Add(itemHolder.transform.GetChild(i).gameObject);
+            }
+        }
+
+        return allItems;
+    }
+
+    public void LockAllItems(){
+        foreach(GameObject curDZObj in dropZones){
+            DropZone curDZ = curDZObj.GetComponent<DropZone>();
+            if(curDZ != null){
+                curDZ.SetIsLocked(true);
             }
         }
     }

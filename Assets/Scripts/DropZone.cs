@@ -6,7 +6,7 @@ public class DropZone : MonoBehaviour
 {
     public List<ObjectGrabbableWithZones> objectsInZone;
 
-    public bool isTrash;
+    public bool isLocked;
     public int maxCapacity;
     public bool hideObjects;
 
@@ -29,27 +29,27 @@ public class DropZone : MonoBehaviour
     }
 
     // Getters and Setters
-    public bool getIsTrash(){
-        return isTrash;
+    public bool GetIsLocked(){
+        return isLocked;
     }
 
-    public void setIsTrash(bool isTrash){
-        this.isTrash = isTrash;
+    public void SetIsLocked(bool isLocked){
+        this.isLocked = isLocked;
     }
 
-    public int getMaxCapacity(){
+    public int GetMaxCapacity(){
         return maxCapacity;
     }
 
-    public void setMaxCapacitys(int maxCapacity){
+    public void SetMaxCapacitys(int maxCapacity){
         this.maxCapacity = maxCapacity;
     }
 
-    public int getHideObjects(){
+    public int GetHideObjects(){
         return maxCapacity;
     }
 
-    public void setHideObjects(bool hideObjects){
+    public void SetHideObjects(bool hideObjects){
         this.hideObjects = hideObjects;
     }
 
@@ -74,10 +74,20 @@ public class DropZone : MonoBehaviour
         return 1;
     }
 
+    // Attempts to remove an object from the zone. Returns 0 for success, 1 for failure
+    public int Remove(ObjectGrabbableWithZones obj){
+
+        if(objectsInZone.Contains(obj)){
+            objectsInZone.Remove(obj);
+            return 0;
+        } 
+        return 1;
+    }
+
     // Attempts to grab object in zone. Returns object for success and null for failure
     public ObjectGrabbableWithZones TryGrab(){
 
-        if(!IsEmpty() && !isTrash){
+        if(!IsEmpty() && !isLocked){
             int lastObjIndex = objectsInZone.Count - 1;
             ObjectGrabbableWithZones obj = objectsInZone[lastObjIndex];
             objectsInZone.RemoveAt(lastObjIndex);
