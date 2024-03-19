@@ -6,9 +6,10 @@ public class DropZone : MonoBehaviour
 {
     public List<ObjectGrabbableWithZones> objectsInZone;
 
-    public bool isLocked;
+    public bool isLockedGrab;
+    public bool isLockedDrop;
+
     public int maxCapacity;
-    public bool hideObjects;
 
     public Color floorColor;
 
@@ -29,12 +30,20 @@ public class DropZone : MonoBehaviour
     }
 
     // Getters and Setters
-    public bool GetIsLocked(){
-        return isLocked;
+    public bool GetIsLockedGrab(){
+        return isLockedGrab;
     }
 
-    public void SetIsLocked(bool isLocked){
-        this.isLocked = isLocked;
+    public void SetIsLockedGrab(bool isLockedGrab){
+        this.isLockedGrab = isLockedGrab;
+    }
+
+    public bool GetIsLockedDrop(){
+        return isLockedDrop;
+    }
+
+    public void SetIsLockedDrop(bool isLockedDrop){
+        this.isLockedDrop = isLockedDrop;
     }
 
     public int GetMaxCapacity(){
@@ -45,12 +54,8 @@ public class DropZone : MonoBehaviour
         this.maxCapacity = maxCapacity;
     }
 
-    public int GetHideObjects(){
-        return maxCapacity;
-    }
-
-    public void SetHideObjects(bool hideObjects){
-        this.hideObjects = hideObjects;
+    public List<ObjectGrabbableWithZones> GetObjectsInZone(){
+        return objectsInZone;
     }
 
     // See if drop zone is full
@@ -67,7 +72,7 @@ public class DropZone : MonoBehaviour
     // Attempts to place object in zone. Returns 0 for success, 1 for failure
     public int TryPlace(ObjectGrabbableWithZones obj){
 
-        if(!IsFull() && obj.GetDropZones().Contains(this.gameObject)){
+        if(!isLockedDrop && !IsFull() && obj.GetDropZones().Contains(this.gameObject)){
             objectsInZone.Add(obj);
             return 0;
         } 
@@ -87,7 +92,7 @@ public class DropZone : MonoBehaviour
     // Attempts to grab object in zone. Returns object for success and null for failure
     public ObjectGrabbableWithZones TryGrab(){
 
-        if(!IsEmpty() && !isLocked){
+        if(!IsEmpty() && !isLockedGrab){
             int lastObjIndex = objectsInZone.Count - 1;
             ObjectGrabbableWithZones obj = objectsInZone[lastObjIndex];
             objectsInZone.RemoveAt(lastObjIndex);
