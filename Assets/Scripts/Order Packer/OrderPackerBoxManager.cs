@@ -37,6 +37,9 @@ public class OrderPackerBoxManager : MonoBehaviour
     public GameObject openPrefab;
     public GameObject completedPrefab;
 
+    // Game manager
+    public OrderPackerGameManager gameManager;
+
     public Transform boxHolder; // Container for all spawned boxes in scene
 
     List<Box> myBoxes; // All boxes in scene
@@ -44,7 +47,9 @@ public class OrderPackerBoxManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        if(gameManager == null){
+            Debug.LogError("Game Manager not loaded!");
+        }
     }
 
     // Update is called once per frame
@@ -56,6 +61,20 @@ public class OrderPackerBoxManager : MonoBehaviour
     // On Destry is call at the end
     void OnDestroy(){
         ClearBoxes();
+    }
+
+    public GameObject GetZone(BoxState state){
+        switch(state)
+        {
+            case BoxState.Unmade:
+                return unmadeDZ;
+            case BoxState.Open:
+                return openDZ;
+            case BoxState.Completed:
+                return completedDZ;
+            default:
+                return null;
+        }
     }
 
     // Spawns one box
@@ -211,6 +230,8 @@ public class OrderPackerBoxManager : MonoBehaviour
         
         if(curBox != null){
 
+            gameManager.BoxPlaced(boxObj);
+
             DropZone curDZ = curBox.Value.box.GetCurrentDropZone().GetComponent<DropZone>();
 
             if(curDZ != null)
@@ -255,35 +276,38 @@ public class OrderPackerBoxManager : MonoBehaviour
         return GameObject.FindGameObjectsWithTag("UnmadeBox").ToList();
     }
 
-    public void SetLockedBox(BoxState dropzone, bool isLocked){
+    public void SetLockedBox(BoxState dropzone, bool CanGrabFrom, bool CanDropInto){
         DropZone dz;
+        
         switch(dropzone)
         {
             case BoxState.Unmade:
                 dz = unmadeDZ.GetComponent<DropZone>();
                 if(dz != null){
-                    dz.SetIsLocked(isLocked);
+                    dz.SetIsLockedGrab(!CanGrabFrom);
+                    dz.SetIsLockedDrop(!CanDropInto);
                 }
                 break;
             case BoxState.Open:
                 dz = openDZ.GetComponent<DropZone>();
                 if(dz != null){
-                    dz.SetIsLocked(isLocked);
+                    dz.SetIsLockedGrab(!CanGrabFrom);
+                    dz.SetIsLockedDrop(!CanDropInto);
                 }
                 break;
             case BoxState.Completed:
                 dz = completedDZ.GetComponent<DropZone>();
                 if(dz != null){
-                    dz.SetIsLocked(isLocked);
+                    dz.SetIsLockedGrab(!CanGrabFrom);
+                    dz.SetIsLockedDrop(!CanDropInto);
                 }
                 break;
             default:
                 break;
         }
+
+        
     }
 
-
-
-
-
+    
 }

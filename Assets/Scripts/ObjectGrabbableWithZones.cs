@@ -59,7 +59,14 @@ public class ObjectGrabbableWithZones : ObjectGrabbable
 
     // Adds one drop zone to the list of dropzones
     public void AddDropZone(GameObject dropZone){
-        dropZones.Add(dropZone);
+        if(!dropZones.Contains(dropZone)){
+            dropZones.Add(dropZone);
+        }
+    }
+
+    // Adds one drop zone to the list of dropzones
+    public void RemoveDropZone(GameObject dropZone){
+        dropZones.Remove(dropZone);
     }
 
     // Grabs object
