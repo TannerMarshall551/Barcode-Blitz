@@ -108,9 +108,6 @@ public class ScannerItemManager : MonoBehaviour
             itemPage.ReloadItem(scannerUIItems[currentItemIndex]);
             itemNumber.text = (currentItemIndex+1).ToString() + "/" + scannerUIItems.Count;
         }
-        else{
-            Debug.LogWarning("No scanner items entered");
-        }
                     
         UpdateButtonVisibility();
     }
