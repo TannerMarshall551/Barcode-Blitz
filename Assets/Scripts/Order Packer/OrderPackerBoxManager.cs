@@ -31,11 +31,13 @@ public class OrderPackerBoxManager : MonoBehaviour
     public GameObject unmadeDZ;
     public GameObject openDZ;
     public GameObject completedDZ;
+    public GameObject printerDZ;
 
     // Prefabs for boxes
     public GameObject unmadePrefab;
     public GameObject openPrefab;
     public GameObject completedPrefab;
+    public GameObject labelPrefab;
 
     // Game manager
     public OrderPackerGameManager gameManager;
@@ -78,12 +80,13 @@ public class OrderPackerBoxManager : MonoBehaviour
     }
 
     // Spawns one box
-    public void SpawnBox(BoxState state){
-        // TODO switch case for state to pick the prefab and dropzones
+    public void SpawnBox(BoxState state, GameObject dropZoneSpawn = null){
+        
         GameObject myPrefab;
         GameObject dz1;
         GameObject dz2;
 
+        // the box spawned depends on the current state
         switch(state)
         {
             case BoxState.Unmade:
@@ -99,7 +102,12 @@ public class OrderPackerBoxManager : MonoBehaviour
             default:
                 myPrefab = completedPrefab;
                 dz1 = completedDZ;
-                dz2 = null;
+                if(dropZoneSpawn != null){
+                    dz2 = dropZoneSpawn;
+                }
+                else{
+                    dz2 = null;
+                }
                 break;
         }
 
@@ -112,7 +120,7 @@ public class OrderPackerBoxManager : MonoBehaviour
 
             // Adds new box if newBox is valid
             if(newBox != null){
-                AddBox(newBox, state, dz1, dz2);
+                AddBox(newBox, state, dz1, dz2, dropZoneSpawn);
             }
             else{
                 Debug.LogWarning("Unmade Box Prefab not a Grabbable Object with Zones!");
@@ -121,6 +129,53 @@ public class OrderPackerBoxManager : MonoBehaviour
         else{
             Debug.LogWarning("Unmade Box Prefab not working!");
         }
+    }
+
+    // Spawns a new Label
+    public void SpawnLabel(){
+
+        // create the label
+        GameObject newLabelTemp = Instantiate(labelPrefab, transform.position, transform.rotation, boxHolder);
+
+        // make sure instantiate worked
+        if(newLabelTemp != null){
+
+            // get the ObjectGrabbableWithZones component
+            ObjectGrabbableWithZones newLabel = newLabelTemp.GetComponent<ObjectGrabbableWithZones>();
+
+            // make sure ObjectGrabbableWithZones compenent exists
+            if(newLabel != null){
+
+                // Get the drop zones and make sure they exist
+                DropZone dz1 = printerDZ.GetComponent<DropZone>();
+
+                if(dz1 != null)
+                {
+                    newLabel.AddDropZone(dz1.gameObject);
+
+                    DropZone dz2 = openDZ.GetComponent<DropZone>();
+
+                    if(dz2 != null)
+                    { 
+                        newLabel.AddDropZone(dz2.gameObject);
+                    }
+                }
+
+                // place label in printer drop zone
+                newLabel.Drop(dz1);
+
+                // add event listeners
+                newLabel.ObjectDropped += ToggleStateOnDrop;
+                newLabel.ObjectGrabbed += ToggleStateOnGrab;
+            }
+            else{
+                Debug.LogError("Label prefab has no ObjectGrabbableWithZones component!");
+            }
+        }
+        else{
+            Debug.LogError("No Label prefab loaded!");
+        }
+
     }
 
     // Spawns a set number of unmade boxes
@@ -133,13 +188,13 @@ public class OrderPackerBoxManager : MonoBehaviour
         // Spawn all boxes
         for(int i=0; i<amount; i++){
             SpawnBox(BoxState.Unmade);
+            SpawnLabel();
         }
     }
 
     // Adds one box by fully setting up the newbox
-    public void AddBox(ObjectGrabbableWithZones newBox, BoxState boxState, GameObject dropzZone1, GameObject dropzZone2 = null){
+    public void AddBox(ObjectGrabbableWithZones newBox, BoxState boxState, GameObject dropzZone1, GameObject dropzZone2 = null, GameObject dropZoneSpawn = null){
 
-        
         // Get and validate dropzones
         DropZone dz1 = dropzZone1.GetComponent<DropZone>();
 
@@ -157,8 +212,23 @@ public class OrderPackerBoxManager : MonoBehaviour
                 }
             }
 
-            // Places new box in drop zone 1
-            newBox.Drop(dz1);
+            if(dropZoneSpawn != null){ // Placed new box in drop zone spawn
+                
+                DropZone dzS = dropZoneSpawn.GetComponent<DropZone>();
+               
+                if (dzS != null)
+                {
+                    newBox.Drop(dzS);
+                }
+                else{ // resorts to dz1 if dzS doesnt exist
+                    newBox.Drop(dz1);
+                }
+            }
+            else{ // Places new box in drop zone 1
+                newBox.Drop(dz1);
+            }
+
+
 
             // Add event actions
             newBox.ObjectDropped += ToggleStateOnDrop;
@@ -206,14 +276,21 @@ public class OrderPackerBoxManager : MonoBehaviour
     // Removes the box object
     public void RemoveBox(Box box){
         
-        if(myBoxes.Contains(box)){
+        if(myBoxes.Contains(box)) // confirm box is in our list
+        {
+            // remove event listener
             box.box.ObjectDropped -= ToggleStateOnDrop;
             box.box.ObjectGrabbed -= ToggleStateOnGrab;
+
             myBoxes.Remove(box);
 
             GameObject dzObj = box.box.GetCurrentDropZone();
-            if(dzObj != null){
+
+            // remove box from dropzone
+            if(dzObj != null)
+            {
                 DropZone dropZone = dzObj.GetComponent<DropZone>();
+
                 if(dropZone != null){
                     dropZone.Remove(box.box);
                 }
@@ -222,19 +299,39 @@ public class OrderPackerBoxManager : MonoBehaviour
         }
     }
 
+    // Removes the label object
+    public void RemoveLabel(ObjectGrabbableWithZones label){
+
+        // remove event listener
+        label.ObjectDropped -= ToggleStateOnDrop;
+        label.ObjectGrabbed -= ToggleStateOnGrab;
+
+        GameObject dzObj = label.GetCurrentDropZone();
+
+        // remove label from dropzone
+        if(dzObj != null)
+        {
+            DropZone dropZone = dzObj.GetComponent<DropZone>();
+
+            if(dropZone != null){
+                dropZone.Remove(label);
+            }
+        }
+        Destroy(label.gameObject);
+    }
 
     // Toggles the state on box drop
-    public void ToggleStateOnDrop(ObjectGrabbableWithZones boxObj){
+    public void ToggleStateOnDrop(ObjectGrabbableWithZones myObj){
 
-        Box? curBox = GetBox(boxObj);
+        Box? curBox = GetBox(myObj);
         
-        if(curBox != null){
+        if(curBox != null){ // box
 
-            gameManager.BoxPlaced(boxObj);
+            gameManager.BoxPlaced(myObj);
 
             DropZone curDZ = curBox.Value.box.GetCurrentDropZone().GetComponent<DropZone>();
 
-            if(curDZ != null)
+            if(curDZ != null) 
             {
                 switch(curBox.Value.state)
                 {
@@ -248,13 +345,15 @@ public class OrderPackerBoxManager : MonoBehaviour
                         }
                         break;
                     case BoxState.Open:
+                        // RemoveBox(curBox.Value);
+                        // if(curDZ == completedDZ.GetComponent<DropZone>()){
+                        //     SpawnBox(BoxState.Completed);
+                        // }
+                        // else{
+                        //     SpawnBox(BoxState.Open);
+                        // }
                         RemoveBox(curBox.Value);
-                        if(curDZ == completedDZ.GetComponent<DropZone>()){
-                            SpawnBox(BoxState.Completed);
-                        }
-                        else{
-                            SpawnBox(BoxState.Open);
-                        }
+                        SpawnBox(BoxState.Open);
                         break;
                     case BoxState.Completed:
                         RemoveBox(curBox.Value);
@@ -265,6 +364,41 @@ public class OrderPackerBoxManager : MonoBehaviour
                 }
             }
         }
+        else{ // label
+
+            gameManager.LabelPlaced();
+            CloseBox();
+
+            DropZone curDZ = myObj.GetCurrentDropZone().GetComponent<DropZone>();
+            if(curDZ != null) 
+            {
+                if(curDZ.gameObject == printerDZ){
+                    RemoveLabel(myObj);
+                    SpawnLabel();
+                }
+                else if(curDZ.gameObject == openDZ){
+                    RemoveLabel(myObj);
+                }
+                else{
+                    Debug.Log("Unknown Dropzone");
+                }
+            }
+        }
+    }
+
+    // closes all boxes in open drop zone
+    public void CloseBox(){
+
+        List<Box> tempBoxes = new List<Box>(myBoxes);
+
+        foreach(Box box in tempBoxes){
+
+            if(box.box.GetCurrentDropZone() == openDZ) // box in open drop zone
+            {
+                RemoveBox(box);
+                SpawnBox(BoxState.Completed, openDZ);
+            }
+        }
     }
 
     // Toggles the state on box grab
@@ -272,10 +406,12 @@ public class OrderPackerBoxManager : MonoBehaviour
         // TODO?
     }
 
+    // return all unopen boxes
     public List<GameObject> GetAllUnopenBoxes(){
         return GameObject.FindGameObjectsWithTag("UnmadeBox").ToList();
     }
 
+    // sets the lock state for grabbing and placing for a dropzone for boxes
     public void SetLockedBox(BoxState dropzone, bool CanGrabFrom, bool CanDropInto){
         DropZone dz;
         
@@ -304,9 +440,18 @@ public class OrderPackerBoxManager : MonoBehaviour
                 break;
             default:
                 break;
-        }
+        } 
+    }
 
-        
+    // sets the lock state for grabbing and placing for a dropzone for labels
+    public void SetLockedPrinter(bool CanGrabFrom, bool CanDropInto){
+
+        DropZone dz = printerDZ.GetComponent<DropZone>();
+
+        if(dz != null){
+            dz.SetIsLockedGrab(!CanGrabFrom);
+            dz.SetIsLockedDrop(!CanDropInto);
+        }
     }
 
     

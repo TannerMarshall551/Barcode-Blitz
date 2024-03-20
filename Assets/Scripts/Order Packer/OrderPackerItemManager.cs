@@ -5,8 +5,8 @@ using System.Linq;
 
 public class OrderPackerItemManager : MonoBehaviour
 {
-    public GameObject[] objectsToSpawn; // Array of object prefabs to spawn
-    public GameObject[] dropZones; // Array of spawn points for shelf 1
+    public List<GameObject> objectsToSpawn; // Array of object prefabs to spawn
+    private List<GameObject> dropZones; // Array of spawn points for shelf (loaded on start)
 
     public GameObject boxDZ; // Drop zone to place items in box
     public GameObject garbadgeDZ; // Drop zone to place items in trash
@@ -22,21 +22,27 @@ public class OrderPackerItemManager : MonoBehaviour
         if(gameManager == null){
             Debug.LogError("Game Manager not loaded!");
         }
+        if(dropZones == null){
+            dropZones = new List<GameObject>(GameObject.FindGameObjectsWithTag("ItemDZ"));
+        }
     }
 
     public void SpawnObjectsOnShelf(){
+        if(dropZones == null){
+            dropZones = new List<GameObject>(GameObject.FindGameObjectsWithTag("ItemDZ"));
+        }
         SpawnObjectsOnShelf(dropZones);
     }
 
     // Spawns objects on shelf
-    void SpawnObjectsOnShelf(GameObject[] dropZones)
+    void SpawnObjectsOnShelf(List<GameObject> dropZones)
     {
         foreach (GameObject dropZone in dropZones)
         {
             DropZone curDZ = dropZone.GetComponent<DropZone>();
             if(curDZ != null){
                 // Select a random object to spawn
-                GameObject selectedObjectPrefab = objectsToSpawn[Random.Range(0, objectsToSpawn.Length)];
+                GameObject selectedObjectPrefab = objectsToSpawn[Random.Range(0, objectsToSpawn.Count)];
 
                 GameObject instantiatedObject;
 
@@ -69,11 +75,9 @@ public class OrderPackerItemManager : MonoBehaviour
                             // Randomly color the object either green or red
                             if(Random.value > 0.1f){
                                 randomColor = Color.green;
-                                // obj.AddDropZone(boxDZ);
                             }
                             else{
                                 randomColor = Color.red;
-                                // obj.AddDropZone(garbadgeDZ);
                             }
 
                             Renderer renderer = instantiatedObject.GetComponent<Renderer>();
@@ -106,10 +110,12 @@ public class OrderPackerItemManager : MonoBehaviour
         }
     }
 
+    // removes all items from scene
     public void ClearItems(){
         // TODO
     }
 
+    // get all items in scene
     public List<GameObject> GetAllItems(){
         List<GameObject> allItems = new List<GameObject>();
 
@@ -122,6 +128,7 @@ public class OrderPackerItemManager : MonoBehaviour
         return allItems;
     }
 
+    // sets the lock state for grabbing and placing for a dropzone for items
     public void LockAllItems(bool CanGrabFrom, bool CanDropInto){
         foreach(GameObject curDZObj in dropZones){
             DropZone curDZ = curDZObj.GetComponent<DropZone>();
@@ -132,11 +139,12 @@ public class OrderPackerItemManager : MonoBehaviour
         }
     }
 
-
+    // called when an item is grabbed
     public void ItemGrabbed(ObjectGrabbableWithZones boxObj){
         gameManager.ItemGrabbed(boxObj);
     }
 
+    // called when an items is dropped
     public void ItemDropped(ObjectGrabbableWithZones boxObj){
         gameManager.ItemPlaced(boxObj);
     }
@@ -144,17 +152,18 @@ public class OrderPackerItemManager : MonoBehaviour
     // Removes the box object
     public void RemoveItem(ObjectGrabbableWithZones item){
         
-            item.ObjectDropped -= ItemDropped;
-            item.ObjectGrabbed -= ItemGrabbed;
+        // remove event listeners
+        item.ObjectDropped -= ItemDropped;
+        item.ObjectGrabbed -= ItemGrabbed;
 
-            GameObject dzObj = item.GetCurrentDropZone();
-            if(dzObj != null){
-                DropZone dropZone = dzObj.GetComponent<DropZone>();
-                if(dropZone != null){
-                    dropZone.Remove(item);
-                }
+        GameObject dzObj = item.GetCurrentDropZone();
+        if(dzObj != null){
+            DropZone dropZone = dzObj.GetComponent<DropZone>();
+            if(dropZone != null){
+                dropZone.Remove(item);
             }
-            Destroy(item.gameObject);
+        }
+        Destroy(item.gameObject);
     }
 
 }
