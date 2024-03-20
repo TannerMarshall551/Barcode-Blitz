@@ -46,12 +46,7 @@ public class SmoothRotation : MonoBehaviour
             }
         }
 
-        if (!isHolding)
-        {
-            rotationModeActive = false;
-            Cursor.visible = false;
-            Cursor.lockState = CursorLockMode.Locked;
-        }
+       
 
         if (rotationModeActive)
         {
