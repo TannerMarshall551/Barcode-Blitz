@@ -12,6 +12,12 @@ TagManager:
   - UnmadeBox
   - OpenBox
   - CompletedBox
+  - ItemDZ
+  - TrashDZ
+  - UnmadeBoxDZ
+  - OpenBoxDZ
+  - CompletedBoxDZ
+  - PrinterDZ
   layers:
   - Default
   - TransparentFX
