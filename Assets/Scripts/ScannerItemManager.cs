@@ -20,12 +20,14 @@ public class ScannerItemManager : MonoBehaviour
 
     private int currentItemIndex = 0;
     
-    // public GameObject startPage;
-    // public GameObject donePage;
+    public OrderPackerScannerManager scannerManager;
 
     // Start is called before the first frame update
     void Start()
     {
+        if(scannerManager == null){
+            Debug.LogError("Scanner Manager not loaded!");
+        }
         itemPage.OnItemChanged += (newItem) => UpdateCurrentItem(newItem); // add to item page to event
 
         LoadItem();
@@ -35,6 +37,11 @@ public class ScannerItemManager : MonoBehaviour
     void OnDisable(){
         
         itemPage.OnItemChanged -= (newItem) => UpdateCurrentItem(newItem); // remove from item page event
+    }
+
+    // gets the current index
+    public int GetIndex(){
+        return currentItemIndex;
     }
 
     // function to switch to next item in list
@@ -115,13 +122,17 @@ public class ScannerItemManager : MonoBehaviour
     // updates the current item to match new item
     public void UpdateCurrentItem(ScannerUIItem newScannerUIItem){
         
+        if(newScannerUIItem.id == "start" || newScannerUIItem.id == "complete"){
+            scannerManager.StartCompletePressed();
+        }
+
         ScannerUIItem newItem = new ScannerUIItem();
         newItem.CopyFrom(newScannerUIItem); // copy new item into local copy
         scannerUIItems[currentItemIndex] = newItem;
     }
 
     // takes a list of items and copies them into scannerUIItems
-    public void SetNewItems(List<ScannerUIItem> newScannerUIItems){
+    public void SetNewItems(List<ScannerUIItem> newScannerUIItems, int index = 0){
         
         scannerUIItems.Clear();
 
@@ -131,6 +142,6 @@ public class ScannerItemManager : MonoBehaviour
             scannerUIItems.Add(newItem);
         }
         
-        LoadItem();
+        LoadItem(index);
     }
 }

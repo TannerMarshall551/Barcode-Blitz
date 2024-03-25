@@ -22,6 +22,20 @@ public class ScannerItemPage : MonoBehaviour
         }
     }
 
+    /* ButtonRowEventHandler handles all events for the button row button presses
+        Used to set the actual values from the ButtonRow to the ScannerUIItem
+    */
+    public class ButtonRowEventHandler
+    {
+        public ScannerUIButtonRow buttonRowScript;
+        public int rowIndex;
+
+        public ButtonRowEventHandler(ScannerUIButtonRow buttonRowScript, int rowIndex){
+            this.buttonRowScript = buttonRowScript;
+            this.rowIndex = rowIndex;
+        }
+    }
+
     // variables for the event when an item is changed
     public delegate void ItemChangedDelegate(ScannerUIItem newItem);
     public event ItemChangedDelegate OnItemChanged;
@@ -30,11 +44,13 @@ public class ScannerItemPage : MonoBehaviour
     public ScannerUIItem item;
     public GameObject textRowPrefab;
     public GameObject selectorRowPrefab;
+    public GameObject buttonRowPrefab;
 
     public float verticalSpacing = 0f;
 
     // list of all SelectorRowEventHandler (all selector rows have events)
     public List<SelectorRowEventHandler> selectorRowEventHandlers = new List<SelectorRowEventHandler>();
+    public List<ButtonRowEventHandler> buttonRowEventHandlers = new List<ButtonRowEventHandler>();
 
     // Start is called before the first frame update
     void Start()
@@ -98,6 +114,22 @@ public class ScannerItemPage : MonoBehaviour
                         }
 
                         break;
+                    case RowType.Button:
+
+                        // instantiate row object from the button row prefab and assign its values
+                        rowObject = Instantiate(buttonRowPrefab, transform);
+                        SetButtonRowValues(rowObject, row.buttonRow);
+
+                        // get the button row scripte needed for event handling
+                        ScannerUIButtonRow buttonRowScript = rowObject.GetComponent<ScannerUIButtonRow>();
+
+                        if(buttonRowScript != null){
+
+                            // add the new selector row to the list of event handlers
+                            ButtonRowEventHandler newHandler = new ButtonRowEventHandler(buttonRowScript, rowIndex);
+                            buttonRowEventHandlers.Add(newHandler);
+                        }
+                        break;
                     default:
                         Debug.LogWarning("Unknown row type");
                         break;
@@ -108,6 +140,11 @@ public class ScannerItemPage : MonoBehaviour
             foreach (SelectorRowEventHandler handler in selectorRowEventHandlers){
                 handler.selectorRowScript.OnYesPressedChanged += (newValue) => UpdateSelectorRowYesValue(handler.rowIndex, newValue);
                 handler.selectorRowScript.OnNoPressedChanged += (newValue) => UpdateSelectorRowNoValue(handler.rowIndex, newValue);
+            }
+
+            // loop through all selector rows add them to the event handler
+            foreach (ButtonRowEventHandler handler in buttonRowEventHandlers){
+                handler.buttonRowScript.OnButtonChanged += (newValue) => UpdateButtonRowValue(handler.rowIndex, newValue);
             }
         }
         else{
@@ -124,6 +161,12 @@ public class ScannerItemPage : MonoBehaviour
     // updates the noPressed value for selector row
     void UpdateSelectorRowNoValue(int rowIndex, bool newValue){
         item.rows[rowIndex].selectorRow.noPressed = newValue;
+        CallOnItemChanged(); // announce changes
+    }
+
+    // updates the noPressed value for selector row
+    void UpdateButtonRowValue(int rowIndex, bool newValue){
+        item.rows[rowIndex].buttonRow.isPressed = newValue;
         CallOnItemChanged(); // announce changes
     }
 
@@ -144,6 +187,11 @@ public class ScannerItemPage : MonoBehaviour
         foreach (SelectorRowEventHandler handler in selectorRowEventHandlers){
             handler.selectorRowScript.OnYesPressedChanged -= (newValue) => UpdateSelectorRowYesValue(handler.rowIndex, newValue);
             handler.selectorRowScript.OnNoPressedChanged -= (newValue) => UpdateSelectorRowNoValue(handler.rowIndex, newValue);
+        }
+
+        // loop through all selector rows add them to the event handler
+        foreach (ButtonRowEventHandler handler in buttonRowEventHandlers){
+            handler.buttonRowScript.OnButtonChanged -= (newValue) => UpdateButtonRowValue(handler.rowIndex, newValue);
         }
     }
 
@@ -174,6 +222,21 @@ public class ScannerItemPage : MonoBehaviour
         else
         {
             Debug.LogError("ScannerUISelectionRow script not found on the prefab.");
+        }
+    }
+
+    // Sets the values of a given buttonRow on the input row
+    void SetButtonRowValues(GameObject rowPrefab, ButtonRow buttonRow)
+    {
+        ScannerUIButtonRow buttonRowPrefabScript = rowPrefab.GetComponent<ScannerUIButtonRow>();
+        if (buttonRowPrefabScript != null)
+        {
+            
+            buttonRowPrefabScript.SetButtonValue(buttonRow.bodyText, buttonRow.isPressed);
+        }
+        else
+        {
+            Debug.LogError("ScannerUIButtonRow script not found on the prefab.");
         }
     }
 }
