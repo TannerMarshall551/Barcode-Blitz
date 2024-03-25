@@ -336,28 +336,15 @@ public class OrderPackerBoxManager : MonoBehaviour
                 switch(curBox.Value.state)
                 {
                     case BoxState.Unmade:
-                        RemoveBox(curBox.Value);
+                        
                         if(curDZ == openDZ.GetComponent<DropZone>()){
+                            RemoveBox(curBox.Value);
                             SpawnBox(BoxState.Open);
-                        }
-                        else{
-                            SpawnBox(BoxState.Unmade);
                         }
                         break;
                     case BoxState.Open:
-                        // RemoveBox(curBox.Value);
-                        // if(curDZ == completedDZ.GetComponent<DropZone>()){
-                        //     SpawnBox(BoxState.Completed);
-                        // }
-                        // else{
-                        //     SpawnBox(BoxState.Open);
-                        // }
-                        RemoveBox(curBox.Value);
-                        SpawnBox(BoxState.Open);
                         break;
                     case BoxState.Completed:
-                        RemoveBox(curBox.Value);
-                        SpawnBox(BoxState.Completed);
                         break;
                     default:
                         break;
@@ -372,15 +359,8 @@ public class OrderPackerBoxManager : MonoBehaviour
             DropZone curDZ = myObj.GetCurrentDropZone().GetComponent<DropZone>();
             if(curDZ != null) 
             {
-                if(curDZ.gameObject == printerDZ){
+                if(curDZ.gameObject == openDZ){
                     RemoveLabel(myObj);
-                    SpawnLabel();
-                }
-                else if(curDZ.gameObject == openDZ){
-                    RemoveLabel(myObj);
-                }
-                else{
-                    Debug.Log("Unknown Dropzone");
                 }
             }
         }
