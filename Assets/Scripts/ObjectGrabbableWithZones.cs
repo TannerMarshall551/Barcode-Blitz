@@ -48,6 +48,11 @@ public class ObjectGrabbableWithZones : ObjectGrabbable
     public GameObject GetCurrentDropZone(){
         return currentDropZone;
     }
+    
+    public void RemoveCurrentDZ(){
+        currentDropZone = null;
+
+    }
 
     public List<GameObject> GetDropZones(){
         return dropZones;

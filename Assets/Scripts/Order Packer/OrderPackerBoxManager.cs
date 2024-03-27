@@ -416,6 +416,24 @@ public class OrderPackerBoxManager : MonoBehaviour
                 if(dz != null){
                     dz.SetIsLockedGrab(!CanGrabFrom);
                     dz.SetIsLockedDrop(!CanDropInto);
+                    //removove from dz 
+                    //once removed, remove collider
+                    // Assuming you want to remove the last object added to the Completed DropZone
+                    if (!dz.IsEmpty())
+                    {
+                        ObjectGrabbableWithZones objectToRemove = dz.TryGrab(); // This removes the object from the DropZone
+                        if (objectToRemove != null)
+                        {
+                            objectToRemove.SetCanPlaceOutsideDropZones(true);
+                            objectToRemove.Drop(); 
+                            // Re-enable the collider
+                            objectToRemove.RemoveCurrentDZ();
+                        }
+                        else
+                        { 
+                            Debug.Log("TryGrab failed: No object was removed.");
+                        }
+                    }
                 }
                 break;
             default:
