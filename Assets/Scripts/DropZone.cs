@@ -142,6 +142,13 @@ public class DropZone : MonoBehaviour
     // Sets the visibility of the dropZone
     public void SetVisibility(bool isVisible){
         this.isVisible = isVisible;
+
+
+        Collider c = GetComponent<Collider>();
+        if (c != null)
+        { 
+            c.enabled = isVisible;
+        }
         Renderer r;
         foreach (Transform child in this.transform)
         {
@@ -149,8 +156,13 @@ public class DropZone : MonoBehaviour
                 foreach (Transform grandChild in child.transform)
                 {
                     r = grandChild.GetComponent<Renderer>();
+                    c = grandChild.GetComponent<Collider>();
+
                     if(r != null){
                         r.enabled = isVisible;
+                    }
+                    if(c != null){
+                        c.enabled = isVisible;
                     }
                 }
             }
