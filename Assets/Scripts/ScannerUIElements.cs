@@ -10,6 +10,13 @@ public enum RowType
     Button
 }
 
+public enum ScannerColorState
+{
+    Default,
+    InProgress,
+    Complete
+}
+
 // Row that has two lines of text
 [System.Serializable]
 public class TextRow
@@ -51,10 +58,12 @@ public class ScannerUIItem
 {
     public string id;
     public List<Row> rows = new List<Row>();
+    public ScannerColorState pageColor;
 
     // Copies newItem into current item
     public void CopyFrom(ScannerUIItem newItem){
         id = newItem.id;
+        pageColor = newItem.pageColor;
         rows.Clear();
 
         // Copy each row from the newItem object

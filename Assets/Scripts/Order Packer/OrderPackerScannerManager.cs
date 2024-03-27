@@ -34,6 +34,7 @@ public class OrderPackerScannerManager : MonoBehaviour
         itemPages = new List<ScannerUIItem>();
         ScannerUIItem newItem = new ScannerUIItem();
         newItem.id = "start";
+        newItem.pageColor = ScannerColorState.Default;
 
         newItem.rows = new List<Row>();
         Row newRow = new Row();
@@ -54,6 +55,7 @@ public class OrderPackerScannerManager : MonoBehaviour
 
         ScannerUIItem newItem = new ScannerUIItem();
         newItem.id = "complete";
+        newItem.pageColor = ScannerColorState.Default;
 
         newItem.rows = new List<Row>();
         Row newRow = new Row();
@@ -114,6 +116,15 @@ public class OrderPackerScannerManager : MonoBehaviour
         // item page
         ScannerUIItem newItem = new ScannerUIItem();
         newItem.id = item;
+        if(total == remaining){
+            newItem.pageColor = ScannerColorState.Default;
+        }
+        else if(remaining > 0){
+            newItem.pageColor = ScannerColorState.InProgress;
+        }
+        else{
+            newItem.pageColor = ScannerColorState.Complete;
+        }
 
         // row 1
         newItem.rows = new List<Row>();
