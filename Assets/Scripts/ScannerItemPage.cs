@@ -46,6 +46,12 @@ public class ScannerItemPage : MonoBehaviour
     public GameObject selectorRowPrefab;
     public GameObject buttonRowPrefab;
 
+    private GameObject panel;
+
+    public Color defaultColor;
+    public Color inProgressColor;
+    public Color completeColor;
+
     public float verticalSpacing = 0f;
 
     // list of all SelectorRowEventHandler (all selector rows have events)
@@ -59,6 +65,20 @@ public class ScannerItemPage : MonoBehaviour
         if(item != null){
             ReloadItem(item);
         } 
+        Transform parentTransform = transform.parent;
+        if(parentTransform != null){
+            foreach (Transform child in parentTransform)
+            {
+                if (child.name == "Panel") 
+                {
+                    panel = child.gameObject;
+                }
+            }
+            SetColor();
+        }
+        else{
+            Debug.LogError("ScannerItemPage has no parents");
+        }
     }
 
     // On disable remove all children and any lingering events
@@ -79,6 +99,7 @@ public class ScannerItemPage : MonoBehaviour
             // remove all children (rows)
             ClearChildren();
             item.CopyFrom(newItemTemp);
+            SetColor();
 
             // loads each row from the newItme
             for(int rowIndex=0; rowIndex < item.rows.Count; rowIndex++){
@@ -237,6 +258,26 @@ public class ScannerItemPage : MonoBehaviour
         else
         {
             Debug.LogError("ScannerUIButtonRow script not found on the prefab.");
+        }
+    }
+
+    //
+    private void SetColor(){
+        if(panel != null){
+            Image i = panel.GetComponent<Image>();
+            if(i != null){
+                switch(item.pageColor){
+                    case ScannerColorState.InProgress:
+                        i.color = inProgressColor;
+                        break;
+                    case ScannerColorState.Complete:
+                        i.color = completeColor;
+                        break;
+                    default:
+                        i.color = defaultColor;
+                        break;   
+                }
+            }
         }
     }
 }

@@ -5,7 +5,6 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using TMPro;
 
-
 // Class for managing the scanner UI system
 public class ScannerItemManager : MonoBehaviour
 {
@@ -144,4 +143,5 @@ public class ScannerItemManager : MonoBehaviour
         
         LoadItem(index);
     }
+    
 }

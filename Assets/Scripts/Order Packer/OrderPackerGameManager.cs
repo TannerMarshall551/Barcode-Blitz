@@ -25,6 +25,7 @@ public class OrderPackerGameManager : MonoBehaviour
     // other managers
     private OrderPackerItemManager itemManager;
     private OrderPackerBoxManager boxManager;
+    private OrderPackerDropZoneManager dropZoneManager;
     public OrderPackerScannerManager scannerManager;
 
     private List<string> currentItems; // current items (tags) for package
@@ -41,7 +42,9 @@ public class OrderPackerGameManager : MonoBehaviour
         // Get the item manager, box manager, and scanner manager in scene
         GameObject boxManagerObj = GameObject.Find("BoxManager");
         GameObject itemManagerObj = GameObject.Find("ItemManager");
+        GameObject dropZoneManagerObj = GameObject.Find("DropZoneManager");
         GameObject scannerManagerObj = GameObject.Find("ScannerManager");
+        
 
         if(boxManagerObj == null){
             Debug.LogError("No BoxManager Object");
@@ -49,12 +52,16 @@ public class OrderPackerGameManager : MonoBehaviour
         if(itemManagerObj == null){
             Debug.LogError("No ItemManager Object");
         }
+        if(dropZoneManagerObj == null){
+            Debug.LogError("No DropZoneManager Object");
+        }
         if(scannerManagerObj == null){
             Debug.LogError("No ScannerManager Object");
         }
         
         boxManager = boxManagerObj.GetComponent<OrderPackerBoxManager>();
         itemManager = itemManagerObj.GetComponent<OrderPackerItemManager>();
+        dropZoneManager = dropZoneManagerObj.GetComponent<OrderPackerDropZoneManager>();
         scannerManager = scannerManagerObj.GetComponent<OrderPackerScannerManager>();
 
         if(boxManager == null){
@@ -63,13 +70,16 @@ public class OrderPackerGameManager : MonoBehaviour
         if(itemManager == null){
             Debug.LogError("No ItemManager Loaded");
         }
+        if(dropZoneManager == null){
+            Debug.LogError("No DropZoneManager Loaded");
+        }
         if(scannerManager == null){
             Debug.LogError("No ScannerManager Loaded");
         }
 
         // spawn items and boxes
         itemManager.SpawnObjectsOnShelf();
-        boxManager.SpawnBoxes(5);     
+        boxManager.SpawnBoxes(5);    
 
         LockAllDropZones();
     }
@@ -87,6 +97,7 @@ public class OrderPackerGameManager : MonoBehaviour
                     currentState = GameState.StartPackage;
 
                     scannerManager.StartPage();
+                    dropZoneManager.UpdateDZVisability(false); 
                 }
                 break;
             case GameState.StartPackage:
@@ -100,7 +111,8 @@ public class OrderPackerGameManager : MonoBehaviour
 
                     GetNextItems();
 
-                    scannerManager.SetItems(currentItems); 
+                    scannerManager.SetItems(currentItems);
+                    dropZoneManager.UpdateDZVisability(false);  
                 }
                 break;
             case GameState.MakeBox:
@@ -112,6 +124,7 @@ public class OrderPackerGameManager : MonoBehaviour
                     boxManager.SetLockedBox(BoxState.Unmade, false, false);
                     boxManager.SetLockedBox(BoxState.Open, false, false);
                     itemManager.LockAllItems(true, true);
+                    dropZoneManager.UpdateDZVisability(false); 
 
                     AssignItemDZ();
                 }
@@ -121,6 +134,7 @@ public class OrderPackerGameManager : MonoBehaviour
                 {
                     Debug.Log("GrabItems Completed");
                     currentState = GameState.ScanItems;
+                    dropZoneManager.UpdateDZVisability(true); 
                 }
                 break;
             case GameState.ScanItems:
@@ -131,6 +145,7 @@ public class OrderPackerGameManager : MonoBehaviour
 
                     boxManager.SetLockedBox(BoxState.Open, false, true);
                     itemManager.LockAllItems(false, false);
+                    dropZoneManager.UpdateDZVisability(true); 
                 }
                 break;
             case GameState.DropItems:
@@ -144,6 +159,7 @@ public class OrderPackerGameManager : MonoBehaviour
 
                         scannerManager.UpdateItems(currentItems);
                         scannerManager.CompletePage();
+                        dropZoneManager.UpdateDZVisability(false); 
                     }
                     else{
                         currentState = GameState.GrabItems;
@@ -152,6 +168,7 @@ public class OrderPackerGameManager : MonoBehaviour
                         itemManager.LockAllItems(true, true);
 
                         scannerManager.UpdateItems(currentItems);
+                        dropZoneManager.UpdateDZVisability(false); 
                     }
                 }
                 break;
@@ -163,6 +180,7 @@ public class OrderPackerGameManager : MonoBehaviour
 
                     boxManager.SetLockedPrinter(true, false);
                     boxManager.SetLockedBox(BoxState.Open, false, true);
+                    dropZoneManager.UpdateDZVisability(false); 
                 }
                 break;
             case GameState.CompleteBox:
@@ -174,6 +192,7 @@ public class OrderPackerGameManager : MonoBehaviour
                     boxManager.SetLockedBox(BoxState.Open, true, false);
                     boxManager.SetLockedBox(BoxState.Completed, false, true);
                     boxManager.SetLockedPrinter(false, false);
+                    dropZoneManager.UpdateDZVisability(false); 
                 }
                 break;
             case GameState.SendPackage:
@@ -181,15 +200,18 @@ public class OrderPackerGameManager : MonoBehaviour
                 {
                     Debug.Log("SendPackage Completed");
                     LockAllDropZones();
+                    boxManager.SetLockedBox(BoxState.Completed, true, false);
                     if(boxManager.GetAllUnopenBoxes().Count > 0){ // check if there are more unopened boxes
                         Debug.Log("Back to StartPackage, next package");
                         currentState = GameState.StartPackage;
                         
                         scannerManager.StartPage();
+                        dropZoneManager.UpdateDZVisability(false); 
                     }
                     else{
                         Debug.Log("All packages completed, to End");
                         currentState = GameState.End;
+                        dropZoneManager.UpdateDZVisability(false); 
                     }
                 }
                 break;
