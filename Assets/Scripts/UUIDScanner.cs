@@ -14,9 +14,8 @@ public class UUIDScanner : MonoBehaviour
         if (Input.GetMouseButtonDown(1)) // 1 is number for right mouse
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hit;
 
-            if (Physics.Raycast(ray, out hit))
+            if (Physics.Raycast(ray, out RaycastHit hit))
             {
                 // Check if the ray hits the collider component of plane (label)
                 if (hit.collider.gameObject == gameObject)
