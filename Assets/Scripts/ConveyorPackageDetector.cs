@@ -7,7 +7,7 @@ public class ConveyorPackageDetector : MonoBehaviour
     {
         Debug.Log("Package '" + other.gameObject.name + "' detected!");
 
-        // Start the coroutine to remove the box after a delay
+        // Remove item after a delay
         StartCoroutine(RemoveBoxAfterDelay(other.gameObject));
     }
 
