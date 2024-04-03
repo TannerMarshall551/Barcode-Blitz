@@ -311,7 +311,7 @@ GameObject:
   - component: {fileID: 8742659481133330183}
   m_Layer: 7
   m_Name: SmallPackage
-  m_TagString: Untagged
+  m_TagString: SmallPackage
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
