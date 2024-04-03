@@ -6,7 +6,6 @@ public class PlaceholderSnapping : MonoBehaviour
 
     private void OnCollisionStay(Collision collision)
     {
-        // collision.gameObject.CompareTag("MediumPackage")
         if (collision.gameObject.tag.Equals(this.tag) && snappedPackage == null)
         {
             snappedPackage = collision.gameObject;
