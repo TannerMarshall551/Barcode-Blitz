@@ -14,7 +14,7 @@ public class CartGrabbable : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0) && Camera.main != null && Camera.main.gameObject.activeInHierarchy && Camera.main.enabled)
         {
             RaycastHit hit;
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
