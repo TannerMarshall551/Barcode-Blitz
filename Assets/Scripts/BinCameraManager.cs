@@ -2,20 +2,22 @@ using UnityEngine;
 
 public class BinCameraManager : MonoBehaviour
 {
-    public float heightAboveBin = 1.5f; // Height above the bin to place the camera
-    public Camera binCamera; // Assign this via the inspector or find it dynamically if there's only one
-    public LayerMask obstructingLayer; // Set this to your 'BinViewObstructions' layer
+    public float heightAboveBin = 2f;
+    public Camera binCamera;
+    public LayerMask obstructingLayer; // Any potential obstructions to the bins (i.e. shelves) should be added here
 
     private void Awake()
     {
-        // Optionally, find the BinCamera by tag if not assigned
+        // Find BinCamera by tag
         if (!binCamera)
+        {
             binCamera = GameObject.FindGameObjectWithTag("BinCamera").GetComponent<Camera>();
+        }
     }
 
     private void OnMouseDown()
     {
-        // Move the camera over the bin and look at it
+        // Move camera over bin, look down
         MeshCollider collider = GetComponent<MeshCollider>();
         if (collider != null)
         {
@@ -23,13 +25,12 @@ public class BinCameraManager : MonoBehaviour
             binCamera.transform.position = new Vector3(binCenter.x, binCenter.y + heightAboveBin, binCenter.z);
             binCamera.transform.LookAt(binCenter);
 
-            // Activate the bin camera and disable the main camera
+            // Activate bin camera, disable main camera
             if (Camera.main != binCamera)
             {
                 Camera.main.gameObject.SetActive(false);
                 binCamera.gameObject.SetActive(true);
 
-                // Update the target for visibility management to the current bin
                 VisibilityManager visibilityManager = binCamera.GetComponent<VisibilityManager>();
                 if (visibilityManager != null)
                 {
