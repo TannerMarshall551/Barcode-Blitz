@@ -5,6 +5,7 @@ public class BinViewMouse : MonoBehaviour
     public RectTransform indicatorRectTransform; // Assign your UI indicator's RectTransform
     public float sensitivity = 3000f; // Increase sensitivity as needed
     public Camera binCamera;
+    public Camera mainCamera;
 
     public Vector2 minXMaxY = new Vector2(-350, 350); // Min and Max X values
     public Vector2 minYMaxY = new Vector2(-210, 210); // Min and Max Y values
@@ -17,6 +18,11 @@ public class BinViewMouse : MonoBehaviour
         if (!binCamera)
         {
             binCamera = GameObject.FindGameObjectWithTag("BinCamera").GetComponent<Camera>();
+        }
+
+        if (!mainCamera)
+        {
+            mainCamera = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
         }
         // Initialize indicatorPosition based on the current indicator position
         indicatorRectTransform = this.GetComponent<RectTransform>();
@@ -41,21 +47,22 @@ public class BinViewMouse : MonoBehaviour
 
         Vector2 screenPoint = RectTransformUtility.WorldToScreenPoint(binCamera, indicatorRectTransform.position);
 
-        // Now cast a ray from this screen point
+        // Cast a ray from indicator downwards
         Ray ray = binCamera.ScreenPointToRay(screenPoint);
         RaycastHit hit;
-        if (Physics.Raycast(ray, out hit, 100)) // Adjust the distance as needed
+        if (Physics.Raycast(ray, out hit, 100))
         {
-            // Check if the hit object has a UUIDGenerator component
+            // Check if hit object has UUID
             UUIDGenerator uuidGenerator = hit.collider.GetComponent<UUIDGenerator>();
             if (uuidGenerator != null)
             {
                 Debug.Log("Hovering over: " + uuidGenerator.GetUUID());
 
-                if (Input.GetMouseButtonDown(0)) // Left click
+                if (Input.GetMouseButtonDown(0))
                 {
                     hit.collider.gameObject.SetActive(false);
-                    // Additional logic for "regenerating" the object in the player's hands
+                    binCamera.gameObject.SetActive(false);
+                    mainCamera.gameObject.SetActive(true);
                 }
             }
         }

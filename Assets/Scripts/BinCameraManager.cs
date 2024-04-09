@@ -4,6 +4,7 @@ public class BinCameraManager : MonoBehaviour
 {
     public float heightAboveBin = 2f;
     public Camera binCamera;
+    public Camera mainCamera;
     public LayerMask obstructingLayer; // Any potential obstructions to the bins (i.e. shelves) should be added here
 
     private void Awake()
@@ -12,6 +13,10 @@ public class BinCameraManager : MonoBehaviour
         if (!binCamera)
         {
             binCamera = GameObject.FindGameObjectWithTag("BinCamera").GetComponent<Camera>();
+        }
+        if (!mainCamera)
+        {
+            mainCamera = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
         }
     }
 
@@ -28,7 +33,7 @@ public class BinCameraManager : MonoBehaviour
             // Activate bin camera, disable main camera
             if (Camera.main != binCamera)
             {
-                Camera.main.gameObject.SetActive(false);
+                mainCamera.gameObject.SetActive(false);
                 binCamera.gameObject.SetActive(true);
 
                 VisibilityManager visibilityManager = binCamera.GetComponent<VisibilityManager>();
