@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerPickupDrop : MonoBehaviour
@@ -8,7 +6,7 @@ public class PlayerPickupDrop : MonoBehaviour
     [SerializeField] private LayerMask pickupLayerMask;
     [SerializeField] private Transform objectGrabPointTransform;
 
-    private ObjectGrabbable objectGrabbable;
+    public ObjectGrabbable objectGrabbable;
 
     public bool isHolding = false;
 
@@ -26,9 +24,7 @@ public class PlayerPickupDrop : MonoBehaviour
                 {
                     if (raycastHit.transform.TryGetComponent(out objectGrabbable))
                     {
-                        objectGrabbable.Grab(objectGrabPointTransform);
-                        isHolding = true;
-                        boxBeingHeld = objectGrabbable.gameObject;
+                        PickUpObject(objectGrabbable);
                     }
                 }
             }
@@ -40,5 +36,13 @@ public class PlayerPickupDrop : MonoBehaviour
                 boxBeingHeld = null;
             }
         }
+    }
+
+    public void PickUpObject(ObjectGrabbable objectGrabbable)
+    {
+        this.objectGrabbable = objectGrabbable;
+        objectGrabbable.Grab(objectGrabPointTransform);
+        isHolding = true;
+        boxBeingHeld = objectGrabbable.gameObject;
     }
 }

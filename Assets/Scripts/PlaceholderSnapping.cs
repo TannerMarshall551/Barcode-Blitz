@@ -3,10 +3,17 @@ using UnityEngine;
 public class PlaceholderSnapping : MonoBehaviour
 {
     private GameObject snappedPackage = null;
+    private PlayerPickupDrop playerPickupDrop;
+
+    private void Awake()
+    {
+        GameObject playerObject = GameObject.Find("Player");
+        playerPickupDrop = playerObject.GetComponent<PlayerPickupDrop>();
+    }
 
     private void OnCollisionStay(Collision collision)
     {
-        if (collision.gameObject.tag.Equals(this.tag) && snappedPackage == null)
+        if (collision.gameObject.tag.Equals(this.tag) && snappedPackage == null && !playerPickupDrop.boxBeingHeld)
         {
             snappedPackage = collision.gameObject;
             Transform placeholderTransform = transform;
@@ -27,13 +34,10 @@ public class PlaceholderSnapping : MonoBehaviour
 
     private void SnapPackageToPlaceholder(GameObject package, Transform placeholder)
     {
-        Debug.Log("Snapping");
         var packageBounds = package.GetComponentInChildren<Collider>().bounds;
 
         // Calculate placeholder size
         var placeholderBounds = GetComponent<Collider>().bounds;
-        Debug.Log("Placeholder bounds: ");
-        Debug.Log(placeholderBounds);
         Vector3 placeholderCenterTop = new Vector3(placeholderBounds.center.x, placeholderBounds.max.y, placeholderBounds.center.z);
 
         // Find current bottom of package

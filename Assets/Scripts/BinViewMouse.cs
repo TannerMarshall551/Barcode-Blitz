@@ -2,8 +2,8 @@ using UnityEngine;
 
 public class BinViewMouse : MonoBehaviour
 {
-    public RectTransform indicatorRectTransform; // Assign your UI indicator's RectTransform
-    public float sensitivity = 3000f; // Increase sensitivity as needed
+    public RectTransform indicatorRectTransform;
+    public float sensitivity = 3000f;
     public Camera binCamera;
     public Camera mainCamera;
 
@@ -12,9 +12,11 @@ public class BinViewMouse : MonoBehaviour
 
     private Vector2 indicatorPosition;
 
+    private PlayerPickupDrop playerPickupDrop;
+    private Collider[] packageColliders;
+
     void Start()
     {
-        // Find BinCamera by tag
         if (!binCamera)
         {
             binCamera = GameObject.FindGameObjectWithTag("BinCamera").GetComponent<Camera>();
@@ -24,45 +26,50 @@ public class BinViewMouse : MonoBehaviour
         {
             mainCamera = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
         }
-        // Initialize indicatorPosition based on the current indicator position
+
         indicatorRectTransform = this.GetComponent<RectTransform>();
         indicatorPosition = indicatorRectTransform.anchoredPosition;
+
+        GameObject playerObject = GameObject.Find("Player");
+        playerPickupDrop = playerObject.GetComponent<PlayerPickupDrop>();
     }
 
     void Update()
     {
-        // Get raw mouse input
         float mouseX = Input.GetAxisRaw("Mouse X") * sensitivity * Time.deltaTime;
         float mouseY = Input.GetAxisRaw("Mouse Y") * sensitivity * Time.deltaTime;
 
-        // Update indicatorPosition based on mouse input
         indicatorPosition += new Vector2(mouseX, mouseY);
 
-        // Clamp the indicatorPosition to ensure it stays within the bounding box
         indicatorPosition.x = Mathf.Clamp(indicatorPosition.x, minXMaxY.x, minXMaxY.y);
         indicatorPosition.y = Mathf.Clamp(indicatorPosition.y, minYMaxY.x, minYMaxY.y);
 
-        // Apply the clamped position to the indicator
         indicatorRectTransform.anchoredPosition = indicatorPosition;
 
         Vector2 screenPoint = RectTransformUtility.WorldToScreenPoint(binCamera, indicatorRectTransform.position);
 
         // Cast a ray from indicator downwards
-        Ray ray = binCamera.ScreenPointToRay(screenPoint);
-        RaycastHit hit;
-        if (Physics.Raycast(ray, out hit, 100))
+        if (binCamera.isActiveAndEnabled)
         {
-            // Check if hit object has UUID
-            UUIDGenerator uuidGenerator = hit.collider.GetComponent<UUIDGenerator>();
-            if (uuidGenerator != null)
+            Ray ray = binCamera.ScreenPointToRay(screenPoint);
+            if (Physics.Raycast(ray, out RaycastHit hit, 100))
             {
-                Debug.Log("Hovering over: " + uuidGenerator.GetUUID());
-
-                if (Input.GetMouseButtonDown(0))
+                // Check if hit object has UUID
+                UUIDGenerator uuidGenerator = hit.collider.GetComponent<UUIDGenerator>();
+                if (uuidGenerator != null)
                 {
-                    hit.collider.gameObject.SetActive(false);
-                    binCamera.gameObject.SetActive(false);
-                    mainCamera.gameObject.SetActive(true);
+                    //Debug.Log("Hovering over: " + uuidGenerator.GetUUID());
+                    if (!playerPickupDrop.isHolding && Input.GetMouseButtonDown(0))
+                    {
+                        if (hit.transform.TryGetComponent(out ObjectGrabbable objectGrabbable))
+                        {
+                            playerPickupDrop.PickUpObject(objectGrabbable);
+                            binCamera.gameObject.SetActive(false);
+                            mainCamera.gameObject.SetActive(true);
+                            binCamera.enabled = false;
+                            mainCamera.enabled = true;
+                        }
+                    }
                 }
             }
         }
