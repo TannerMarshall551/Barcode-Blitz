@@ -7,9 +7,10 @@ public class BinCameraManager : MonoBehaviour
     public Camera mainCamera;
     public LayerMask obstructingLayer; // Any potential obstructions to the bins (i.e. shelves) should be added here
 
+    private PlayerPickupDrop playerPickupDrop;
+
     private void Awake()
     {
-        // Find BinCamera by tag
         if (!binCamera)
         {
             binCamera = GameObject.FindGameObjectWithTag("BinCamera").GetComponent<Camera>();
@@ -18,34 +19,40 @@ public class BinCameraManager : MonoBehaviour
         {
             mainCamera = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
         }
+
+        GameObject playerObject = GameObject.Find("Player");
+        playerPickupDrop = playerObject.GetComponent<PlayerPickupDrop>();
     }
 
-    private void OnMouseDown()
+    private void OnMouseUp()
     {
-        // Move camera over bin, look down
-        MeshCollider collider = GetComponent<MeshCollider>();
-        if (collider != null)
+        if (!playerPickupDrop.isHolding)
         {
-            Vector3 binCenter = collider.bounds.center;
-            binCamera.transform.position = new Vector3(binCenter.x, binCenter.y + heightAboveBin, binCenter.z);
-            binCamera.transform.LookAt(binCenter);
-
-            // Activate bin camera, disable main camera
-            if (Camera.main != binCamera)
+            // Move camera over bin, look down
+            MeshCollider collider = GetComponent<MeshCollider>();
+            if (collider != null)
             {
-                mainCamera.gameObject.SetActive(false);
-                binCamera.gameObject.SetActive(true);
+                Vector3 binCenter = collider.bounds.center;
+                binCamera.transform.position = new Vector3(binCenter.x, binCenter.y + heightAboveBin, binCenter.z);
+                binCamera.transform.LookAt(binCenter);
 
-                VisibilityManager visibilityManager = binCamera.GetComponent<VisibilityManager>();
-                if (visibilityManager != null)
+                // Activate bin camera, disable main camera
+                if (!binCamera.isActiveAndEnabled)
                 {
-                    visibilityManager.SetTarget(this.transform);
+                    VisibilityManager visibilityManager = binCamera.GetComponent<VisibilityManager>();
+                    if (visibilityManager != null)
+                    {
+                        visibilityManager.SetTarget(this.transform);
+                    }
+                    mainCamera.gameObject.SetActive(false);
+                    binCamera.gameObject.SetActive(true);
+                    binCamera.enabled = true;
                 }
             }
-        }
-        else
-        {
-            Debug.LogError("No MeshCollider component found on the GameObject.");
+            else
+            {
+                Debug.LogError("No MeshCollider component found on the GameObject.");
+            }
         }
     }
 }
