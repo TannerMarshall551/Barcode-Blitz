@@ -6,6 +6,7 @@ public class BinViewMouse : MonoBehaviour
     public float sensitivity = 3000f;
     public Camera binCamera;
     public Camera mainCamera;
+    private float originalPlayerMoveSpeed;
 
     public Vector2 minXMaxY = new Vector2(-350, 350); // Min and Max X values
     public Vector2 minYMaxY = new Vector2(-210, 210); // Min and Max Y values
@@ -13,7 +14,7 @@ public class BinViewMouse : MonoBehaviour
     private Vector2 indicatorPosition;
 
     private PlayerPickupDrop playerPickupDrop;
-    private Collider[] packageColliders;
+    private PlayerMovement playerMovement;
 
     void Start()
     {
@@ -32,6 +33,8 @@ public class BinViewMouse : MonoBehaviour
 
         GameObject playerObject = GameObject.Find("Player");
         playerPickupDrop = playerObject.GetComponent<PlayerPickupDrop>();
+        playerMovement = playerObject.GetComponent<PlayerMovement>();
+        originalPlayerMoveSpeed = playerMovement.GetMoveSpeed();
     }
 
     void Update()
@@ -51,6 +54,8 @@ public class BinViewMouse : MonoBehaviour
         // Cast a ray from indicator downwards
         if (binCamera.isActiveAndEnabled)
         {
+            playerMovement.moveSpeed = 0;
+
             Ray ray = binCamera.ScreenPointToRay(screenPoint);
             if (Physics.Raycast(ray, out RaycastHit hit, 100))
             {
@@ -68,6 +73,7 @@ public class BinViewMouse : MonoBehaviour
                             mainCamera.gameObject.SetActive(true);
                             binCamera.enabled = false;
                             mainCamera.enabled = true;
+                            playerMovement.moveSpeed = originalPlayerMoveSpeed;
                         }
                     }
                 }
