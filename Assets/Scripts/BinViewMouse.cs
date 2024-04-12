@@ -1,3 +1,5 @@
+using System.Collections;
+using TMPro;
 using UnityEngine;
 
 public class BinViewMouse : MonoBehaviour
@@ -15,6 +17,11 @@ public class BinViewMouse : MonoBehaviour
 
     private PlayerPickupDrop playerPickupDrop;
     private PlayerMovement playerMovement;
+
+    public GameObject infoText;
+    public float delayBeforeDisabling = 2f;
+
+    public GameObject UUIDHoverText;
 
     void Start()
     {
@@ -54,7 +61,21 @@ public class BinViewMouse : MonoBehaviour
         // Cast a ray from indicator downwards
         if (binCamera.isActiveAndEnabled)
         {
+            // Remove info text after delay
+            StartCoroutine(HideInfoText());
+
+            // Disable player movement
             playerMovement.moveSpeed = 0;
+
+            if (Input.GetKeyDown(KeyCode.Alpha1))
+            {
+                ExitBinView();
+            }
+
+            if (Input.GetKeyDown(KeyCode.Alpha2))
+            {
+                Debug.Log("2 was pressed");
+            }
 
             Ray ray = binCamera.ScreenPointToRay(screenPoint);
             if (Physics.Raycast(ray, out RaycastHit hit, 100))
@@ -63,21 +84,51 @@ public class BinViewMouse : MonoBehaviour
                 UUIDGenerator uuidGenerator = hit.collider.GetComponent<UUIDGenerator>();
                 if (uuidGenerator != null)
                 {
-                    //Debug.Log("Hovering over: " + uuidGenerator.GetUUID());
+                    DisplayHoverUUID(hit, uuidGenerator);
+
                     if (!playerPickupDrop.isHolding && Input.GetMouseButtonDown(0))
                     {
-                        if (hit.transform.TryGetComponent(out ObjectGrabbable objectGrabbable))
-                        {
-                            playerPickupDrop.PickUpObject(objectGrabbable);
-                            binCamera.gameObject.SetActive(false);
-                            mainCamera.gameObject.SetActive(true);
-                            binCamera.enabled = false;
-                            mainCamera.enabled = true;
-                            playerMovement.moveSpeed = originalPlayerMoveSpeed;
-                        }
+                        PickupAndSwitchViews(hit);
                     }
+                }
+                else
+                {
+                    UUIDHoverText.SetActive(false);
                 }
             }
         }
+    }
+
+    private void ExitBinView()
+    {
+        binCamera.gameObject.SetActive(false);
+        mainCamera.gameObject.SetActive(true);
+        binCamera.enabled = false;
+        mainCamera.enabled = true;
+        playerMovement.moveSpeed = originalPlayerMoveSpeed;
+    }
+
+    private void PickupAndSwitchViews(RaycastHit hit)
+    {
+        if (hit.transform.TryGetComponent(out ObjectGrabbable objectGrabbable))
+        {
+            playerPickupDrop.PickUpObject(objectGrabbable);
+            ExitBinView();
+        }
+    }
+
+    private IEnumerator HideInfoText()
+    {
+        yield return new WaitForSeconds(delayBeforeDisabling);
+        infoText.SetActive(false);
+    }
+
+    private void DisplayHoverUUID(RaycastHit hit, UUIDGenerator uuidGenerator)
+    {
+        var packageBounds = hit.collider.GetComponent<Collider>().bounds;
+        Vector3 targetPosition = new Vector3(packageBounds.center.x, packageBounds.max.y + 0.01f, packageBounds.center.z);
+        UUIDHoverText.SetActive(true);
+        UUIDHoverText.GetComponent<TextMeshProUGUI>().text = uuidGenerator.GetUUID();
+        UUIDHoverText.transform.position = targetPosition;
     }
 }
