@@ -280,4 +280,9 @@ public class ScannerItemPage : MonoBehaviour
             }
         }
     }
+
+    //
+    public ScannerUIItem GetItem(){
+        return item;
+    }
 }

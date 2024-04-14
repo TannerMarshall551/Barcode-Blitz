@@ -750,7 +750,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 561178850401231992, guid: f236112e2d5174c74bd8e24058857ba0, type: 3}
       propertyPath: maxCapacity
-      value: 10
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 561178850401231992, guid: f236112e2d5174c74bd8e24058857ba0, type: 3}
       propertyPath: floorColor.b
@@ -762,6 +762,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 561178850401231992, guid: f236112e2d5174c74bd8e24058857ba0, type: 3}
       propertyPath: floorColor.r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 561178850401231992, guid: f236112e2d5174c74bd8e24058857ba0, type: 3}
+      propertyPath: isLockedGrab
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 561178850401231992, guid: f236112e2d5174c74bd8e24058857ba0, type: 3}

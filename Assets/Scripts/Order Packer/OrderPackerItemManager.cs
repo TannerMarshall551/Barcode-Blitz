@@ -75,9 +75,11 @@ public class OrderPackerItemManager : MonoBehaviour
                             // Randomly color the object either green or red
                             if(Random.value > 0.1f){
                                 randomColor = Color.green;
+                                obj.AddDropZone(boxDZ);
                             }
                             else{
                                 randomColor = Color.red;
+                                obj.AddDropZone(garbadgeDZ);
                             }
 
                             Renderer renderer = instantiatedObject.GetComponent<Renderer>();
@@ -129,7 +131,7 @@ public class OrderPackerItemManager : MonoBehaviour
     }
 
     // sets the lock state for grabbing and placing for a dropzone for items
-    public void LockAllItems(bool CanGrabFrom, bool CanDropInto){
+    public void LockAllItems(bool CanGrabFrom, bool CanDropInto, bool CanTrash){
         foreach(GameObject curDZObj in dropZones){
             DropZone curDZ = curDZObj.GetComponent<DropZone>();
             if(curDZ != null){
@@ -137,6 +139,8 @@ public class OrderPackerItemManager : MonoBehaviour
                 curDZ.SetIsLockedDrop(!CanDropInto);
             }
         }
+        DropZone trashDZ = garbadgeDZ.GetComponent<DropZone>();
+        trashDZ.SetIsLockedDrop(!CanTrash);
     }
 
     // called when an item is grabbed
