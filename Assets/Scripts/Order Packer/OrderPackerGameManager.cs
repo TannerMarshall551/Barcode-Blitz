@@ -425,7 +425,7 @@ public class OrderPackerGameManager : MonoBehaviour
         currentItemTag = itemObj.gameObject.tag;
     }
 
-    // add or remove the open box drop zone to items in current items
+    // TODO (remove?) add or remove the open box drop zone to items in current items
     public void AssignItemDZ(){
 
         // get all the items and distinct items in current items
