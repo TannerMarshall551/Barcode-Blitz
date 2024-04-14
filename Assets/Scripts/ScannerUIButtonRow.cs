@@ -61,7 +61,7 @@ public class ScannerUIButtonRow : MonoBehaviour
         }
     }
 
-    // toggles the button states when one is clicked (only one can be pressed down at a time)
+    // toggles the button states when one is clicked
     void ToggleButtonState()
     {
         // Determine which button was clicked and toggle both buttons states
@@ -84,7 +84,7 @@ public class ScannerUIButtonRow : MonoBehaviour
     {
         // Press the button and update its visual appearance
         isPressed = true;
-        button.interactable = false;
+        // button.interactable = false;
     }
 
     // logic for releasing a button
@@ -92,11 +92,12 @@ public class ScannerUIButtonRow : MonoBehaviour
     {
         // Release the button and update its visual appearance
         isPressed = false;
-        button.interactable = true;
+        // button.interactable = true;
     }
 
     // invoke the on yes and no pressed changed events
     void CallOnPressed(){
         OnButtonChanged?.Invoke(isPressed);
     }
+
 }

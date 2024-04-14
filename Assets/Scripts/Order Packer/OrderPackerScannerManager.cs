@@ -7,6 +7,7 @@ public class OrderPackerScannerManager : MonoBehaviour
 {
     private List<string> allItems;
     private List<string> itemsRemaining;
+    private List<string> damagedItems;
 
     public ScannerItemManager scannerItemManager; // get the scannerItemManager 
     public List<ScannerUIItem> itemPages; 
@@ -76,6 +77,7 @@ public class OrderPackerScannerManager : MonoBehaviour
     public void SetItems(List<string> newItems){
         allItems = new List<string>(newItems);
         itemsRemaining = allItems;
+        damagedItems = new List<string>();
 
         UpdateScanner(true);
     }
@@ -87,6 +89,11 @@ public class OrderPackerScannerManager : MonoBehaviour
         UpdateScanner(false);
     }
 
+    // Adds a damaged item
+    public void AddDamagedItem(string itemID){
+        damagedItems.Add(itemID);
+    }
+
     // Updates the scanner
     public void UpdateScanner(bool newItems){
         
@@ -96,7 +103,7 @@ public class OrderPackerScannerManager : MonoBehaviour
         
         foreach(string item in uniqueItems)
         {
-            AddItemPage(item, allItems.Count(s => s == item), itemsRemaining.Count(d => d == item));
+            AddItemPage(item, allItems.Count(s => s == item), itemsRemaining.Count(d => d == item), damagedItems.Count(f => f == item));
         }
         
         int index = scannerItemManager.GetIndex();
@@ -110,7 +117,7 @@ public class OrderPackerScannerManager : MonoBehaviour
     }
 
     // Adds an item page to the scanner
-    public void AddItemPage(string item, int total, int remaining)
+    public void AddItemPage(string item, int total, int remaining, int damaged)
     {
 
         // item page
@@ -153,18 +160,21 @@ public class OrderPackerScannerManager : MonoBehaviour
         newRow.type = RowType.Text;
         newRow.textRow = new TextRow();
         newRow.textRow.headerText = "Packed:";
-        newRow.textRow.bodyText = (total - remaining).ToString();
-
+        if(damaged > 0){
+            newRow.textRow.bodyText = (total - remaining).ToString() + " - ( " + (damaged).ToString() +" damaged )";
+        }
+        else{
+            newRow.textRow.bodyText = (total - remaining).ToString();
+        }
         newItem.rows.Add(newRow);
 
         // row 4
         newRow = new Row();
 
-        newRow.type = RowType.Selector;
-        newRow.selectorRow = new SelectorRow();
-        newRow.selectorRow.headerText = "Damaged?:";
-        newRow.selectorRow.yesPressed = false;
-        newRow.selectorRow.noPressed = false;
+        newRow.type = RowType.Button;
+        newRow.buttonRow = new ButtonRow();
+        newRow.buttonRow.bodyText = "Mark as Damaged";
+        newRow.buttonRow.isPressed = false;
 
         newItem.rows.Add(newRow);
 
@@ -177,4 +187,17 @@ public class OrderPackerScannerManager : MonoBehaviour
         gameManager.StartCompletePressed();
     }
 
+    //
+    public void ItemUpdated(ScannerUIItem newScannerUIItem){
+        if(newScannerUIItem.id == "start" || newScannerUIItem.id == "complete"){
+            StartCompletePressed();
+        }
+        else{
+            gameManager.MarkTrashPressed(newScannerUIItem.id);
+        }
+    }
+
+    public string GetCurrentItemPageID(){
+        return scannerItemManager.GetItemID();
+    }
 }

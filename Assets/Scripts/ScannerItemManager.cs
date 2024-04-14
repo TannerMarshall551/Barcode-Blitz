@@ -121,10 +121,7 @@ public class ScannerItemManager : MonoBehaviour
     // updates the current item to match new item
     public void UpdateCurrentItem(ScannerUIItem newScannerUIItem){
         
-        if(newScannerUIItem.id == "start" || newScannerUIItem.id == "complete"){
-            scannerManager.StartCompletePressed();
-        }
-
+        scannerManager.ItemUpdated(newScannerUIItem);
         ScannerUIItem newItem = new ScannerUIItem();
         newItem.CopyFrom(newScannerUIItem); // copy new item into local copy
         scannerUIItems[currentItemIndex] = newItem;
@@ -142,6 +139,11 @@ public class ScannerItemManager : MonoBehaviour
         }
         
         LoadItem(index);
+    }
+
+    //
+    public string GetItemID(){
+        return itemPage.GetItem().id;
     }
     
 }
