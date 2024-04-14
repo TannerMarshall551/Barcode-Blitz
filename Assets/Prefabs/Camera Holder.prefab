@@ -325,7 +325,7 @@ GameObject:
   - component: {fileID: 4537243307600999898}
   m_Layer: 0
   m_Name: Camera Holder
-  m_TagString: MainCamera
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
