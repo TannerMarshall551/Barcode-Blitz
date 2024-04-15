@@ -15,13 +15,14 @@ public class UUIDScanner : MonoBehaviour
         {
             Debug.Log("CheEse!");
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hit;
 
-            if (Physics.Raycast(ray, out RaycastHit hit))
+            if (Physics.Raycast(ray, out hit))
             {
                 Debug.Log("meed!");
                 // Check if the ray hits the collider component of plane (label)
-                if (hit.collider.gameObject == gameObject)
-                {
+                //if (hit.collider.gameObject == gameObject)
+                //{
                     Debug.Log("ahh!");
                     // Log UUID
                     // Check UUID stored in component attached to parent GameObject
@@ -30,7 +31,7 @@ public class UUIDScanner : MonoBehaviour
                     {
                         Debug.Log("UUID: " + uuidGenerator.GetUUID());
                     }
-                }
+                //}
             }
         }
     }

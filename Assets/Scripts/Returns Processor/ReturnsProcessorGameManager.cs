@@ -81,6 +81,7 @@ public class ReturnsProcessorGameManager : MonoBehaviour
                 }
                 break;
             case RPGameState.TakeObjectOut:
+                //boxManager.DzSetLockDropGrab(false, false);
                 break;
             case RPGameState.MarkIfCorrect:
                 break;

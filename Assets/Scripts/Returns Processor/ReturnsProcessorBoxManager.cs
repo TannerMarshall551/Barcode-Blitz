@@ -7,7 +7,8 @@ public class ReturnsProcessorBoxManager : MonoBehaviour
     public GameObject package;
     public GameObject conveyorPoint;
 
-    public List<GameObject> openPackages;
+    public GameObject openPackage;
+    public List<GameObject> toyCars;
 
     //public float spawnRate = 2f;
     //float nextSpawn = 0f;
@@ -58,29 +59,36 @@ public class ReturnsProcessorBoxManager : MonoBehaviour
     public bool IsDZFull()
     {
         if (dz1 != null)
-            return dz1.IsFull();
+            return dz1.GetObjectsInZone().Count == 1;
         else
             return false;
     }
 
     public bool OpenBox()
     {
+        Debug.Log("here");
+
         Destroy(newBox);
 
-        int randomBoxIndex = Random.Range(0, 6);
+        int randomToyIndex = Random.Range(0, 6);
 
-        GameObject randomBox = openPackages[randomBoxIndex];
+        GameObject randomToy = toyCars[randomToyIndex];
 
-        GameObject openBox = (GameObject)GameObject.Instantiate(randomBox, new Vector3(dz.transform.position.x, dz.transform.position.y+1, dz.transform.position.z), Quaternion.identity);
-        openBox.GetComponent<Collider>().enabled = true;
+        GameObject openBox = (GameObject)GameObject.Instantiate(openPackage, dz.transform.position, Quaternion.identity);
+        //openBox.GetComponent<Collider>().enabled = true;
 
         ObjectGrabbableWithZones openBoxObjGrab = openBox.GetComponent<ObjectGrabbableWithZones>();
 
         List<GameObject> dzList = new();
         dzList.Add(dz1.gameObject);
         openBoxObjGrab.SetDropZones(dzList);
+        openBoxObjGrab.Drop(dz1);
 
-        openBoxObjGrab.SetCurrentDropZone(dz);
+        GameObject toy = (GameObject)GameObject.Instantiate(randomToy, new Vector3(dz.transform.position.x, dz.transform.position.y, dz.transform.position.z), Quaternion.identity);
+
+        ObjectGrabbableWithZones toyObjGrab = toy.GetComponent<ObjectGrabbableWithZones>();
+        toyObjGrab.SetDropZones(dzList);
+        //toyObjGrab.Drop(dz1);
 
 
         float isCorrect = Random.Range(1, 101);
