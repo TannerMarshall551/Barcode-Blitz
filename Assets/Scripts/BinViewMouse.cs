@@ -78,22 +78,27 @@ public class BinViewMouse : MonoBehaviour
             }
 
             Ray ray = binCamera.ScreenPointToRay(screenPoint);
-            if (Physics.Raycast(ray, out RaycastHit hit, 100))
-            {
-                // Check if hit object has UUID
-                UUIDGenerator uuidGenerator = hit.collider.GetComponent<UUIDGenerator>();
-                if (uuidGenerator != null)
-                {
-                    DisplayHoverUUID(hit, uuidGenerator);
 
-                    if (!playerPickupDrop.isHolding && Input.GetMouseButtonDown(0))
+            float maxDistance = 100f;
+            float currentDistance = 0f;
+
+            while (currentDistance < maxDistance)
+            {
+                if (Physics.Raycast(ray.origin + ray.direction * currentDistance, ray.direction, out RaycastHit hit, maxDistance - currentDistance))
+                {
+                    if (hit.collider.GetComponent<Renderer>()?.enabled == true) // Check if renderer is enabled
                     {
-                        PickupAndSwitchViews(hit);
+                        ProcessHit(hit);
+                        break;
+                    }
+                    else
+                    {
+                        currentDistance += hit.distance + 0.01f; // Move the start point beyond the last hit object
                     }
                 }
                 else
                 {
-                    UUIDHoverText.SetActive(false);
+                    break; // No more objects hit
                 }
             }
         }
@@ -130,5 +135,24 @@ public class BinViewMouse : MonoBehaviour
         UUIDHoverText.SetActive(true);
         UUIDHoverText.GetComponent<TextMeshProUGUI>().text = uuidGenerator.GetUUID();
         UUIDHoverText.transform.position = targetPosition;
+    }
+
+    void ProcessHit(RaycastHit hit)
+    {
+        Debug.Log(hit.collider.name);
+        UUIDGenerator uuidGenerator = hit.collider.GetComponent<UUIDGenerator>();
+        if (uuidGenerator != null)
+        {
+            DisplayHoverUUID(hit, uuidGenerator);
+
+            if (!playerPickupDrop.isHolding && Input.GetMouseButtonDown(0))
+            {
+                PickupAndSwitchViews(hit);
+            }
+        }
+        else
+        {
+            UUIDHoverText.SetActive(false);
+        }
     }
 }
