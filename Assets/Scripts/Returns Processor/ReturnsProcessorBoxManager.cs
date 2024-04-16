@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class ReturnsProcessorBoxManager : MonoBehaviour
 {
+    public ReturnsProcessorGameManager rpGameManager;
+
     public GameObject package;
     public GameObject conveyorPoint;
 
@@ -14,6 +16,7 @@ public class ReturnsProcessorBoxManager : MonoBehaviour
     //float nextSpawn = 0f;
 
     private GameObject newBox;
+    private string newBoxUuid;
 
     public float speed;
     private bool arrived;
@@ -24,15 +27,27 @@ public class ReturnsProcessorBoxManager : MonoBehaviour
 
     public float chanceGood = 80;
 
+    private float isCorrect;
+
     public void SpawnBox()
     {
         newBox = (GameObject)GameObject.Instantiate(package, transform.position, Quaternion.identity);
         arrived = false;
+        newBoxUuid = newBox.GetComponentInChildren<UUIDGenerator>().GetUUID();
+        Debug.Log("Just Spawned Box newBoxUUID: " + newBoxUuid);
+
+        SetGameManagerInScanner(rpGameManager, newBox);
 
         ObjectGrabbableWithZones objRemove = newBox.GetComponent<ObjectGrabbableWithZones>();
         if (objRemove != null)
             Destroy(objRemove);
 
+    }
+
+    public void SetGameManagerInScanner(ReturnsProcessorGameManager gameManager, GameObject box)
+    {
+        UUIDScanner boxScanner = box.GetComponentInChildren<UUIDScanner>();
+        boxScanner.rpGameManager = gameManager;
     }
 
     public void DzSetLockDropGrab(bool canDrop, bool canGrab)
@@ -66,9 +81,8 @@ public class ReturnsProcessorBoxManager : MonoBehaviour
 
     public bool OpenBox()
     {
-        Debug.Log("here");
-
         Destroy(newBox);
+        newBoxUuid = null;
 
         int randomToyIndex = Random.Range(0, 6);
 
@@ -82,21 +96,38 @@ public class ReturnsProcessorBoxManager : MonoBehaviour
         List<GameObject> dzList = new();
         dzList.Add(dz1.gameObject);
         openBoxObjGrab.SetDropZones(dzList);
-        openBoxObjGrab.Drop(dz1);
+        
 
         GameObject toy = (GameObject)GameObject.Instantiate(randomToy, new Vector3(dz.transform.position.x, dz.transform.position.y, dz.transform.position.z), Quaternion.identity);
 
         ObjectGrabbableWithZones toyObjGrab = toy.GetComponent<ObjectGrabbableWithZones>();
         toyObjGrab.SetDropZones(dzList);
-        //toyObjGrab.Drop(dz1);
+        toyObjGrab.SetCanPlaceOutsideDropZones(true);
+
+        
+        openBoxObjGrab.Drop(dz1);
+        toyObjGrab.Drop(dz1);
+
+        openBox.GetComponent<BoxCollider>().enabled = false;
+        dz.GetComponent<BoxCollider>().enabled = false;
 
 
-        float isCorrect = Random.Range(1, 101);
+        isCorrect = Random.Range(1, 101);
         Debug.Log("Is Correct: " + isCorrect);
         if (isCorrect > chanceGood)
             return false;
         else
             return true;
+    }
+
+    public string GetNewBoxUUID()
+    {
+        return newBoxUuid;
+    }
+
+    public float GetIsCorrect()
+    {
+        return isCorrect;
     }
 
     // Start is called before the first frame update
@@ -131,6 +162,7 @@ public class ReturnsProcessorBoxManager : MonoBehaviour
                     List<GameObject> dzList = new();
                     dzList.Add(dz1.gameObject);
                     objGrabZones.SetDropZones(dzList);
+                    objGrabZones.SetCanPlaceOutsideDropZones(true);
                 }
             }
         }

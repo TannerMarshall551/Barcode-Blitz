@@ -8,6 +8,9 @@ using UnityEngine;
 
 public class UUIDScanner : MonoBehaviour
 {
+
+    public ReturnsProcessorGameManager rpGameManager;
+
     void Update()
     {
         // Check left mouse button clicked
@@ -29,7 +32,12 @@ public class UUIDScanner : MonoBehaviour
                     UUIDGenerator uuidGenerator = hit.collider.GetComponentInParent<UUIDGenerator>();
                     if (uuidGenerator != null)
                     {
-                        Debug.Log("UUID: " + uuidGenerator.GetUUID());
+                    string uuid = uuidGenerator.GetUUID();
+                        Debug.Log("UUID: " + uuid);
+                        if(rpGameManager != null)
+                        {
+                            rpGameManager.SetLastScannedUUID(uuid);
+                        }
                     }
                 //}
             }
