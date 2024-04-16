@@ -41,12 +41,8 @@ public class VisibilityManager : MonoBehaviour
             // Only affect objects if they are between the camera and the target
             if (distanceToHit < maxDistance)
             {
-                Renderer hitRenderer = hit.collider.GetComponent<Renderer>();
-                if (hitRenderer != null && !previouslyObstructed.Contains(hitRenderer))
-                {
-                    hitRenderer.enabled = false; // Hide obstructing object
-                    previouslyObstructed.Add(hitRenderer); // Add to tracked objects
-                }
+                // Hide the Renderer of the hit object and all its children
+                HideRenderersRecursively(hit.transform);
             }
         }
     }
@@ -73,5 +69,17 @@ public class VisibilityManager : MonoBehaviour
     {
         // Make sure to reset visibility when the camera/script is disabled
         ResetObstructedObjectsVisibility();
+    }
+
+    private void HideRenderersRecursively(Transform objTransform)
+    {
+        foreach (Renderer renderer in objTransform.GetComponentsInChildren<Renderer>())
+        {
+            if (renderer != null && !previouslyObstructed.Contains(renderer))
+            {
+                renderer.enabled = false; // Hide obstructing object
+                previouslyObstructed.Add(renderer); // Add to tracked objects
+            }
+        }
     }
 }
