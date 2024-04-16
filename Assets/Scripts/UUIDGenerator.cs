@@ -10,22 +10,47 @@ public class UUIDGenerator : MonoBehaviour
 {
     private string uuid;
 
-    private void Start()
+    public string manualUUID;
+    
+
+    private void Awake()
     {
         // Generate UUID
-        uuid = System.Guid.NewGuid().ToString();
-
-        // TextMeshPro component must be attached to child object of GameObject – this is the component that displays text
-        // Find TextMeshPro component in child object -> set text to generated UUID
-        TextMeshPro tmp = GetComponentInChildren<TextMeshPro>();
-        if (tmp != null)
+        if (manualUUID.Equals(""))
         {
-            tmp.text = uuid;
+            Debug.Log("HERE");
+            uuid = System.Guid.NewGuid().ToString();
+
+            // TextMeshPro component must be attached to child object of GameObject – this is the component that displays text
+            // Find TextMeshPro component in child object -> set text to generated UUID
+            TextMeshPro tmp = GetComponentInChildren<TextMeshPro>();
+            if (tmp != null)
+            {
+                tmp.text = uuid;
+            }
+            else
+            {
+                Debug.LogError("TextMeshPro component not found.");
+            }
         }
         else
         {
-            Debug.LogError("TextMeshPro component not found.");
+            Debug.Log("HERE INSTEAD: " + manualUUID);
+            uuid = manualUUID;
+
+            // TextMeshPro component must be attached to child object of GameObject – this is the component that displays text
+            // Find TextMeshPro component in child object -> set text to generated UUID
+            TextMeshPro tmp = GetComponentInChildren<TextMeshPro>();
+            if (tmp != null)
+            {
+                tmp.text = uuid;
+            }
+            else
+            {
+                Debug.LogError("TextMeshPro component not found.");
+            }
         }
+       
     }
 
     public string GetUUID()

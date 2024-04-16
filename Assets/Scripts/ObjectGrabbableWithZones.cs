@@ -14,6 +14,8 @@ public class ObjectGrabbableWithZones : ObjectGrabbable
     public event EventHandler ObjectDropped; // Triggered when object is dropped
     public event EventHandler ObjectGrabbed; // Triggered when object is grabbed
 
+    public bool holdingObject = false; // Keeps track if an object is being held
+
     // Start is called before the first frame update
     protected override void Start()
     {
@@ -54,6 +56,7 @@ public class ObjectGrabbableWithZones : ObjectGrabbable
 
     }
 
+
     public List<GameObject> GetDropZones(){
         return dropZones;
     }
@@ -74,6 +77,11 @@ public class ObjectGrabbableWithZones : ObjectGrabbable
         dropZones.Remove(dropZone);
     }
 
+    public bool GetHoldingObject()
+    {
+        return holdingObject;
+    }
+
     // Grabs object
     public override void Grab(Transform objectGrabPointTransform)
     {
@@ -85,6 +93,8 @@ public class ObjectGrabbableWithZones : ObjectGrabbable
 
         // Triggers event
         ObjectGrabbed?.Invoke(this);
+
+        holdingObject = true;
     }
 
     // Drops object
@@ -118,6 +128,8 @@ public class ObjectGrabbableWithZones : ObjectGrabbable
 
                 float objectHeight = objectCollider.bounds.size.y;
                 this.transform.position += new Vector3(0, objectHeight / 2, 0);
+
+                holdingObject = false;
             }
             else{
                 Debug.Log("Couldn't Find Position of DropZone");
