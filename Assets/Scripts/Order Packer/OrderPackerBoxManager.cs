@@ -336,28 +336,15 @@ public class OrderPackerBoxManager : MonoBehaviour
                 switch(curBox.Value.state)
                 {
                     case BoxState.Unmade:
-                        RemoveBox(curBox.Value);
+                        
                         if(curDZ == openDZ.GetComponent<DropZone>()){
+                            RemoveBox(curBox.Value);
                             SpawnBox(BoxState.Open);
-                        }
-                        else{
-                            SpawnBox(BoxState.Unmade);
                         }
                         break;
                     case BoxState.Open:
-                        // RemoveBox(curBox.Value);
-                        // if(curDZ == completedDZ.GetComponent<DropZone>()){
-                        //     SpawnBox(BoxState.Completed);
-                        // }
-                        // else{
-                        //     SpawnBox(BoxState.Open);
-                        // }
-                        RemoveBox(curBox.Value);
-                        SpawnBox(BoxState.Open);
                         break;
                     case BoxState.Completed:
-                        RemoveBox(curBox.Value);
-                        SpawnBox(BoxState.Completed);
                         break;
                     default:
                         break;
@@ -372,15 +359,8 @@ public class OrderPackerBoxManager : MonoBehaviour
             DropZone curDZ = myObj.GetCurrentDropZone().GetComponent<DropZone>();
             if(curDZ != null) 
             {
-                if(curDZ.gameObject == printerDZ){
+                if(curDZ.gameObject == openDZ){
                     RemoveLabel(myObj);
-                    SpawnLabel();
-                }
-                else if(curDZ.gameObject == openDZ){
-                    RemoveLabel(myObj);
-                }
-                else{
-                    Debug.Log("Unknown Dropzone");
                 }
             }
         }
@@ -436,6 +416,24 @@ public class OrderPackerBoxManager : MonoBehaviour
                 if(dz != null){
                     dz.SetIsLockedGrab(!CanGrabFrom);
                     dz.SetIsLockedDrop(!CanDropInto);
+                    //removove from dz 
+                    //once removed, remove collider
+                    // Assuming you want to remove the last object added to the Completed DropZone
+                    if (!dz.IsEmpty())
+                    {
+                        ObjectGrabbableWithZones objectToRemove = dz.TryGrab(); // This removes the object from the DropZone
+                        if (objectToRemove != null)
+                        {
+                            objectToRemove.SetCanPlaceOutsideDropZones(true);
+                            objectToRemove.Drop(); 
+                            // Re-enable the collider
+                            objectToRemove.RemoveCurrentDZ();
+                        }
+                        else
+                        { 
+                            Debug.Log("TryGrab failed: No object was removed.");
+                        }
+                    }
                 }
                 break;
             default:

@@ -8,10 +8,15 @@ public class DropZone : MonoBehaviour
 
     public bool isLockedGrab;
     public bool isLockedDrop;
+    public bool isVisible;
 
     public int maxCapacity;
 
     public Color floorColor;
+
+    public delegate void EventHandler(ObjectGrabbableWithZones box); // Eventhandler for object (returns self)
+    public event EventHandler ObjectDropped; // Triggered when object is dropped
+    public event EventHandler ObjectGrabbed; // Triggered when object is grabbed
 
     // Start is called before the first frame update
     void Start()
@@ -20,6 +25,7 @@ public class DropZone : MonoBehaviour
             objectsInZone = new List<ObjectGrabbableWithZones>();
         }
         SetColor(floorColor);
+        SetVisibility(isVisible);
 
     }
 
@@ -74,6 +80,7 @@ public class DropZone : MonoBehaviour
 
         if(!isLockedDrop && !IsFull() && obj.GetDropZones().Contains(this.gameObject)){
             objectsInZone.Add(obj);
+            ObjectDropped?.Invoke(obj);
             return 0;
         } 
         return 1;
@@ -96,6 +103,7 @@ public class DropZone : MonoBehaviour
             int lastObjIndex = objectsInZone.Count - 1;
             ObjectGrabbableWithZones obj = objectsInZone[lastObjIndex];
             objectsInZone.RemoveAt(lastObjIndex);
+            ObjectGrabbed?.Invoke(obj);
             return obj;
         } 
 
@@ -128,6 +136,41 @@ public class DropZone : MonoBehaviour
         else
         {
             Debug.Log("Floor child not found.");
+        }
+    }
+
+    // Sets the visibility of the dropZone
+    public void SetVisibility(bool isVisible){
+        this.isVisible = isVisible;
+
+
+        Collider c = GetComponent<Collider>();
+        if (c != null)
+        { 
+            c.enabled = isVisible;
+        }
+        Renderer r;
+        foreach (Transform child in this.transform)
+        {
+            if(child.name == "Floor"){
+                foreach (Transform grandChild in child.transform)
+                {
+                    r = grandChild.GetComponent<Renderer>();
+                    c = grandChild.GetComponent<Collider>();
+
+                    if(r != null){
+                        r.enabled = isVisible;
+                    }
+                    if(c != null){
+                        c.enabled = isVisible;
+                    }
+                }
+            }
+
+            r = child.GetComponent<Renderer>();
+            if(r != null){
+                r.enabled = isVisible;
+            }
         }
     }
 }
