@@ -31,7 +31,25 @@ public class ReturnsProcessorGameManager : MonoBehaviour
     private string lastScannedUUID;
 
     private List<string> binList = new List<string> { "1a", "1b", "1c", "1d", "2a", "2b", "2c", "2d" };
+    private List<string> binLocationList = new List<string> { "Row 1, Column 1", "Row 1, Column 2", "Row 1, Column 3", "Row 1, Column 4",
+        "Row 2, Column 1", "Row 2, Column 2", "Row 2, Column 3", "Row 2, Column 4" };
+    private string correctBinLocation;
+
     private string correctBin;
+
+    public List<GameObject> toyCars;
+    private GameObject randomToy;
+    public List<string> toyCarStrings;
+    private string randomToyString;
+
+    public int chanceCorrect = 80;
+
+    private int score = 0;
+    public int scoreToWin = 5;
+
+    private int itemsToTrash;
+
+    private int randBinIndex;
 
     // Start is called before the first frame update
     void Start()
@@ -55,6 +73,7 @@ public class ReturnsProcessorGameManager : MonoBehaviour
     void Update()
     {
         newBoxUUID = boxManager.GetNewBoxUUID();
+        
 
         switch (currentState)
         {
@@ -66,64 +85,111 @@ public class ReturnsProcessorGameManager : MonoBehaviour
                 }
                 break;
             case RPGameState.PickUpBox:
-                if(PickUpBoxComplete())
+                if (PickUpBoxComplete())
                 {
                     Debug.Log("PickUpBox Completed");
                     currentState = RPGameState.ScanBox;
                 }
                 break;
             case RPGameState.ScanBox:
-                if(ScanBoxCompleted())
+                if (ScanBoxCompleted())
                 {
                     Debug.Log("ScanBox Completed");
                     boxManager.DzSetLockDropGrab(true, false);
                     currentState = RPGameState.PutBoxDown;
 
-                    float isCorrectNumber = boxManager.GetIsCorrect();
+                    int randomToyIndex = Random.Range(0, 6);
+
+                    randomToy = toyCars[randomToyIndex];
+
+                    float isCorrectNumber = Random.Range(0, 100);
+
+
                     if (isCorrectNumber <= 80)
+                    {
                         isItemCorrect = true;
+                        randomToyString = toyCarStrings[randomToyIndex];
+                        randBinIndex = Random.Range(0, 8);
+                        correctBin = binList[randBinIndex];
+                        correctBinLocation = binLocationList[randBinIndex];
+                        boxManager.ToggleBinDZ(randBinIndex, false);
+                    }
                     else
+                    {
                         isItemCorrect = false;
+
+                        int randomStringIndex = Random.Range(0, 6);
+                        while(randomStringIndex == randomToyIndex)
+                        {
+                            randomStringIndex = Random.Range(0, 6);
+                        }
+                        randomToyString = toyCarStrings[randomStringIndex];
+                    }
+
+                    
+                    
 
                     //UpdateScannerInterface();
                 }
                 break;
             case RPGameState.PutBoxDown:
-                if(PutBoxDownComplete())
+                if (PutBoxDownComplete())
                 {
                     Debug.Log("PutBoxDown Completed");
-                    isItemCorrect = boxManager.OpenBox();
+                    boxManager.OpenBox(randomToy, randBinIndex);
                     boxManager.DzSetLockDropGrab(false, true);
                     currentState = RPGameState.MarkIfCorrect;
                 }
                 break;
             case RPGameState.MarkIfCorrect:
-                if(MarkIfCorrectComplete())
+                if (MarkIfCorrectComplete())
                 {
                     Debug.Log("Mark If Correct Completed");
                     if (isItemCorrect)
                     {
-                        int randBinIndex = Random.Range(0, 6);
-                        correctBin = binList[randBinIndex];
                         Debug.Log("Correct Bin: " + correctBin);
+                        itemsToTrash = 1;
                         currentState = RPGameState.ScanShelf;
                     }
                     else
                     {
                         Debug.Log("Incorrect item, trash it");
+                        boxManager.SetTrashLockDrop(false);
+                        itemsToTrash = 2;
                         currentState = RPGameState.TrashItem;
                     }
                 }
                 break;
             case RPGameState.ScanShelf:
-                if(ScanShelfComplete())
+                if (ScanShelfComplete())
                 {
                     Debug.Log("ScanShelfComplete");
+                    currentState = RPGameState.PlaceItem;
                 }
                 break;
             case RPGameState.PlaceItem:
+                if(PlaceItemComplete())
+                {
+                    Debug.Log("PlaceItem Complete");
+                    boxManager.SetTrashLockDrop(false);
+                    boxManager.ReenableColliders();
+                    currentState = RPGameState.TrashItem;
+                }
                 break;
             case RPGameState.TrashItem:
+                if(TrashItemComplete(itemsToTrash))
+                {
+                    boxManager.SetTrashLockDrop(true);
+                    score++;
+                    if(score >= scoreToWin)
+                        currentState = RPGameState.End;
+                    else
+                    {
+                        boxManager.SpawnBox();
+                        currentState = RPGameState.PickUpBox;
+                    }
+                    Debug.Log("Score: " + score);
+                }
                 break;
             case RPGameState.End:
                 break;
@@ -180,11 +246,6 @@ public class ReturnsProcessorGameManager : MonoBehaviour
             return false;
     }
 
-    public void SetLastScannedUUID(string scan)
-    {
-        lastScannedUUID = scan;
-    }
-
     private bool MarkIfCorrectComplete()
     {
         return true;
@@ -192,7 +253,7 @@ public class ReturnsProcessorGameManager : MonoBehaviour
 
     private bool ScanShelfComplete()
     {
-        if(lastScannedUUID != null && lastScannedUUID.Equals(correctBin))
+        if (lastScannedUUID != null && lastScannedUUID.Equals(correctBin))
         {
             lastScannedUUID = null;
             return true;
@@ -202,5 +263,32 @@ public class ReturnsProcessorGameManager : MonoBehaviour
             lastScannedUUID = null;
             return false;
         }
+    }
+
+    private bool PlaceItemComplete()
+    {
+        return boxManager.CheckBinDZFull(randBinIndex);
+    }
+
+    private bool TrashItemComplete(int numItemsToTrash)
+    {
+        return boxManager.AllItemsTrashed(numItemsToTrash);
+    }
+
+    public void SetLastScannedUUID(string scan)
+    {
+        lastScannedUUID = scan;
+    }
+
+   
+
+    public string GetCarTypeForScanner()
+    {
+        return randomToyString;
+    }
+
+    public string GetBinLocationForScanner()
+    {
+        return correctBinLocation;
     }
 }
