@@ -8,6 +8,7 @@ public class BinCameraManager : MonoBehaviour
     public LayerMask obstructingLayer; // Any potential obstructions to the bins (i.e. shelves) should be added here
 
     private PlayerPickupDrop playerPickupDrop;
+    private BinViewMouse binViewMouse;
 
     private void Awake()
     {

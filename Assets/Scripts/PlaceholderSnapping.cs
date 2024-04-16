@@ -34,23 +34,27 @@ public class PlaceholderSnapping : MonoBehaviour
 
     private void SnapPackageToPlaceholder(GameObject package, Transform placeholder)
     {
-        var packageBounds = package.GetComponentInChildren<Collider>().bounds;
+        var placeholderCollider = placeholder.GetComponent<Collider>();
+        var packageCollider = package.GetComponentInChildren<Collider>();
 
-        // Calculate placeholder size
-        var placeholderBounds = GetComponent<Collider>().bounds;
-        Vector3 placeholderCenterTop = new Vector3(placeholderBounds.center.x, placeholderBounds.max.y, placeholderBounds.center.z);
+        if (placeholderCollider == null || packageCollider == null)
+        {
+            Debug.LogError("Missing required colliders on either package or placeholder.");
+            return;
+        }
 
-        // Find current bottom of package
-        float lowestPoint = packageBounds.min.y;
+        // Get top surface of placeholder
+        Vector3 placeholderTop = new Vector3(placeholderCollider.bounds.center.x, placeholderCollider.bounds.max.y, placeholderCollider.bounds.center.z);
 
-        // Calculate position to snap to
-        Vector3 targetPosition = placeholderCenterTop + (Vector3.up * (packageBounds.extents.y - lowestPoint + placeholderBounds.extents.y));
+        // Calculate offset for bottom of package --> placeholder top
+        float packageHeight = packageCollider.bounds.size.y;
+        Vector3 targetPosition = placeholderTop + Vector3.up * packageHeight / 2;
 
-        // Set position and rotation
-        snappedPackage.transform.position = new Vector3(targetPosition.x, targetPosition.y, targetPosition.z);
-        snappedPackage.transform.rotation = transform.rotation;
-        snappedPackage.transform.SetParent(placeholder, true);
-        var packageRigidBody = package.GetComponent<Rigidbody>();
+        package.transform.position = targetPosition;
+        package.transform.rotation = placeholder.rotation;
+        package.transform.SetParent(placeholder);
+
+        Rigidbody packageRigidBody = package.GetComponent<Rigidbody>();
         if (packageRigidBody != null)
         {
             packageRigidBody.constraints = RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionZ;

@@ -106,6 +106,7 @@ public class BinViewMouse : MonoBehaviour
 
     private void ExitBinView()
     {
+        StopCoroutine(HideInfoText());
         binCamera.gameObject.SetActive(false);
         mainCamera.gameObject.SetActive(true);
         binCamera.enabled = false;
