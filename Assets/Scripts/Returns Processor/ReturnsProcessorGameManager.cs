@@ -8,7 +8,6 @@ public enum RPGameState
     PickUpBox, //Waiting for box to be picked up
     ScanBox, // Scan the label on the box
     PutBoxDown, // Click Dropzone to put down box
-    TakeObjectOut, // Pick up itemsn out of box
     MarkIfCorrect, // Mark on scanner if items are correct
     ScanShelf, // Scan label on shelf to put item away
     PlaceItem, // Put the item away
@@ -27,6 +26,13 @@ public class ReturnsProcessorGameManager : MonoBehaviour
 
     private bool isItemCorrect;
 
+    private string newBoxUUID;
+
+    private string lastScannedUUID;
+
+    private List<string> binList = new List<string> { "1a", "1b", "1c", "1d", "2a", "2b", "2c", "2d" };
+    private string correctBin;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -42,12 +48,14 @@ public class ReturnsProcessorGameManager : MonoBehaviour
         if (boxManager == null)
             Debug.LogError("No BoxManager Loaded");
 
-        boxManager.SpawnBox(); 
+        boxManager.SpawnBox();
     }
 
     // Update is called once per frame
     void Update()
     {
+        newBoxUUID = boxManager.GetNewBoxUUID();
+
         switch (currentState)
         {
             case RPGameState.Tutorial:
@@ -65,27 +73,53 @@ public class ReturnsProcessorGameManager : MonoBehaviour
                 }
                 break;
             case RPGameState.ScanBox:
-                //if(ScanBoxCompleted())
-                //{
-                    //Debug.Log("ScanBox Completed");
+                if(ScanBoxCompleted())
+                {
+                    Debug.Log("ScanBox Completed");
                     boxManager.DzSetLockDropGrab(true, false);
                     currentState = RPGameState.PutBoxDown;
-                //}
+
+                    float isCorrectNumber = boxManager.GetIsCorrect();
+                    if (isCorrectNumber <= 80)
+                        isItemCorrect = true;
+                    else
+                        isItemCorrect = false;
+
+                    //UpdateScannerInterface();
+                }
                 break;
             case RPGameState.PutBoxDown:
                 if(PutBoxDownComplete())
                 {
                     Debug.Log("PutBoxDown Completed");
                     isItemCorrect = boxManager.OpenBox();
-                    currentState = RPGameState.TakeObjectOut;
+                    boxManager.DzSetLockDropGrab(false, true);
+                    currentState = RPGameState.MarkIfCorrect;
                 }
                 break;
-            case RPGameState.TakeObjectOut:
-                //boxManager.DzSetLockDropGrab(false, false);
-                break;
             case RPGameState.MarkIfCorrect:
+                if(MarkIfCorrectComplete())
+                {
+                    Debug.Log("Mark If Correct Completed");
+                    if (isItemCorrect)
+                    {
+                        int randBinIndex = Random.Range(0, 6);
+                        correctBin = binList[randBinIndex];
+                        Debug.Log("Correct Bin: " + correctBin);
+                        currentState = RPGameState.ScanShelf;
+                    }
+                    else
+                    {
+                        Debug.Log("Incorrect item, trash it");
+                        currentState = RPGameState.TrashItem;
+                    }
+                }
                 break;
             case RPGameState.ScanShelf:
+                if(ScanShelfComplete())
+                {
+                    Debug.Log("ScanShelfComplete");
+                }
                 break;
             case RPGameState.PlaceItem:
                 break;
@@ -133,5 +167,40 @@ public class ReturnsProcessorGameManager : MonoBehaviour
     public bool PutBoxDownComplete()
     {
         return boxManager.IsDZFull();
+    }
+
+    public bool ScanBoxCompleted()
+    {
+        if (lastScannedUUID != null && lastScannedUUID.Equals(newBoxUUID))
+        {
+            lastScannedUUID = null;
+            return true;
+        }
+        else
+            return false;
+    }
+
+    public void SetLastScannedUUID(string scan)
+    {
+        lastScannedUUID = scan;
+    }
+
+    private bool MarkIfCorrectComplete()
+    {
+        return true;
+    }
+
+    private bool ScanShelfComplete()
+    {
+        if(lastScannedUUID != null && lastScannedUUID.Equals(correctBin))
+        {
+            lastScannedUUID = null;
+            return true;
+        }
+        else
+        {
+            lastScannedUUID = null;
+            return false;
+        }
     }
 }
