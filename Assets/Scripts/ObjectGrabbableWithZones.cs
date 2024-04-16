@@ -50,6 +50,11 @@ public class ObjectGrabbableWithZones : ObjectGrabbable
     public GameObject GetCurrentDropZone(){
         return currentDropZone;
     }
+    
+    public void RemoveCurrentDZ(){
+        currentDropZone = null;
+
+    }
 
 
     public List<GameObject> GetDropZones(){
@@ -113,6 +118,9 @@ public class ObjectGrabbableWithZones : ObjectGrabbable
 
                 this.gameObject.transform.position = position.transform.position;
                 this.gameObject.transform.rotation = position.transform.rotation;
+
+                // force physics to update
+                Physics.SyncTransforms();
 
                 if(objectCollider == null){
                     objectCollider = GetComponent<Collider>();

@@ -6,7 +6,15 @@ using UnityEngine;
 public enum RowType
 {
     Text,
-    Selector
+    Selector,
+    Button
+}
+
+public enum ScannerColorState
+{
+    Default,
+    InProgress,
+    Complete
 }
 
 // Row that has two lines of text
@@ -26,6 +34,14 @@ public class SelectorRow
     public bool noPressed;
 }
 
+// Row that has one line of text in a button
+[System.Serializable]
+public class ButtonRow
+{
+    public string bodyText;
+    public bool isPressed;
+}
+
 // Row for each part of the item page
 [System.Serializable]
 public class Row
@@ -33,6 +49,7 @@ public class Row
     public RowType type;
     public TextRow textRow;
     public SelectorRow selectorRow;
+    public ButtonRow buttonRow;
 }
 
 // ScannerUIItem contains the info for all the rows for each item
@@ -41,10 +58,12 @@ public class ScannerUIItem
 {
     public string id;
     public List<Row> rows = new List<Row>();
+    public ScannerColorState pageColor;
 
     // Copies newItem into current item
     public void CopyFrom(ScannerUIItem newItem){
         id = newItem.id;
+        pageColor = newItem.pageColor;
         rows.Clear();
 
         // Copy each row from the newItem object
@@ -66,6 +85,11 @@ public class ScannerUIItem
                     newRow.selectorRow.headerText = row.selectorRow.headerText;
                     newRow.selectorRow.yesPressed = row.selectorRow.yesPressed;
                     newRow.selectorRow.noPressed = row.selectorRow.noPressed;
+                    break;
+                case RowType.Button:
+                    newRow.buttonRow = new ButtonRow();
+                    newRow.buttonRow.bodyText = row.buttonRow.bodyText;
+                    newRow.buttonRow.isPressed = row.buttonRow.isPressed;
                     break;
             }
 

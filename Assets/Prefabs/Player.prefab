@@ -257,6 +257,46 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
+    - target: {fileID: 3871193270190259538, guid: 63a590f23e9354be8a6c29d856db6c67, type: 3}
+      propertyPath: defaultColor.b
+      value: 0.7647059
+      objectReference: {fileID: 0}
+    - target: {fileID: 3871193270190259538, guid: 63a590f23e9354be8a6c29d856db6c67, type: 3}
+      propertyPath: defaultColor.g
+      value: 0.7647059
+      objectReference: {fileID: 0}
+    - target: {fileID: 3871193270190259538, guid: 63a590f23e9354be8a6c29d856db6c67, type: 3}
+      propertyPath: defaultColor.r
+      value: 0.7647059
+      objectReference: {fileID: 0}
+    - target: {fileID: 3871193270190259538, guid: 63a590f23e9354be8a6c29d856db6c67, type: 3}
+      propertyPath: buttonRowPrefab
+      value: 
+      objectReference: {fileID: 2806926635573835053, guid: 97d50333b03f5408395e09628a80a428, type: 3}
+    - target: {fileID: 3871193270190259538, guid: 63a590f23e9354be8a6c29d856db6c67, type: 3}
+      propertyPath: completeColor.b
+      value: 0.1764706
+      objectReference: {fileID: 0}
+    - target: {fileID: 3871193270190259538, guid: 63a590f23e9354be8a6c29d856db6c67, type: 3}
+      propertyPath: completeColor.g
+      value: 0.85882354
+      objectReference: {fileID: 0}
+    - target: {fileID: 3871193270190259538, guid: 63a590f23e9354be8a6c29d856db6c67, type: 3}
+      propertyPath: completeColor.r
+      value: 0.16470589
+      objectReference: {fileID: 0}
+    - target: {fileID: 3871193270190259538, guid: 63a590f23e9354be8a6c29d856db6c67, type: 3}
+      propertyPath: inProgressColor.b
+      value: 0.3647059
+      objectReference: {fileID: 0}
+    - target: {fileID: 3871193270190259538, guid: 63a590f23e9354be8a6c29d856db6c67, type: 3}
+      propertyPath: inProgressColor.g
+      value: 0.90588236
+      objectReference: {fileID: 0}
+    - target: {fileID: 3871193270190259538, guid: 63a590f23e9354be8a6c29d856db6c67, type: 3}
+      propertyPath: inProgressColor.r
+      value: 0.8901961
+      objectReference: {fileID: 0}
     - target: {fileID: 4790635218138817542, guid: 63a590f23e9354be8a6c29d856db6c67, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.009
@@ -268,6 +308,22 @@ PrefabInstance:
     - target: {fileID: 4790635218138817542, guid: 63a590f23e9354be8a6c29d856db6c67, type: 3}
       propertyPath: m_LocalScale.z
       value: 0.01
+      objectReference: {fileID: 0}
+    - target: {fileID: 5594168308265395765, guid: 63a590f23e9354be8a6c29d856db6c67, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5594168308265395765, guid: 63a590f23e9354be8a6c29d856db6c67, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5594168308265395765, guid: 63a590f23e9354be8a6c29d856db6c67, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5594168308265395765, guid: 63a590f23e9354be8a6c29d856db6c67, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6886394927638925869, guid: 63a590f23e9354be8a6c29d856db6c67, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
