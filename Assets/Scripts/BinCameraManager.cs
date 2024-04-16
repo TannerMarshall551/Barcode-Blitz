@@ -30,16 +30,20 @@ public class BinCameraManager : MonoBehaviour
         {
             // Move camera over bin, look down
             MeshCollider collider = GetComponent<MeshCollider>();
+            VisibilityManager visibilityManager = binCamera.GetComponent<VisibilityManager>();
             if (collider != null)
             {
-                Vector3 binCenter = collider.bounds.center;
-                binCamera.transform.position = new Vector3(binCenter.x, binCenter.y + heightAboveBin, binCenter.z);
-                binCamera.transform.LookAt(binCenter);
+                if (!visibilityManager.isTargetSet)
+                {
+                    Vector3 binCenter = collider.bounds.center;
+                    binCamera.transform.position = new Vector3(binCenter.x, binCenter.y + heightAboveBin, binCenter.z);
+                    binCamera.transform.LookAt(binCenter);
+                }
 
                 // Activate bin camera, disable main camera
                 if (!binCamera.isActiveAndEnabled)
                 {
-                    VisibilityManager visibilityManager = binCamera.GetComponent<VisibilityManager>();
+                    //VisibilityManager visibilityManager = binCamera.GetComponent<VisibilityManager>();
                     if (visibilityManager != null)
                     {
                         visibilityManager.SetTarget(this.transform);
