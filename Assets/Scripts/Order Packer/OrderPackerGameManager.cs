@@ -27,6 +27,7 @@ public enum GameState
 - Tutorial
 - Scan Items
 - End
+- Change item assets
 
 ========BUGS=========
 - None :D
@@ -40,7 +41,8 @@ public class OrderPackerGameManager : MonoBehaviour
     private OrderPackerItemManager itemManager;
     private OrderPackerBoxManager boxManager;
     private OrderPackerDropZoneManager dropZoneManager;
-    public OrderPackerScannerManager scannerManager;
+    private OrderPackerScannerManager scannerManager;
+    public OrderPackerTimerDisplay timer;
 
     private List<string> currentItems; // current items (tags) for package
 
@@ -48,6 +50,7 @@ public class OrderPackerGameManager : MonoBehaviour
 
     private bool stateComplete = false; // if the current state is complete
     private bool damagedItem = false; // if the current item being held is damaged
+    private bool itemScanned = false;
     private string currentItemTag = ""; // the tag for the current item
 
     // Start is called before the first frame update
@@ -60,7 +63,6 @@ public class OrderPackerGameManager : MonoBehaviour
         GameObject itemManagerObj = GameObject.Find("ItemManager");
         GameObject dropZoneManagerObj = GameObject.Find("DropZoneManager");
         GameObject scannerManagerObj = GameObject.Find("ScannerManager");
-        
 
         if(boxManagerObj == null){
             Debug.LogError("No BoxManager Object");
@@ -74,6 +76,7 @@ public class OrderPackerGameManager : MonoBehaviour
         if(scannerManagerObj == null){
             Debug.LogError("No ScannerManager Object");
         }
+        
         
         boxManager = boxManagerObj.GetComponent<OrderPackerBoxManager>();
         itemManager = itemManagerObj.GetComponent<OrderPackerItemManager>();
@@ -91,6 +94,9 @@ public class OrderPackerGameManager : MonoBehaviour
         }
         if(scannerManager == null){
             Debug.LogError("No ScannerManager Loaded");
+        }
+        if(timer == null){
+            Debug.LogError("No Timer Loaded");
         }
 
         // spawn items and boxes
@@ -114,6 +120,9 @@ public class OrderPackerGameManager : MonoBehaviour
 
                     scannerManager.StartPage();
                     dropZoneManager.UpdateDZVisability(false); 
+
+                    timer.StartTimer();
+
                 }
                 break;
             case GameState.StartPackage:
@@ -247,6 +256,8 @@ public class OrderPackerGameManager : MonoBehaviour
                         Debug.Log("All packages completed, to End");
                         currentState = GameState.End;
                         dropZoneManager.UpdateDZVisability(false); 
+
+                        timer.StopTimer();
                     }
                 }
                 break;
@@ -297,7 +308,10 @@ public class OrderPackerGameManager : MonoBehaviour
     }
     // all items in next drop zone
     public bool ScanItemsComplete(){
-        if(SpacePressed()){ // TODO scan item
+        if(itemScanned){ // TODO scan item
+
+            itemScanned = false;
+
             if(currentItemTag == scannerManager.GetCurrentItemPageID() && currentItems.Contains(currentItemTag)){
                 return true; 
             }
@@ -473,5 +487,10 @@ public class OrderPackerGameManager : MonoBehaviour
         boxManager.SetLockedBox(BoxState.Completed, false, false);
         boxManager.SetLockedPrinter(false, false);
         itemManager.LockAllItems(false, false, false);
+    }
+
+    //
+    public void ScanItem(string uuid){
+        itemScanned = true;
     }
 }
