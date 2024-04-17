@@ -22,6 +22,7 @@ public class BinViewMouse : MonoBehaviour
     public float delayBeforeDisabling = 2f;
 
     public GameObject UUIDHoverText;
+    private GameObject lastHitObject;
 
     void Start()
     {
@@ -148,6 +149,9 @@ public class BinViewMouse : MonoBehaviour
 
             if (!playerPickupDrop.isHolding && Input.GetMouseButtonDown(0))
             {
+                lastHitObject = hit.collider.gameObject;
+                MakePackageIntangible(hit.collider.gameObject);
+                StartCoroutine(MakeTangibleAfterDelay(hit.collider.gameObject, 0.25f));
                 PickupAndSwitchViews(hit);
             }
         }
@@ -155,5 +159,31 @@ public class BinViewMouse : MonoBehaviour
         {
             UUIDHoverText.SetActive(false);
         }
+    }
+
+    private void MakePackageIntangible(GameObject package)
+    {
+        Debug.Log("Making package intangible");
+        Collider[] colliders = package.GetComponentsInChildren<Collider>();
+        foreach (Collider collider in colliders)
+        {
+            collider.isTrigger = true;
+        }
+    }
+
+    private void MakePackageTangible(GameObject package)
+    {
+        Debug.Log("Making package tangible");
+        Collider[] colliders = package.GetComponentsInChildren<Collider>();
+        foreach (Collider collider in colliders)
+        {
+            collider.isTrigger = false;
+        }
+    }
+
+    private IEnumerator MakeTangibleAfterDelay(GameObject package, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        MakePackageTangible(package);
     }
 }
