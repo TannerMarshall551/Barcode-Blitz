@@ -135,13 +135,12 @@ public class BinViewMouse : MonoBehaviour
         var packageBounds = hit.collider.GetComponent<Collider>().bounds;
         Vector3 targetPosition = new Vector3(packageBounds.center.x, packageBounds.max.y + 0.01f, packageBounds.center.z);
         UUIDHoverText.SetActive(true);
-        UUIDHoverText.GetComponent<TextMeshProUGUI>().text = uuidGenerator.GetUUID();
+        UUIDHoverText.GetComponent<TextMeshProUGUI>().text = hit.collider.GetComponentInParent<Package>().displayLabel + "\n" + uuidGenerator.GetUUID();
         UUIDHoverText.transform.position = targetPosition;
     }
 
     void ProcessHit(RaycastHit hit)
     {
-        Debug.Log(hit.collider.name);
         UUIDGenerator uuidGenerator = hit.collider.GetComponent<UUIDGenerator>();
         if (uuidGenerator != null)
         {
@@ -163,7 +162,6 @@ public class BinViewMouse : MonoBehaviour
 
     private void MakePackageIntangible(GameObject package)
     {
-        Debug.Log("Making package intangible");
         Collider[] colliders = package.GetComponentsInChildren<Collider>();
         foreach (Collider collider in colliders)
         {
@@ -173,7 +171,6 @@ public class BinViewMouse : MonoBehaviour
 
     private void MakePackageTangible(GameObject package)
     {
-        Debug.Log("Making package tangible");
         Collider[] colliders = package.GetComponentsInChildren<Collider>();
         foreach (Collider collider in colliders)
         {
