@@ -19,6 +19,19 @@ public enum GameState
     End // Prompt to retry TODO
 }
 
+
+/* 
+========TODO=========
+- Add timer as scoring for level
+- Deduct points (add time) whenever a mistake was made
+- Tutorial
+- Scan Items
+- End
+
+========BUGS=========
+- Pressing "complete package" multiple times can move forward multiple game stages
+*/
+
 public class OrderPackerGameManager : MonoBehaviour
 {
     private GameState currentState; // current state the game is in
@@ -285,11 +298,11 @@ public class OrderPackerGameManager : MonoBehaviour
     // all items in next drop zone
     public bool ScanItemsComplete(){
         if(SpacePressed()){ // TODO scan item
-            if(currentItemTag == scannerManager.GetCurrentItemPageID()){
+            if(currentItemTag == scannerManager.GetCurrentItemPageID() && currentItems.Contains(currentItemTag)){
                 return true; 
             }
             else{
-                Debug.Log("Item doesn't match item page!");
+                Debug.Log("Item doesn't match item page or item quantity already fulfilled!");
             }
         }
         return false;
@@ -353,6 +366,7 @@ public class OrderPackerGameManager : MonoBehaviour
 
     // Called when the start and complete package buttons are pressed
     public void StartCompletePressed(){
+        if(currentState == GameState.StartPackage || currentState == GameState.CompletePackage)
         stateComplete = true;
     }
 
