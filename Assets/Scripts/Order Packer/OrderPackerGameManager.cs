@@ -29,7 +29,7 @@ public enum GameState
 - End
 
 ========BUGS=========
-- Pressing "complete package" multiple times can move forward multiple game stages
+- None :D
 */
 
 public class OrderPackerGameManager : MonoBehaviour
