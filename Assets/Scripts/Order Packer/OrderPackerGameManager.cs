@@ -19,6 +19,20 @@ public enum GameState
     End // Prompt to retry TODO
 }
 
+
+/* 
+========TODO=========
+- Add timer as scoring for level
+- Deduct points (add time) whenever a mistake was made
+- Tutorial
+- Scan Items
+- End
+- Change item assets
+
+========BUGS=========
+- None :D
+*/
+
 public class OrderPackerGameManager : MonoBehaviour
 {
     private GameState currentState; // current state the game is in
@@ -27,14 +41,16 @@ public class OrderPackerGameManager : MonoBehaviour
     private OrderPackerItemManager itemManager;
     private OrderPackerBoxManager boxManager;
     private OrderPackerDropZoneManager dropZoneManager;
-    public OrderPackerScannerManager scannerManager;
+    private OrderPackerScannerManager scannerManager;
+    public OrderPackerTimerDisplay timer;
 
     private List<string> currentItems; // current items (tags) for package
 
-    private const int MAXITEMS = 7; // max number of items per package
+    private const int MAXITEMS = 2; // max number of items per package
 
     private bool stateComplete = false; // if the current state is complete
     private bool damagedItem = false; // if the current item being held is damaged
+    private bool itemScanned = false;
     private string currentItemTag = ""; // the tag for the current item
 
     // Start is called before the first frame update
@@ -47,7 +63,6 @@ public class OrderPackerGameManager : MonoBehaviour
         GameObject itemManagerObj = GameObject.Find("ItemManager");
         GameObject dropZoneManagerObj = GameObject.Find("DropZoneManager");
         GameObject scannerManagerObj = GameObject.Find("ScannerManager");
-        
 
         if(boxManagerObj == null){
             Debug.LogError("No BoxManager Object");
@@ -61,6 +76,7 @@ public class OrderPackerGameManager : MonoBehaviour
         if(scannerManagerObj == null){
             Debug.LogError("No ScannerManager Object");
         }
+        
         
         boxManager = boxManagerObj.GetComponent<OrderPackerBoxManager>();
         itemManager = itemManagerObj.GetComponent<OrderPackerItemManager>();
@@ -78,6 +94,9 @@ public class OrderPackerGameManager : MonoBehaviour
         }
         if(scannerManager == null){
             Debug.LogError("No ScannerManager Loaded");
+        }
+        if(timer == null){
+            Debug.LogError("No Timer Loaded");
         }
 
         // spawn items and boxes
@@ -101,6 +120,9 @@ public class OrderPackerGameManager : MonoBehaviour
 
                     scannerManager.StartPage();
                     dropZoneManager.UpdateDZVisability(false); 
+
+                    timer.StartTimer();
+
                 }
                 break;
             case GameState.StartPackage:
@@ -234,6 +256,8 @@ public class OrderPackerGameManager : MonoBehaviour
                         Debug.Log("All packages completed, to End");
                         currentState = GameState.End;
                         dropZoneManager.UpdateDZVisability(false); 
+
+                        timer.StopTimer();
                     }
                 }
                 break;
@@ -284,12 +308,15 @@ public class OrderPackerGameManager : MonoBehaviour
     }
     // all items in next drop zone
     public bool ScanItemsComplete(){
-        if(SpacePressed()){ // TODO scan item
-            if(currentItemTag == scannerManager.GetCurrentItemPageID()){
+        if(itemScanned){ // TODO scan item
+
+            itemScanned = false;
+
+            if(currentItemTag == scannerManager.GetCurrentItemPageID() && currentItems.Contains(currentItemTag)){
                 return true; 
             }
             else{
-                Debug.Log("Item doesn't match item page!");
+                Debug.Log("Item doesn't match item page or item quantity already fulfilled!");
             }
         }
         return false;
@@ -353,6 +380,7 @@ public class OrderPackerGameManager : MonoBehaviour
 
     // Called when the start and complete package buttons are pressed
     public void StartCompletePressed(){
+        if(currentState == GameState.StartPackage || currentState == GameState.CompletePackage)
         stateComplete = true;
     }
 
@@ -459,5 +487,10 @@ public class OrderPackerGameManager : MonoBehaviour
         boxManager.SetLockedBox(BoxState.Completed, false, false);
         boxManager.SetLockedPrinter(false, false);
         itemManager.LockAllItems(false, false, false);
+    }
+
+    //
+    public void ScanItem(string uuid){
+        itemScanned = true;
     }
 }

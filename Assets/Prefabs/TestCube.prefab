@@ -14,6 +14,8 @@ GameObject:
   - component: {fileID: 4692031323897213432}
   - component: {fileID: 2831475143840336883}
   - component: {fileID: 7272202061975484810}
+  - component: {fileID: -2731748213027792397}
+  - component: {fileID: -5704911502402248502}
   m_Layer: 0
   m_Name: TestCube
   m_TagString: Cube
@@ -130,3 +132,31 @@ MonoBehaviour:
   dropZones: []
   currentDropZone: {fileID: 0}
   canPlaceOutsideDropZones: 0
+  holdingObject: 0
+--- !u!114 &-2731748213027792397
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4692031323897213438}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 68cefc37af34d471fa79e22aba24f9e5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  manualUUID: 
+--- !u!114 &-5704911502402248502
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4692031323897213438}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0261d7498f06d46e182bd16f3a220092, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rpGameManager: {fileID: 0}
+  opGameManager: {fileID: 0}
