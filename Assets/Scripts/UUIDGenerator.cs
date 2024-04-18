@@ -30,7 +30,7 @@ public class UUIDGenerator : MonoBehaviour
             }
             else
             {
-                Debug.LogError("TextMeshPro component not found.");
+                // Debug.LogError("TextMeshPro component not found.");
             }
         }
         else
@@ -47,7 +47,7 @@ public class UUIDGenerator : MonoBehaviour
             }
             else
             {
-                Debug.LogError("TextMeshPro component not found.");
+                // Debug.LogError("TextMeshPro component not found.");
             }
         }
        
