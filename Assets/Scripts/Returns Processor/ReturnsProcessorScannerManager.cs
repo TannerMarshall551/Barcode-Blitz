@@ -21,6 +21,7 @@ public class ReturnsProcessorScannerManager : MonoBehaviour
         {
             Debug.LogError("Game Manager not loaded!");
         }
+        itemPages = new List<ScannerUIItem>();
     }
 
     // Update is called once per frame
@@ -32,8 +33,7 @@ public class ReturnsProcessorScannerManager : MonoBehaviour
     // Resets scanner to start page
     public void StartPage()
     {
-
-        itemPages = new List<ScannerUIItem>();
+        itemPages.Clear();
         ScannerUIItem newItem = new ScannerUIItem();
         newItem.id = "start";
         newItem.pageColor = ScannerColorState.Default;
@@ -54,10 +54,11 @@ public class ReturnsProcessorScannerManager : MonoBehaviour
     }
 
    
-    public void MarkBrokenPage()
+    public void MarkIfCorrectPage()
     {
+        itemPages.Clear();
         ScannerUIItem newItem = new ScannerUIItem();
-        newItem.id = "markBroken";
+        newItem.id = "markCorrect";
         newItem.pageColor = ScannerColorState.Default;
 
         newItem.rows = new List<Row>();
@@ -66,26 +67,32 @@ public class ReturnsProcessorScannerManager : MonoBehaviour
         newRow.type = RowType.Text;
         newRow.textRow = new TextRow();
         newRow.textRow.headerText = "Item";
-        newRow.textRow.bodyText = gameManager.GetCarTypeForScanner();
+        string tmp = gameManager.GetCarTypeForScanner();
+        newRow.textRow.bodyText = tmp;
         newItem.rows.Add(newRow);
+
+        Row newRow2 = new Row();
+        newRow2.type = RowType.Text;
+        newRow2.textRow = new TextRow();
+        newRow2.textRow.headerText = "Is Item Correct?";
+        newItem.rows.Add(newRow2);
 
         Row newButtonRow = new Row();
         newButtonRow.type = RowType.Selector;
         newButtonRow.selectorRow = new SelectorRow();
-        newButtonRow.selectorRow.headerText = "Is item correct?";
         newButtonRow.selectorRow.noPressed = false;
         newButtonRow.selectorRow.yesPressed = false;
         newItem.rows.Add(newButtonRow);
 
         itemPages.Add(newItem);
 
-        //THIS KEEPS TRACK OF WHAT PAGE YOU ARE ON MUST IMPLEMENT IN OURS OR NOT WELL SEE
-        int index = scannerItemManager.GetIndex();
-        scannerItemManager.SetNewItems(itemPages, index);
+
+        scannerItemManager.SetNewItems(itemPages);
     }
 
     public void Discard()
     {
+        itemPages.Clear();
         ScannerUIItem newItem = new ScannerUIItem();
         newItem.id = "discard";
         newItem.pageColor = ScannerColorState.Default;
@@ -96,14 +103,16 @@ public class ReturnsProcessorScannerManager : MonoBehaviour
         newRow.type = RowType.Text;
         newRow.textRow = new TextRow();
         newRow.textRow.headerText = "Incorrect Item";
-        newRow.textRow.bodyText = "Place item in trash";
+        newRow.textRow.bodyText = "\n\nPlace item and box in trash";
         newItem.rows.Add(newRow);
 
         itemPages.Add(newItem);
+        scannerItemManager.SetNewItems(itemPages);
     }
 
     public void CorrectItemPage()
     {
+        itemPages.Clear();
         ScannerUIItem newItem = new ScannerUIItem();
         newItem.id = "correctItem";
         newItem.pageColor = ScannerColorState.Default;
@@ -118,6 +127,64 @@ public class ReturnsProcessorScannerManager : MonoBehaviour
         newItem.rows.Add(newRow);
 
         itemPages.Add(newItem);
+        scannerItemManager.SetNewItems(itemPages);
+    }
+
+    public void DiscardBoxPage()
+    {
+        itemPages.Clear();
+        ScannerUIItem newItem = new ScannerUIItem();
+        newItem.id = "discardBox";
+        newItem.pageColor = ScannerColorState.Default;
+
+        newItem.rows = new List<Row>();
+        Row newRow = new Row();
+
+        newRow.type = RowType.Text;
+        newRow.textRow = new TextRow();
+        newRow.textRow.headerText = "Discard Empty Box";
+        newItem.rows.Add(newRow);
+
+        itemPages.Add(newItem);
+        scannerItemManager.SetNewItems(itemPages);
+    }
+
+    public void YouWinPage()
+    {
+        itemPages.Clear();
+        ScannerUIItem newItem = new ScannerUIItem();
+        newItem.id = "youWin";
+        newItem.pageColor = ScannerColorState.Default;
+
+        newItem.rows = new List<Row>();
+        Row newRow = new Row();
+
+        newRow.type = RowType.Text;
+        newRow.textRow = new TextRow();
+        newRow.textRow.headerText = "YOU WIN!!!";
+        newItem.rows.Add(newRow);
+
+        itemPages.Add(newItem);
+        scannerItemManager.SetNewItems(itemPages);
+    }
+
+    public void YouLosePage()
+    {
+        itemPages.Clear();
+        ScannerUIItem newItem = new ScannerUIItem();
+        newItem.id = "youLose";
+        newItem.pageColor = ScannerColorState.Default;
+
+        newItem.rows = new List<Row>();
+        Row newRow = new Row();
+
+        newRow.type = RowType.Text;
+        newRow.textRow = new TextRow();
+        newRow.textRow.headerText = "Sorry, You Ran Out of Time :(";
+        newItem.rows.Add(newRow);
+
+        itemPages.Add(newItem);
+        scannerItemManager.SetNewItems(itemPages);
     }
 
     // Get new items

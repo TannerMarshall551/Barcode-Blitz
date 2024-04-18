@@ -8,6 +8,7 @@ public enum RPGameState
     PickUpBox, //Waiting for box to be picked up
     ScanBox, // Scan the label on the box
     PutBoxDown, // Click Dropzone to put down box
+    PutItemDown, //Take item out of box and put into smaller drop zone
     MarkIfCorrect, // Mark on scanner if items are correct
     ScanShelf, // Scan label on shelf to put item away
     PlaceItem, // Put the item away
@@ -21,6 +22,7 @@ public class ReturnsProcessorGameManager : MonoBehaviour
 
     // other managers
     private ReturnsProcessorBoxManager boxManager;
+    private ReturnsProcessorScannerManager scannerManager;
 
     private bool stateComplete = false; // if the current state is complete
 
@@ -39,7 +41,7 @@ public class ReturnsProcessorGameManager : MonoBehaviour
 
     public List<GameObject> toyCars;
     private GameObject randomToy;
-    public List<string> toyCarStrings;
+    private List<string> toyCarStrings = new List<string> { "Blue Car 1", "Blue Car 2", "Orange Car 1", "Orange Car 2", "Yellow Car 1", "Yellow Car 2" };
     private string randomToyString;
 
     public int chanceCorrect = 80;
@@ -50,6 +52,9 @@ public class ReturnsProcessorGameManager : MonoBehaviour
     private int itemsToTrash;
 
     private int randBinIndex;
+
+    public Timer timer;
+    private bool gameOver = false;
 
     // Start is called before the first frame update
     void Start()
@@ -66,6 +71,15 @@ public class ReturnsProcessorGameManager : MonoBehaviour
         if (boxManager == null)
             Debug.LogError("No BoxManager Loaded");
 
+        GameObject scannerManagerObj = GameObject.Find("ScannerManager");
+        if (scannerManagerObj == null)
+            Debug.LogError("No ScannerManager Object");
+
+        scannerManager = scannerManagerObj.GetComponent<ReturnsProcessorScannerManager>();
+
+        if (boxManager == null)
+            Debug.LogError("No ScannerManager Loaded");
+
         boxManager.SpawnBox();
     }
 
@@ -73,7 +87,12 @@ public class ReturnsProcessorGameManager : MonoBehaviour
     void Update()
     {
         newBoxUUID = boxManager.GetNewBoxUUID();
-        
+        if(timer.GetGameOver() && !gameOver)
+        {
+            currentState = RPGameState.End;
+            scannerManager.YouLosePage();
+            gameOver = true;
+        }
 
         switch (currentState)
         {
@@ -81,6 +100,7 @@ public class ReturnsProcessorGameManager : MonoBehaviour
                 if (TutorialComplete())
                 {
                     Debug.Log("Tutorial Completed");
+                    scannerManager.StartPage();
                     currentState = RPGameState.PickUpBox;
                 }
                 break;
@@ -95,7 +115,7 @@ public class ReturnsProcessorGameManager : MonoBehaviour
                 if (ScanBoxCompleted())
                 {
                     Debug.Log("ScanBox Completed");
-                    boxManager.DzSetLockDropGrab(true, false);
+                    boxManager.DzSetLockDropGrab(false, true);
                     currentState = RPGameState.PutBoxDown;
 
                     int randomToyIndex = Random.Range(0, 6);
@@ -110,6 +130,7 @@ public class ReturnsProcessorGameManager : MonoBehaviour
                         isItemCorrect = true;
                         randomToyString = toyCarStrings[randomToyIndex];
                         randBinIndex = Random.Range(0, 8);
+                        boxManager.RemoveItemFromBin(randBinIndex);
                         correctBin = binList[randBinIndex];
                         correctBinLocation = binLocationList[randBinIndex];
                         boxManager.ToggleBinDZ(randBinIndex, false);
@@ -126,10 +147,7 @@ public class ReturnsProcessorGameManager : MonoBehaviour
                         randomToyString = toyCarStrings[randomStringIndex];
                     }
 
-                    
-                    
-
-                    //UpdateScannerInterface();
+                    scannerManager.MarkIfCorrectPage();
                 }
                 break;
             case RPGameState.PutBoxDown:
@@ -137,7 +155,16 @@ public class ReturnsProcessorGameManager : MonoBehaviour
                 {
                     Debug.Log("PutBoxDown Completed");
                     boxManager.OpenBox(randomToy, randBinIndex);
-                    boxManager.DzSetLockDropGrab(false, true);
+                    boxManager.DzSetLockDropGrab(false, false);
+                    boxManager.ToggleItemDZ(false, false);
+                    currentState = RPGameState.PutItemDown;
+                }
+                break;
+            case RPGameState.PutItemDown:
+                if(PutItemDownComplete())
+                {
+                    Debug.Log("PutItemDown Complete");
+                    boxManager.DzSetLockDropGrab(true, false);
                     currentState = RPGameState.MarkIfCorrect;
                 }
                 break;
@@ -155,8 +182,10 @@ public class ReturnsProcessorGameManager : MonoBehaviour
                     {
                         Debug.Log("Incorrect item, trash it");
                         boxManager.SetTrashLockDrop(false);
+                        boxManager.ReenableColliders();
                         itemsToTrash = 2;
                         currentState = RPGameState.TrashItem;
+                        scannerManager.Discard();
                     }
                 }
                 break;
@@ -173,7 +202,9 @@ public class ReturnsProcessorGameManager : MonoBehaviour
                     Debug.Log("PlaceItem Complete");
                     boxManager.SetTrashLockDrop(false);
                     boxManager.ReenableColliders();
+                    boxManager.ToggleItemDZ(true, true);
                     currentState = RPGameState.TrashItem;
+                    scannerManager.DiscardBoxPage();
                 }
                 break;
             case RPGameState.TrashItem:
@@ -182,11 +213,15 @@ public class ReturnsProcessorGameManager : MonoBehaviour
                     boxManager.SetTrashLockDrop(true);
                     score++;
                     if(score >= scoreToWin)
+                    {
+                        scannerManager.YouWinPage();
                         currentState = RPGameState.End;
+                    }  
                     else
                     {
                         boxManager.SpawnBox();
                         currentState = RPGameState.PickUpBox;
+                        scannerManager.StartPage();
                     }
                     Debug.Log("Score: " + score);
                 }
@@ -246,6 +281,11 @@ public class ReturnsProcessorGameManager : MonoBehaviour
             return false;
     }
 
+    public bool PutItemDownComplete()
+    {
+        return boxManager.CheckItemDZFull();
+    }
+
     private bool MarkIfCorrectComplete()
     {
         return true;
@@ -290,5 +330,15 @@ public class ReturnsProcessorGameManager : MonoBehaviour
     public string GetBinLocationForScanner()
     {
         return correctBinLocation;
+    }
+
+    public RPGameState GetCurrentState()
+    {
+        return currentState;
+    }
+
+    public int GetScore()
+    {
+        return score;
     }
 }

@@ -34,6 +34,9 @@ public class ReturnsProcessorBoxManager : MonoBehaviour
 
     private GameObject openBox;
 
+    public GameObject itemDz;
+    DropZone itemDz1;
+
     public void SpawnBox()
     {
         newBox = (GameObject)GameObject.Instantiate(package, transform.position, Quaternion.identity);
@@ -45,7 +48,10 @@ public class ReturnsProcessorBoxManager : MonoBehaviour
 
         ObjectGrabbableWithZones objRemove = newBox.GetComponent<ObjectGrabbableWithZones>();
         if (objRemove != null)
+        {
             Destroy(objRemove);
+        }
+            
 
     }
 
@@ -59,8 +65,8 @@ public class ReturnsProcessorBoxManager : MonoBehaviour
     {
         if (dz1 != null)
         {
-            dz1.SetIsLockedDrop(!canDrop);
-            dz1.SetIsLockedGrab(!canGrab);
+            dz1.SetIsLockedDrop(canDrop);
+            dz1.SetIsLockedGrab(canGrab);
         }
         else
             Debug.Log("null");
@@ -86,6 +92,7 @@ public class ReturnsProcessorBoxManager : MonoBehaviour
 
     public void OpenBox(GameObject randomToy, int randomBinIndex)
     {
+        dz1.Remove(objGrabZones);
         Destroy(newBox);
         newBoxUuid = null;
 
@@ -108,11 +115,11 @@ public class ReturnsProcessorBoxManager : MonoBehaviour
         ObjectGrabbableWithZones toyObjGrab = toy.GetComponent<ObjectGrabbableWithZones>();
         toyObjGrab.SetDropZones(dzList);
         toyObjGrab.AddDropZone(randomBinDZ1.gameObject);
-        toyObjGrab.SetCanPlaceOutsideDropZones(true);
+        toyObjGrab.AddDropZone(itemDz1.gameObject);
 
         
         openBoxObjGrab.Drop(dz1);
-        toyObjGrab.Drop(dz1);
+        //toyObjGrab.Drop(dz1);
 
         openBox.GetComponent<BoxCollider>().enabled = false;
         dz.GetComponent<BoxCollider>().enabled = false;
@@ -155,10 +162,34 @@ public class ReturnsProcessorBoxManager : MonoBehaviour
         shelfDZ.SetIsLockedDrop(lockDrop);
     }
 
+    public void ToggleItemDZ(bool lockDrop, bool lockGrab)
+    {
+        itemDz1.SetIsLockedDrop(lockDrop);
+        itemDz1.SetIsLockedGrab(lockGrab);
+    }
+
     public bool CheckBinDZFull(int randBinIndex)
     {
         DropZone shelfDZ = shelfDropZones[randBinIndex].GetComponent<DropZone>();
         return shelfDZ.IsFull();
+    }
+
+    public bool CheckItemDZFull()
+    {
+        return itemDz1.IsFull();
+    }
+
+    public void RemoveItemFromBin(int binIndex)
+    {
+        GameObject zone = shelfDropZones[binIndex];
+        DropZone zoneDZ = zone.GetComponent<DropZone>();
+        if (zoneDZ.IsFull())
+        {
+            List<ObjectGrabbableWithZones> itemsList = zoneDZ.GetObjectsInZone();
+            GameObject itemInBin = itemsList[0].gameObject;
+            zoneDZ.Remove(itemsList[0]);
+            Destroy(itemInBin);
+        }
     }
 
     // Start is called before the first frame update
@@ -166,6 +197,8 @@ public class ReturnsProcessorBoxManager : MonoBehaviour
     {
         dz1 = dz.GetComponent<DropZone>();
         trashDZ1 = trashDZ.GetComponent<DropZone>();
+        itemDz1 = itemDz.GetComponent<DropZone>();
+
     }
 
     // Update is called once per frame
@@ -194,7 +227,6 @@ public class ReturnsProcessorBoxManager : MonoBehaviour
                     dzList.Add(dz1.gameObject);
                     dzList.Add(trashDZ1.gameObject);
                     objGrabZones.SetDropZones(dzList);
-                    objGrabZones.SetCanPlaceOutsideDropZones(true);
                 }
             }
         }

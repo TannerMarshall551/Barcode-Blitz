@@ -95,7 +95,6 @@ public class ScannerItemPage : MonoBehaviour
 
         // make sure item exists
         if (newItemTemp != null){
-            
             // remove all children (rows)
             ClearChildren();
             item.CopyFrom(newItemTemp);
