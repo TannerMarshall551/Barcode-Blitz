@@ -11,46 +11,38 @@ public class UUIDGenerator : MonoBehaviour
     private string uuid;
 
     public string manualUUID;
-    
 
     private void Awake()
     {
-        // Generate UUID
-        if (manualUUID.Equals(""))
+        // Check if a manual UUID is provided, use it; otherwise, generate a new UUID
+        if (string.IsNullOrEmpty(manualUUID))
         {
-            Debug.Log("HERE");
             uuid = System.Guid.NewGuid().ToString();
+            Debug.Log("Generated new UUID: " + uuid);
+        }
+        else
+        {
+            uuid = manualUUID;
+            Debug.Log("Using manual UUID: " + uuid);
+        }
 
-            // TextMeshPro component must be attached to child object of GameObject – this is the component that displays text
-            // Find TextMeshPro component in child object -> set text to generated UUID
-            TextMeshPro tmp = GetComponentInChildren<TextMeshPro>();
-            if (tmp != null)
+        // TextMeshPro components must be attached to child objects of GameObject – these are the components that display text
+        // Find TextMeshPro components in child objects -> set text to UUID
+        TextMeshPro[] tmps = GetComponentsInChildren<TextMeshPro>();
+        if (tmps.Length > 0)
+        {
+            foreach (TextMeshPro tmp in tmps)
             {
-                tmp.text = uuid;
-            }
-            else
-            {
-                // Debug.LogError("TextMeshPro component not found.");
+                if (tmp.gameObject.name == "BarcodeUUID")
+                {
+                    tmp.text = uuid;
+                }
             }
         }
         else
         {
-            Debug.Log("HERE INSTEAD: " + manualUUID);
-            uuid = manualUUID;
-
-            // TextMeshPro component must be attached to child object of GameObject – this is the component that displays text
-            // Find TextMeshPro component in child object -> set text to generated UUID
-            TextMeshPro tmp = GetComponentInChildren<TextMeshPro>();
-            if (tmp != null)
-            {
-                tmp.text = uuid;
-            }
-            else
-            {
-                // Debug.LogError("TextMeshPro component not found.");
-            }
+            Debug.LogWarning("TextMeshPro components not found.");
         }
-       
     }
 
     public string GetUUID()

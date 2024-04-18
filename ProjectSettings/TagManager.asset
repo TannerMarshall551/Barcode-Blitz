@@ -4,6 +4,13 @@
 TagManager:
   serializedVersion: 2
   tags:
+<<<<<<< HEAD
+  - Handlebar
+  - MediumPackage
+  - BigPackage
+  - SmallPackage
+  - BinCamera
+=======
   - Item
   - Cube
   - Cylinder
@@ -18,6 +25,7 @@ TagManager:
   - OpenBoxDZ
   - CompletedBoxDZ
   - PrinterDZ
+>>>>>>> origin/main
   layers:
   - Default
   - TransparentFX
@@ -30,7 +38,7 @@ TagManager:
   - 
   - 
   - whatIsGround
-  - 
+  - BinViewObstructions
   - 
   - 
   - 
