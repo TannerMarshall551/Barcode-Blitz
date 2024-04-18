@@ -1,3 +1,5 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerPickupDrop : MonoBehaviour
@@ -6,88 +8,94 @@ public class PlayerPickupDrop : MonoBehaviour
     [SerializeField] private LayerMask pickupLayerMask;
     [SerializeField] private Transform objectGrabPointTransform;
 
-    public ObjectGrabbable objectGrabbable;
+    private ObjectGrabbable objectGrabbable;
 
     public bool isHolding = false;
 
     public GameObject boxBeingHeld;
 
+    // Update is called once per frame
     void Update()
     {
         if (Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.Q))
         {
+            
             float pickupDistance = 2f;
             DropZone dropZone;
 
             if (Physics.Raycast(playerCameraTransform.position, playerCameraTransform.forward, out RaycastHit raycastHit, pickupDistance))
             {
+                // not holding anything
                 if (objectGrabbable == null)
                 {
+                    // check for grabbable object
                     if (raycastHit.transform.TryGetComponent(out objectGrabbable))
                     {
-                        PickUpObject(objectGrabbable);
+                        Grab();
                     }
-                    else if (raycastHit.transform.TryGetComponent(out dropZone))
+                    // check for dropzone
+                    else if(raycastHit.transform.TryGetComponent(out dropZone))
                     {
                         objectGrabbable = dropZone.TryGrab();
-                        if (objectGrabbable != null)
-                        {
-                            PickUpObject(objectGrabbable);
+                        if(objectGrabbable != null){
+                            Grab();
                         }
                     }
                 }
+                // holding something
                 else
                 {
-                    HandleDrop(raycastHit);
+                    ObjectGrabbableWithZones curObj = objectGrabbable as ObjectGrabbableWithZones;
+                    // check if object needs to be placed in zone
+                    if(curObj != null)
+                    {
+                        // check for dropzone
+                        if(raycastHit.transform.TryGetComponent(out dropZone))
+                        {
+                            Drop(dropZone);
+                        }
+                        // no dropzone, check if object can be placed on ground
+                        else if(curObj.GetCanPlaceOutsideDropZones()){
+                            Drop();
+                        }
+                    }
+                    // object grabable doesn't need to be placed in zone
+                    else{
+                        Drop();
+                    }
                 }
             }
         }
     }
 
-    public void PickUpObject(ObjectGrabbable objectToGrab)
-    {
-        objectGrabbable = objectToGrab;
+    // Grabs the current object
+    private void Grab(){
         objectGrabbable.Grab(objectGrabPointTransform);
         isHolding = true;
         boxBeingHeld = objectGrabbable.gameObject;
     }
 
-    private void HandleDrop(RaycastHit raycastHit)
-    {
-        DropZone dropZone;
-        ObjectGrabbableWithZones curObj = objectGrabbable as ObjectGrabbableWithZones;
 
-        if (curObj != null && raycastHit.transform.TryGetComponent(out dropZone))
-        {
-            Drop(dropZone);
-        }
-        else if (curObj != null && curObj.GetCanPlaceOutsideDropZones())
-        {
-            Drop();
-        }
-        // else
-        // {
-        //     Drop();
-        // }
-    }
+    // Drops the current object
+    private void Drop(DropZone dropZone = null){
+        // check to see if there is a dropzone for the object
+        if(dropZone != null){
 
-    private void Drop(DropZone dropZone = null)
-    {
-        if (dropZone != null && objectGrabbable is ObjectGrabbableWithZones curObj && curObj.Drop(dropZone) == 0)
-        {
-            ClearHeldObject();
+            ObjectGrabbableWithZones curObj = objectGrabbable as ObjectGrabbableWithZones;
+
+            // attempts to place object in dropzone
+            if(curObj.Drop(dropZone) == 0){
+                objectGrabbable = null;
+                isHolding = false;
+                boxBeingHeld = null;
+            }
         }
-        else
-        {
+        else{
             objectGrabbable.Drop();
-            ClearHeldObject();
+            objectGrabbable = null;
+            isHolding = false;
+            boxBeingHeld = null;
         }
-    }
-
-    private void ClearHeldObject()
-    {
-        objectGrabbable = null;
-        isHolding = false;
-        boxBeingHeld = null;
+        
     }
 }

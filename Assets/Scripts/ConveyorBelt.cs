@@ -1,9 +1,12 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class ConveyorBelt : MonoBehaviour
 {
-    public float speed = 1.0f; // Adjust this speed as needed
+   public float speed = 1.0f; // Adjust this speed as needed
    
+
     void FixedUpdate()
     {
         // Move items on the conveyor belt
@@ -27,3 +30,7 @@ public class ConveyorBelt : MonoBehaviour
         }
     }
 }
+
+
+
+

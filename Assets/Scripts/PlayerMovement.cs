@@ -178,9 +178,4 @@ public class PlayerMovement : MonoBehaviour
             }
         }
     }
-
-    public float GetMoveSpeed()
-    {
-        return this.moveSpeed;
-    }
 }
