@@ -98,7 +98,7 @@ public class RPScannerManager : MonoBehaviour
     // updates the current item to match new item
     public void UpdateCurrentItem(ScannerUIItem newScannerUIItem)
     {
-
+        Debug.Log("UpdateCurrentItem");
         scannerManager.ItemUpdated(newScannerUIItem);
         ScannerUIItem newItem = new ScannerUIItem();
         newItem.CopyFrom(newScannerUIItem); // copy new item into local copy

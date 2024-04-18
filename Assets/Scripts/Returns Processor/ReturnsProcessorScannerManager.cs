@@ -123,7 +123,47 @@ public class ReturnsProcessorScannerManager : MonoBehaviour
         newRow.type = RowType.Text;
         newRow.textRow = new TextRow();
         newRow.textRow.headerText = "Scan Bin then Place Item Inside";
-        newRow.textRow.bodyText = "Bin: " + gameManager.GetBinLocationForScanner();
+        newRow.textRow.bodyText = "\n\n\n\nBin: " + gameManager.GetBinLocationForScanner();
+        newItem.rows.Add(newRow);
+
+        itemPages.Add(newItem);
+        scannerItemManager.SetNewItems(itemPages);
+    }
+
+    public void CorrectItemPageRed()
+    {
+        itemPages.Clear();
+        ScannerUIItem newItem = new ScannerUIItem();
+        newItem.id = "correctItem";
+        newItem.pageColor = ScannerColorState.ScanFailed;
+
+        newItem.rows = new List<Row>();
+        Row newRow = new Row();
+
+        newRow.type = RowType.Text;
+        newRow.textRow = new TextRow();
+        newRow.textRow.headerText = "Scan Bin then Place Item Inside";
+        newRow.textRow.bodyText = "\n\n\n\nBin: " + gameManager.GetBinLocationForScanner();
+        newItem.rows.Add(newRow);
+
+        itemPages.Add(newItem);
+        scannerItemManager.SetNewItems(itemPages);
+    }
+
+    public void CorrectItemPageGreen()
+    {
+        itemPages.Clear();
+        ScannerUIItem newItem = new ScannerUIItem();
+        newItem.id = "correctItem";
+        newItem.pageColor = ScannerColorState.Complete;
+
+        newItem.rows = new List<Row>();
+        Row newRow = new Row();
+
+        newRow.type = RowType.Text;
+        newRow.textRow = new TextRow();
+        newRow.textRow.headerText = "Scan Bin then Place Item Inside";
+        newRow.textRow.bodyText = "\n\n\n\nBin: " + gameManager.GetBinLocationForScanner();
         newItem.rows.Add(newRow);
 
         itemPages.Add(newItem);
@@ -316,9 +356,23 @@ public class ReturnsProcessorScannerManager : MonoBehaviour
     //
     public void ItemUpdated(ScannerUIItem newScannerUIItem)
     {
-        if (newScannerUIItem.id == "start" || newScannerUIItem.id == "complete")
+        if (newScannerUIItem.id == "markCorrect")
         {
-            StartCompletePressed();
+            List<Row> rowList = newScannerUIItem.rows;
+            foreach(Row row in rowList)
+            {
+                if(row.type == RowType.Selector)
+                {
+                    if(row.selectorRow.yesPressed)
+                    {
+                        gameManager.CheckIfCorrectButton(0);
+                    }
+                    else if(row.selectorRow.noPressed)
+                    {
+                        gameManager.CheckIfCorrectButton(1);
+                    }
+                }
+            }
         }
         else
         {

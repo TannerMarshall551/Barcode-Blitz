@@ -56,6 +56,8 @@ public class ReturnsProcessorGameManager : MonoBehaviour
     public Timer timer;
     private bool gameOver = false;
 
+    private bool scanCorrect = false;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -153,6 +155,7 @@ public class ReturnsProcessorGameManager : MonoBehaviour
             case RPGameState.PutBoxDown:
                 if (PutBoxDownComplete())
                 {
+                    lastScannedUUID = null;
                     Debug.Log("PutBoxDown Completed");
                     boxManager.OpenBox(randomToy, randBinIndex);
                     boxManager.DzSetLockDropGrab(false, false);
@@ -176,6 +179,7 @@ public class ReturnsProcessorGameManager : MonoBehaviour
                     {
                         Debug.Log("Correct Bin: " + correctBin);
                         itemsToTrash = 1;
+                        scannerManager.CorrectItemPage();
                         currentState = RPGameState.ScanShelf;
                     }
                     else
@@ -288,21 +292,31 @@ public class ReturnsProcessorGameManager : MonoBehaviour
 
     private bool MarkIfCorrectComplete()
     {
-        return true;
+        if (scanCorrect)
+        {
+            scanCorrect = false;
+            return true;
+        }
+        else
+            return false;
     }
 
     private bool ScanShelfComplete()
     {
         if (lastScannedUUID != null && lastScannedUUID.Equals(correctBin))
         {
+            scannerManager.CorrectItemPageGreen();
             lastScannedUUID = null;
             return true;
         }
-        else
+        else if (lastScannedUUID != null)
         {
+            scannerManager.CorrectItemPageRed();
             lastScannedUUID = null;
             return false;
         }
+        else
+            return false;
     }
 
     private bool PlaceItemComplete()
@@ -340,5 +354,18 @@ public class ReturnsProcessorGameManager : MonoBehaviour
     public int GetScore()
     {
         return score;
+    }
+
+    public void CheckIfCorrectButton(int yesOrNo)
+    {
+        if((yesOrNo == 0 && isItemCorrect) || (yesOrNo == 1 && !isItemCorrect))
+        {
+            scanCorrect = true;
+        }
+        else
+        {
+            scanCorrect = false;
+        }
+       
     }
 }
