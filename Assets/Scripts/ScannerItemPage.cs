@@ -51,7 +51,6 @@ public class ScannerItemPage : MonoBehaviour
     public Color defaultColor;
     public Color inProgressColor;
     public Color completeColor;
-    public Color failedScanColor;
 
     public float verticalSpacing = 0f;
 
@@ -96,6 +95,7 @@ public class ScannerItemPage : MonoBehaviour
 
         // make sure item exists
         if (newItemTemp != null){
+            
             // remove all children (rows)
             ClearChildren();
             item.CopyFrom(newItemTemp);
@@ -272,9 +272,6 @@ public class ScannerItemPage : MonoBehaviour
                         break;
                     case ScannerColorState.Complete:
                         i.color = completeColor;
-                        break;
-                    case ScannerColorState.ScanFailed:
-                        i.color = failedScanColor;
                         break;
                     default:
                         i.color = defaultColor;

@@ -185,10 +185,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 3223011150747403465}
     m_Modifications:
-    - target: {fileID: 1569754645160848444, guid: 63a590f23e9354be8a6c29d856db6c67, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 1836233783884258879, guid: 63a590f23e9354be8a6c29d856db6c67, type: 3}
       propertyPath: m_RootOrder
       value: 0
@@ -260,10 +256,6 @@ PrefabInstance:
     - target: {fileID: 2261466519831597788, guid: 63a590f23e9354be8a6c29d856db6c67, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
-      objectReference: {fileID: 0}
-    - target: {fileID: 3457794811171821690, guid: 63a590f23e9354be8a6c29d856db6c67, type: 3}
-      propertyPath: m_IsActive
-      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3871193270190259538, guid: 63a590f23e9354be8a6c29d856db6c67, type: 3}
       propertyPath: defaultColor.b
