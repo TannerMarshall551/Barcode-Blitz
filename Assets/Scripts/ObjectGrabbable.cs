@@ -4,35 +4,35 @@ using UnityEngine;
 
 public class ObjectGrabbable : MonoBehaviour
 {
-    private Rigidbody objectRigidBody;
-    private Transform objectGrabPointTransform;
+    protected Rigidbody objectRigidBody;
+    protected Transform objectGrabPointTransform;
 
-    private GameObject player;
-    private Transform target;
+    protected GameObject player;
+    protected Transform target;
 
-    private SmoothRotation smoothRotation;
-    private bool rotationModeActive;
+    protected SmoothRotation smoothRotation;
+    protected bool rotationModeActive;
 
 
     // Start is called before the first frame update
-    void Start()
+    protected virtual void Start()
     {
         
     }
 
     // Update is called once per frame
-    void Update()
+    protected virtual void Update()
     {
         rotationModeActive = smoothRotation.rotationModeActive;
     }
 
-    public void Grab(Transform objectGrabPointTransform)
+    public virtual void Grab(Transform objectGrabPointTransform)
     {
         this.objectGrabPointTransform = objectGrabPointTransform;
         objectRigidBody.useGravity = false;
     }
 
-    public void Drop()
+    public virtual void Drop()
     {
         this.objectGrabPointTransform = null;
         objectRigidBody.useGravity = true;
@@ -66,5 +66,3 @@ public class ObjectGrabbable : MonoBehaviour
         }
     }
 }
-
-

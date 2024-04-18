@@ -4,11 +4,28 @@
 TagManager:
   serializedVersion: 2
   tags:
+<<<<<<< HEAD
   - Handlebar
   - MediumPackage
   - BigPackage
   - SmallPackage
   - BinCamera
+=======
+  - Item
+  - Cube
+  - Cylinder
+  - Ball
+  - Pill
+  - UnmadeBox
+  - OpenBox
+  - CompletedBox
+  - ItemDZ
+  - TrashDZ
+  - UnmadeBoxDZ
+  - OpenBoxDZ
+  - CompletedBoxDZ
+  - PrinterDZ
+>>>>>>> origin/main
   layers:
   - Default
   - TransparentFX
