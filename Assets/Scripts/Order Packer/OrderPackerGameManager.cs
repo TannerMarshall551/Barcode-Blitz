@@ -46,7 +46,7 @@ public class OrderPackerGameManager : MonoBehaviour
 
     private List<string> currentItems; // current items (tags) for package
 
-    private const int MAXITEMS = 7; // max number of items per package
+    private const int MAXITEMS = 2; // max number of items per package
 
     private bool stateComplete = false; // if the current state is complete
     private bool damagedItem = false; // if the current item being held is damaged
