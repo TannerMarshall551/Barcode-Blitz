@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 using TMPro;
 using UnityEngine;
@@ -125,5 +126,10 @@ public class OrderPickerGameManager : MonoBehaviour
             resultList.AddRange(FindAllChildrenWithName(child, name)); // Recursive search
         }
         return resultList;
+    }
+
+    public List<string> GetTargetUUIDs()
+    {
+        return targetPackagesUUIDToDisplayLabel.Keys.ToList();
     }
 }
