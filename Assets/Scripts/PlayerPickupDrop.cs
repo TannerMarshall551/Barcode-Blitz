@@ -65,10 +65,10 @@ public class PlayerPickupDrop : MonoBehaviour
         {
             Drop();
         }
-        else
-        {
-            Drop();
-        }
+        // else
+        // {
+        //     Drop();
+        // }
     }
 
     private void Drop(DropZone dropZone = null)
