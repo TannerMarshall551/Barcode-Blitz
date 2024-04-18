@@ -41,7 +41,7 @@ public class ReturnsProcessorGameManager : MonoBehaviour
 
     public List<GameObject> toyCars;
     private GameObject randomToy;
-    private List<string> toyCarStrings = new List<string> { "Blue Car 1", "Blue Car 2", "Orange Car 1", "Orange Car 2", "Yellow Car 1", "Yellow Car 2" };
+    private List<string> toyCarStrings = new List<string> { "Blue Car", "Orange Car", "Yellow Car"};
     private string randomToyString;
 
     public int chanceCorrect = 80;
@@ -120,7 +120,7 @@ public class ReturnsProcessorGameManager : MonoBehaviour
                     boxManager.DzSetLockDropGrab(false, true);
                     currentState = RPGameState.PutBoxDown;
 
-                    int randomToyIndex = Random.Range(0, 6);
+                    int randomToyIndex = Random.Range(0, 3);
 
                     randomToy = toyCars[randomToyIndex];
 
@@ -141,10 +141,10 @@ public class ReturnsProcessorGameManager : MonoBehaviour
                     {
                         isItemCorrect = false;
 
-                        int randomStringIndex = Random.Range(0, 6);
+                        int randomStringIndex = Random.Range(0, 3);
                         while(randomStringIndex == randomToyIndex)
                         {
-                            randomStringIndex = Random.Range(0, 6);
+                            randomStringIndex = Random.Range(0, 3);
                         }
                         randomToyString = toyCarStrings[randomStringIndex];
                     }

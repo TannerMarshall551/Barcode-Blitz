@@ -1889,11 +1889,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   toyCars:
   - {fileID: 7185596859297472755, guid: c4795a1bccbdd074a9e1cdfaecd7a8f9, type: 3}
-  - {fileID: 4448526077209326866, guid: 626d3410256ccd9408360da8d0c575df, type: 3}
   - {fileID: 7022180649335760263, guid: 41a537a40d04a8a4c860f1c28b99fee7, type: 3}
-  - {fileID: 3237946995748465636, guid: 0846a12d414e95a43a37ee26f20f0fd7, type: 3}
   - {fileID: 6035109872869635736, guid: 697843ba726e58145bf026c3cb7178df, type: 3}
-  - {fileID: 5692805163654478004, guid: e9c84a1c6fb066245a865021e00c6252, type: 3}
   chanceCorrect: 80
   scoreToWin: 5
   timer: {fileID: 862902103}
