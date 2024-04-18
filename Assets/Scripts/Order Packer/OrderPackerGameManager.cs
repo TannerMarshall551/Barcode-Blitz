@@ -10,7 +10,7 @@ public enum GameState
     StartPackage, // Click the scanner to start package
     MakeBox, // Make the box
     GrabItems, // Pick up items
-    ScanItems, // Scan items held TODO (what happens when you try to scan a damaged item?)
+    ScanItems, // Scan items held
     MarkTrashItems, // Mark items as trash if item is damaged
     DropItems, // Place items
     CompletePackage, // Click the scanner to complete package
@@ -22,15 +22,14 @@ public enum GameState
 
 /* 
 ========TODO=========
-- Add timer as scoring for level
 - Deduct points (add time) whenever a mistake was made
 - Tutorial
-- Scan Items
 - End
-- Change item assets
 
 ========BUGS=========
-- None :D
+- Can pick up from item DZ when the item DZ is disabled
+- Separate item pages are sometimes made for damaged items
+    - However damaged and undamaged items can be used interchangeably for these pages
 */
 
 public class OrderPackerGameManager : MonoBehaviour
@@ -46,7 +45,7 @@ public class OrderPackerGameManager : MonoBehaviour
 
     private List<string> currentItems; // current items (tags) for package
 
-    private const int MAXITEMS = 2; // max number of items per package
+    private const int MAXITEMS = 5; // max number of items per package
 
     private bool stateComplete = false; // if the current state is complete
     private bool damagedItem = false; // if the current item being held is damaged
@@ -373,7 +372,7 @@ public class OrderPackerGameManager : MonoBehaviour
         // get random items
         for(int i = 0; i< numNextItems; i++){
             int randomIndex = UnityEngine.Random.Range(0, allRemainingItems.Count);
-            currentItems.Add(allRemainingItems[randomIndex].tag);
+            currentItems.Add(allRemainingItems[randomIndex].tag.Replace("Damaged", ""));
             allRemainingItems.RemoveAt(randomIndex);
         } 
     }
@@ -386,11 +385,16 @@ public class OrderPackerGameManager : MonoBehaviour
 
     //
     public void MarkTrashPressed(string itemPageTag){
+
+
         if(currentState != GameState.MarkTrashItems){
             Debug.Log("Cannot mark as damaged, not correct game state!");
         }
-        else if(itemPageTag == currentItemTag){ // item must be damaged at this point so just need to check if id's match
+        else if(itemPageTag == currentItemTag.Replace("Damaged","") && currentItemTag.Contains("Damaged")){ // item must be damaged at this point so just need to check if id's match
             stateComplete = true;
+        }
+        else{
+            Debug.Log("Fix this");
         }
     }
 
@@ -411,7 +415,7 @@ public class OrderPackerGameManager : MonoBehaviour
 
         if(curDZ == boxManager.GetZone(BoxState.Open) || curDZ == itemManager.garbadgeDZ) // item placed in open box
         { 
-            if(currentItems.Remove(itemObj.tag)) // item in current items
+            if(currentItems.Remove(itemObj.tag.Replace("Damaged",""))) // item in current items
             { 
                 stateComplete = true;
                 itemManager.RemoveItem(itemObj);
@@ -438,19 +442,14 @@ public class OrderPackerGameManager : MonoBehaviour
 
         stateComplete = true; // can only pick up items during GrabItems state
 
-        Renderer r = itemObj.gameObject.GetComponent<Renderer>();
-
-        if(r != null){
-            Color c = r.material.color;
-            if(c == Color.red){
-                damagedItem = true;
-            }
-            else{
-                damagedItem = false;
-            }
-        }
-
         currentItemTag = itemObj.gameObject.tag;
+
+        if(currentItemTag.Contains("Damaged")){
+            damagedItem = true;
+        }
+        else{
+            damagedItem = false;
+        }
     }
 
     // TODO (remove?) add or remove the open box drop zone to items in current items
