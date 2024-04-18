@@ -41,7 +41,7 @@ public class UUIDGenerator : MonoBehaviour
         }
         else
         {
-            Debug.LogError("TextMeshPro components not found.");
+            Debug.LogWarning("TextMeshPro components not found.");
         }
     }
 
