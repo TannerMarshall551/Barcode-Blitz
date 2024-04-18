@@ -3,42 +3,20 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags:
-<<<<<<< HEAD
-  - Handlebar
-  - MediumPackage
-  - BigPackage
-  - SmallPackage
-  - BinCamera
-=======
-  - Item
-  - Cube
-  - Cylinder
-  - Ball
-  - Pill
-  - UnmadeBox
-  - OpenBox
-  - CompletedBox
-  - ItemDZ
-  - TrashDZ
-  - UnmadeBoxDZ
-  - OpenBoxDZ
-  - CompletedBoxDZ
-  - PrinterDZ
->>>>>>> origin/main
+  tags: []
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - Player
+  - 
   - Water
   - UI
-  - Moveable Objects
-  - Package
   - 
   - 
-  - whatIsGround
-  - BinViewObstructions
+  - 
+  - 
+  - 
+  - 
   - 
   - 
   - 
