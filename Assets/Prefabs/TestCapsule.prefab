@@ -14,8 +14,6 @@ GameObject:
   - component: {fileID: 1646744286683955372}
   - component: {fileID: 6251488080512788661}
   - component: {fileID: 5608103559074555339}
-  - component: {fileID: 6619068490097564209}
-  - component: {fileID: 2231817537371781753}
   m_Layer: 0
   m_Name: TestCapsule
   m_TagString: Pill
@@ -133,31 +131,3 @@ MonoBehaviour:
   dropZones: []
   currentDropZone: {fileID: 0}
   canPlaceOutsideDropZones: 0
-  holdingObject: 0
---- !u!114 &6619068490097564209
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3465263264876593278}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 68cefc37af34d471fa79e22aba24f9e5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  manualUUID: 
---- !u!114 &2231817537371781753
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3465263264876593278}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0261d7498f06d46e182bd16f3a220092, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  rpGameManager: {fileID: 0}
-  opGameManager: {fileID: 0}

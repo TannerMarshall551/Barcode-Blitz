@@ -14,7 +14,6 @@ GameObject:
   - component: {fileID: 4055909272867294893}
   - component: {fileID: 7551228060420052210}
   - component: {fileID: 8686709647198524411}
-  - component: {fileID: -6475252501130643464}
   m_Layer: 0
   m_Name: TestCylinder
   m_TagString: Cylinder
@@ -116,7 +115,6 @@ MonoBehaviour:
   dropZones: []
   currentDropZone: {fileID: 0}
   canPlaceOutsideDropZones: 0
-  holdingObject: 0
 --- !u!54 &8686709647198524411
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -133,16 +131,3 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &-6475252501130643464
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7220485097253943705}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 68cefc37af34d471fa79e22aba24f9e5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  manualUUID: 

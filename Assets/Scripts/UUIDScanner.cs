@@ -10,15 +10,6 @@ public class UUIDScanner : MonoBehaviour
 {
 
     public ReturnsProcessorGameManager rpGameManager;
-    public OrderPackerGameManager opGameManager;
-
-    void Start(){
-        GameObject opGM = GameObject.Find("GameManager");
-        if(opGM != null){
-            opGameManager = opGM.GetComponent<OrderPackerGameManager>();
-        }
-        
-    }
 
     void Update()
     {
@@ -46,10 +37,6 @@ public class UUIDScanner : MonoBehaviour
                         if(rpGameManager != null)
                         {
                             rpGameManager.SetLastScannedUUID(uuid);
-                        }
-                        if(opGameManager != null)
-                        {
-                            opGameManager.ScanItem(uuid);
                         }
                     }
                 //}
