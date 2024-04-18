@@ -6,6 +6,7 @@ using System.Linq;
 public class OrderPackerItemManager : MonoBehaviour
 {
     public List<GameObject> objectsToSpawn; // Array of object prefabs to spawn
+    public List<GameObject> objectsToSpawnDamaged; // Array of damaged object prefabs to spawn
     private List<GameObject> dropZones; // Array of spawn points for shelf (loaded on start)
 
     public GameObject boxDZ; // Drop zone to place items in box
@@ -41,11 +42,21 @@ public class OrderPackerItemManager : MonoBehaviour
         {
             DropZone curDZ = dropZone.GetComponent<DropZone>();
             if(curDZ != null){
-                // Select a random object to spawn
-                GameObject selectedObjectPrefab = objectsToSpawn[Random.Range(0, objectsToSpawn.Count)];
 
+                bool isDamaged = Random.value < 0.1f;
+
+                GameObject selectedObjectPrefab;
                 GameObject instantiatedObject;
 
+                if(!isDamaged){
+                    selectedObjectPrefab = objectsToSpawn[Random.Range(0, objectsToSpawn.Count)];
+                }
+                else{
+                    selectedObjectPrefab = objectsToSpawnDamaged[Random.Range(0, objectsToSpawnDamaged.Count)];
+                }
+
+                // Select a random object to spawn
+                // GameObject selectedObjectPrefab = objectsToSpawn[Random.Range(0, objectsToSpawn.Count)];
                 // Correctly use the prefab to instantiate and adjust its position
                 if(itemHolder != null){
                     instantiatedObject = Instantiate(selectedObjectPrefab, dropZone.transform.position, dropZone.transform.rotation, itemHolder);
@@ -66,36 +77,16 @@ public class OrderPackerItemManager : MonoBehaviour
 
                         // add all dropzones to item
                         obj.SetDropZones(dropZones.ToList());
-                        
-                        // object successfully added to dropzone
-                        if(obj.Drop(curDZ) == 0){
 
-                            Color randomColor;
-                
-                            // Randomly color the object either green or red
-                            if(Random.value > 0.1f){
-                                randomColor = Color.green;
-                                obj.AddDropZone(boxDZ);
-                            }
-                            else{
-                                randomColor = Color.red;
-                                obj.AddDropZone(garbadgeDZ);
-                            }
+                        if(!isDamaged){
+                            obj.AddDropZone(boxDZ);
+                        }
+                        else{
+                            obj.AddDropZone(garbadgeDZ);
+                        }
 
-                            Renderer renderer = instantiatedObject.GetComponent<Renderer>();
-                            if (renderer != null)
-                            {
-                                renderer.material.color = randomColor;
-                            }
-                            else
-                            {
-                                // Try to find a renderer in the children if the parent doesn't have one
-                                renderer = instantiatedObject.GetComponentInChildren<Renderer>();
-                                if (renderer != null)
-                                {
-                                    renderer.material.color = randomColor;
-                                }
-                            }
+                        if(obj.Drop(curDZ) != 0){
+                            Debug.LogWarning("Couldn't Place Item");
                         }
                     }
                     else{

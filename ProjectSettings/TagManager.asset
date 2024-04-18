@@ -18,6 +18,18 @@ TagManager:
   - OpenBoxDZ
   - CompletedBoxDZ
   - PrinterDZ
+  - Blue Car Damaged
+  - Blue Car
+  - Black Car
+  - Black Car Damaged
+  - Cop Car
+  - Cop Car Damaged
+  - Red Car
+  - Red Car Damaged
+  - White Car
+  - White Car Damaged
+  - Yellow Car
+  - Yellow Car Damaged
   layers:
   - Default
   - TransparentFX
