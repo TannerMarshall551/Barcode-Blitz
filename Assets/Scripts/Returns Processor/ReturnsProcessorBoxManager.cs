@@ -10,8 +10,7 @@ public class ReturnsProcessorBoxManager : MonoBehaviour
     public GameObject conveyorPoint;
 
     public GameObject openPackage;
-    public List<GameObject> toyCars;
-
+    
     //public float spawnRate = 2f;
     //float nextSpawn = 0f;
 
@@ -22,12 +21,21 @@ public class ReturnsProcessorBoxManager : MonoBehaviour
     private bool arrived;
 
     public GameObject dz;
+    public GameObject trashDZ;
+
+    DropZone trashDZ1;
+
     ObjectGrabbableWithZones objGrabZones;
     DropZone dz1;
 
-    public float chanceGood = 80;
+    private int itemsTrashed = 0;
 
-    private float isCorrect;
+    public List<GameObject> shelfDropZones;
+
+    private GameObject openBox;
+
+    public GameObject itemDz;
+    DropZone itemDz1;
 
     public void SpawnBox()
     {
@@ -40,7 +48,10 @@ public class ReturnsProcessorBoxManager : MonoBehaviour
 
         ObjectGrabbableWithZones objRemove = newBox.GetComponent<ObjectGrabbableWithZones>();
         if (objRemove != null)
+        {
             Destroy(objRemove);
+        }
+            
 
     }
 
@@ -54,8 +65,8 @@ public class ReturnsProcessorBoxManager : MonoBehaviour
     {
         if (dz1 != null)
         {
-            dz1.SetIsLockedDrop(!canDrop);
-            dz1.SetIsLockedGrab(!canGrab);
+            dz1.SetIsLockedDrop(canDrop);
+            dz1.SetIsLockedGrab(canGrab);
         }
         else
             Debug.Log("null");
@@ -79,22 +90,23 @@ public class ReturnsProcessorBoxManager : MonoBehaviour
             return false;
     }
 
-    public bool OpenBox()
+    public void OpenBox(GameObject randomToy, int randomBinIndex)
     {
+        dz1.Remove(objGrabZones);
         Destroy(newBox);
         newBoxUuid = null;
 
-        int randomToyIndex = Random.Range(0, 6);
+        GameObject randomBinDZ = shelfDropZones[randomBinIndex];
+        DropZone randomBinDZ1 = randomBinDZ.GetComponent<DropZone>();
 
-        GameObject randomToy = toyCars[randomToyIndex];
-
-        GameObject openBox = (GameObject)GameObject.Instantiate(openPackage, dz.transform.position, Quaternion.identity);
+        openBox = (GameObject)GameObject.Instantiate(openPackage, dz.transform.position, Quaternion.identity);
         //openBox.GetComponent<Collider>().enabled = true;
 
         ObjectGrabbableWithZones openBoxObjGrab = openBox.GetComponent<ObjectGrabbableWithZones>();
 
         List<GameObject> dzList = new();
         dzList.Add(dz1.gameObject);
+        dzList.Add(trashDZ1.gameObject);
         openBoxObjGrab.SetDropZones(dzList);
         
 
@@ -102,22 +114,15 @@ public class ReturnsProcessorBoxManager : MonoBehaviour
 
         ObjectGrabbableWithZones toyObjGrab = toy.GetComponent<ObjectGrabbableWithZones>();
         toyObjGrab.SetDropZones(dzList);
-        toyObjGrab.SetCanPlaceOutsideDropZones(true);
+        toyObjGrab.AddDropZone(randomBinDZ1.gameObject);
+        toyObjGrab.AddDropZone(itemDz1.gameObject);
 
         
         openBoxObjGrab.Drop(dz1);
-        toyObjGrab.Drop(dz1);
+        //toyObjGrab.Drop(dz1);
 
         openBox.GetComponent<BoxCollider>().enabled = false;
         dz.GetComponent<BoxCollider>().enabled = false;
-
-
-        isCorrect = Random.Range(1, 101);
-        Debug.Log("Is Correct: " + isCorrect);
-        if (isCorrect > chanceGood)
-            return false;
-        else
-            return true;
     }
 
     public string GetNewBoxUUID()
@@ -125,21 +130,80 @@ public class ReturnsProcessorBoxManager : MonoBehaviour
         return newBoxUuid;
     }
 
-    public float GetIsCorrect()
+    public void SetTrashLockDrop(bool isLocked)
     {
-        return isCorrect;
+        if (trashDZ1 != null)
+            trashDZ1.SetIsLockedDrop(isLocked);
+        else
+            Debug.Log("null");
+    }
+
+    public bool AllItemsTrashed(int numItemsToTrash)
+    {
+        if (itemsTrashed >= numItemsToTrash)
+        {
+            itemsTrashed = 0;
+            return true;
+        }
+        else
+            return false;
+        
+    }
+
+    public void ReenableColliders()
+    {
+        openBox.GetComponent<BoxCollider>().enabled = true;
+        dz.GetComponent<BoxCollider>().enabled = true;
+    }
+
+    public void ToggleBinDZ(int randBinIndex, bool lockDrop)
+    {
+        DropZone shelfDZ = shelfDropZones[randBinIndex].GetComponent<DropZone>();
+        shelfDZ.SetIsLockedDrop(lockDrop);
+    }
+
+    public void ToggleItemDZ(bool lockDrop, bool lockGrab)
+    {
+        itemDz1.SetIsLockedDrop(lockDrop);
+        itemDz1.SetIsLockedGrab(lockGrab);
+    }
+
+    public bool CheckBinDZFull(int randBinIndex)
+    {
+        DropZone shelfDZ = shelfDropZones[randBinIndex].GetComponent<DropZone>();
+        return shelfDZ.IsFull();
+    }
+
+    public bool CheckItemDZFull()
+    {
+        return itemDz1.IsFull();
+    }
+
+    public void RemoveItemFromBin(int binIndex)
+    {
+        GameObject zone = shelfDropZones[binIndex];
+        DropZone zoneDZ = zone.GetComponent<DropZone>();
+        if (zoneDZ.IsFull())
+        {
+            List<ObjectGrabbableWithZones> itemsList = zoneDZ.GetObjectsInZone();
+            GameObject itemInBin = itemsList[0].gameObject;
+            zoneDZ.Remove(itemsList[0]);
+            Destroy(itemInBin);
+        }
     }
 
     // Start is called before the first frame update
     void Start()
     {
+        dz1 = dz.GetComponent<DropZone>();
+        trashDZ1 = trashDZ.GetComponent<DropZone>();
+        itemDz1 = itemDz.GetComponent<DropZone>();
 
     }
 
     // Update is called once per frame
     void Update()
     {
-        dz1 = dz.GetComponent<DropZone>();
         /*if (Time.time > nextSpawn)
         {
             SpawnBox();
@@ -161,10 +225,19 @@ public class ReturnsProcessorBoxManager : MonoBehaviour
                     objGrabZones = newBox.GetComponent<ObjectGrabbableWithZones>();
                     List<GameObject> dzList = new();
                     dzList.Add(dz1.gameObject);
+                    dzList.Add(trashDZ1.gameObject);
                     objGrabZones.SetDropZones(dzList);
-                    objGrabZones.SetCanPlaceOutsideDropZones(true);
                 }
             }
+        }
+
+        if(trashDZ1.IsFull())
+        {
+            List<ObjectGrabbableWithZones> itemsList = trashDZ1.GetObjectsInZone();
+            GameObject itemInTrash = itemsList[0].gameObject;
+            trashDZ1.Remove(itemsList[0]);
+            Destroy(itemInTrash);
+            itemsTrashed++;
         }
     }
 }

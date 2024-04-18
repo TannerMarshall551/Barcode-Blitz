@@ -14,7 +14,8 @@ public enum ScannerColorState
 {
     Default,
     InProgress,
-    Complete
+    Complete,
+    ScanFailed
 }
 
 // Row that has two lines of text
