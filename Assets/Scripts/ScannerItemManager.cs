@@ -25,7 +25,7 @@ public class ScannerItemManager : MonoBehaviour
     void Start()
     {
         if(scannerManager == null){
-            Debug.LogError("Scanner Manager not loaded!");
+            //Debug.LogError("Scanner Manager not loaded!");
         }
         itemPage.OnItemChanged += (newItem) => UpdateCurrentItem(newItem); // add to item page to event
 

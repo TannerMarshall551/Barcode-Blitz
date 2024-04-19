@@ -9,13 +9,14 @@ public class OrderPickerGameManager : MonoBehaviour
     public List<Bin> bins;
     public List<Package> packages = new();
     private Dictionary<string, string> targetPackagesUUIDToDisplayLabel = new(); // <UUID, DisplayLabel>
+    public int numPackagesToPick = 3;
 
     void Start()
     {
         Bin[] binArray = FindObjectsOfType<Bin>();
         bins.AddRange(binArray);
         AssignLabels();
-        SelectRandomLabels(3);
+        SelectRandomLabels(numPackagesToPick);
     }
 
     void AssignLabels()
@@ -95,6 +96,7 @@ public class OrderPickerGameManager : MonoBehaviour
             selectedIndices.Add(index);
         }
 
+        Debug.Log($"Collect {numberOfSelections} Packages:");
         foreach (int index in selectedIndices)
         {
             Package package = packages[index];
@@ -104,7 +106,7 @@ public class OrderPickerGameManager : MonoBehaviour
                 string selectedLabel = package.packageLabels[Random.Range(0, 2)];
                 targetPackagesUUIDToDisplayLabel[package.packageUUID] = selectedLabel;
                 package.SetLabel(selectedLabel);
-                Debug.Log($"Selected Package UUID: {package.packageUUID}, Selected Label: {selectedLabel}");
+                Debug.Log($"Label: {selectedLabel}, UUID: {package.packageUUID}");
             }
             else
             {
@@ -130,5 +132,11 @@ public class OrderPickerGameManager : MonoBehaviour
     public List<string> GetTargetUUIDs()
     {
         return targetPackagesUUIDToDisplayLabel.Keys.ToList();
+    }
+
+    public int AcknowledgeSuccessfulDelivery(string packageUUID)
+    {
+        targetPackagesUUIDToDisplayLabel.Remove(packageUUID);
+        return numPackagesToPick - targetPackagesUUIDToDisplayLabel.Count();
     }
 }

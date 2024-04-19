@@ -18,7 +18,6 @@ public class UUIDGenerator : MonoBehaviour
         if (string.IsNullOrEmpty(manualUUID))
         {
             uuid = System.Guid.NewGuid().ToString();
-            Debug.Log("Generated new UUID: " + uuid);
         }
         else
         {
