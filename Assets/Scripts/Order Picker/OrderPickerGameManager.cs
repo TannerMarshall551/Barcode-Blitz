@@ -14,7 +14,6 @@ public class OrderPickerGameManager : MonoBehaviour
     {
         Bin[] binArray = FindObjectsOfType<Bin>();
         bins.AddRange(binArray);
-        Debug.Log("Found " + bins.Count + " bins in the scene.");
         AssignLabels();
         SelectRandomLabels(3);
     }
