@@ -9,6 +9,8 @@ public class Timer : MonoBehaviour
     private float startTime;
 
     private bool gameOver = false;
+    public ReturnsProcessorGameManager gameManager;
+    private float t;
 
     void Start()
     {
@@ -17,7 +19,8 @@ public class Timer : MonoBehaviour
 
     void Update()
     {
-        float t = Time.time - startTime;
+        if (!gameManager.GetGameOver())
+            t = Time.time - startTime;
 
         if (t < 300f)
         {
