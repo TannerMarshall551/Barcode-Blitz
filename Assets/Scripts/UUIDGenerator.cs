@@ -18,7 +18,7 @@ public class UUIDGenerator : MonoBehaviour
         // Generate UUID
         if (manualUUID.Equals(""))
         {
-            Debug.Log("HERE");
+            // Debug.Log("HERE");
             uuid = System.Guid.NewGuid().ToString();
 
             // TextMeshPro component must be attached to child object of GameObject – this is the component that displays text
@@ -35,7 +35,7 @@ public class UUIDGenerator : MonoBehaviour
         }
         else
         {
-            Debug.Log("HERE INSTEAD: " + manualUUID);
+            // Debug.Log("HERE INSTEAD: " + manualUUID);
             uuid = manualUUID;
 
             // TextMeshPro component must be attached to child object of GameObject – this is the component that displays text

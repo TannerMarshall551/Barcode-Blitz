@@ -41,11 +41,12 @@ public class OrderPackerGameManager : MonoBehaviour
     private OrderPackerBoxManager boxManager;
     private OrderPackerDropZoneManager dropZoneManager;
     private OrderPackerScannerManager scannerManager;
-    public OrderPackerTimerDisplay timer;
+    private OrderPackerUIManager uiManager;
 
     private List<string> currentItems; // current items (tags) for package
 
     private const int MAXITEMS = 5; // max number of items per package
+    private const int MAXBOXES = 5; // max number of boxes
 
     private bool stateComplete = false; // if the current state is complete
     private bool damagedItem = false; // if the current item being held is damaged
@@ -62,6 +63,7 @@ public class OrderPackerGameManager : MonoBehaviour
         GameObject itemManagerObj = GameObject.Find("ItemManager");
         GameObject dropZoneManagerObj = GameObject.Find("DropZoneManager");
         GameObject scannerManagerObj = GameObject.Find("ScannerManager");
+        GameObject uiManagerObj = GameObject.Find("UIManager");
 
         if(boxManagerObj == null){
             Debug.LogError("No BoxManager Object");
@@ -75,12 +77,17 @@ public class OrderPackerGameManager : MonoBehaviour
         if(scannerManagerObj == null){
             Debug.LogError("No ScannerManager Object");
         }
+        if(uiManagerObj == null){
+            Debug.LogError("No UIManager Object");
+        }
         
         
         boxManager = boxManagerObj.GetComponent<OrderPackerBoxManager>();
         itemManager = itemManagerObj.GetComponent<OrderPackerItemManager>();
         dropZoneManager = dropZoneManagerObj.GetComponent<OrderPackerDropZoneManager>();
         scannerManager = scannerManagerObj.GetComponent<OrderPackerScannerManager>();
+        uiManager = uiManagerObj.GetComponent<OrderPackerUIManager>();
+
 
         if(boxManager == null){
             Debug.LogError("No BoxManager Loaded");
@@ -94,13 +101,13 @@ public class OrderPackerGameManager : MonoBehaviour
         if(scannerManager == null){
             Debug.LogError("No ScannerManager Loaded");
         }
-        if(timer == null){
-            Debug.LogError("No Timer Loaded");
+        if(uiManager == null){
+            Debug.LogError("No UIManager Loaded");
         }
 
         // spawn items and boxes
         itemManager.SpawnObjectsOnShelf();
-        boxManager.SpawnBoxes(5);    
+        boxManager.SpawnBoxes(MAXBOXES);    
 
         LockAllDropZones();
     }
@@ -120,7 +127,7 @@ public class OrderPackerGameManager : MonoBehaviour
                     scannerManager.StartPage();
                     dropZoneManager.UpdateDZVisability(false); 
 
-                    timer.StartTimer();
+                    uiManager.StartTimer();
 
                 }
                 break;
@@ -242,8 +249,11 @@ public class OrderPackerGameManager : MonoBehaviour
                 if(SendPackageComplete())
                 {
                     Debug.Log("SendPackage Completed");
+
                     LockAllDropZones();
                     boxManager.SetLockedBox(BoxState.Completed, true, false);
+                    uiManager.SetCountText((MAXBOXES - boxManager.GetAllUnopenBoxes().Count()) + "/" + MAXBOXES);
+                    
                     if(boxManager.GetAllUnopenBoxes().Count > 0){ // check if there are more unopened boxes
                         Debug.Log("Back to StartPackage, next package");
                         currentState = GameState.StartPackage;
@@ -256,7 +266,7 @@ public class OrderPackerGameManager : MonoBehaviour
                         currentState = GameState.End;
                         dropZoneManager.UpdateDZVisability(false); 
 
-                        timer.StopTimer();
+                        uiManager.StopTimer();
                     }
                 }
                 break;
@@ -372,7 +382,7 @@ public class OrderPackerGameManager : MonoBehaviour
         // get random items
         for(int i = 0; i< numNextItems; i++){
             int randomIndex = UnityEngine.Random.Range(0, allRemainingItems.Count);
-            currentItems.Add(allRemainingItems[randomIndex].tag.Replace("Damaged", ""));
+            currentItems.Add(allRemainingItems[randomIndex].tag.Replace(" Damaged", ""));
             allRemainingItems.RemoveAt(randomIndex);
         } 
     }
@@ -390,7 +400,7 @@ public class OrderPackerGameManager : MonoBehaviour
         if(currentState != GameState.MarkTrashItems){
             Debug.Log("Cannot mark as damaged, not correct game state!");
         }
-        else if(itemPageTag == currentItemTag.Replace("Damaged","") && currentItemTag.Contains("Damaged")){ // item must be damaged at this point so just need to check if id's match
+        else if(itemPageTag == currentItemTag.Replace(" Damaged","") && currentItemTag.Contains(" Damaged")){ // item must be damaged at this point so just need to check if id's match
             stateComplete = true;
         }
         else{
@@ -415,14 +425,14 @@ public class OrderPackerGameManager : MonoBehaviour
 
         if(curDZ == boxManager.GetZone(BoxState.Open) || curDZ == itemManager.garbadgeDZ) // item placed in open box
         { 
-            if(currentItems.Remove(itemObj.tag.Replace("Damaged",""))) // item in current items
+            if(currentItems.Remove(itemObj.tag.Replace(" Damaged",""))) // item in current items
             { 
                 stateComplete = true;
                 itemManager.RemoveItem(itemObj);
                 // AssignItemDZ();
 
                 if(damagedItem){
-                    scannerManager.AddDamagedItem(itemObj.tag);
+                    scannerManager.AddDamagedItem(itemObj.tag.Replace(" Damaged",""));
                 }
             }
             else{ // item not in current items
@@ -435,6 +445,8 @@ public class OrderPackerGameManager : MonoBehaviour
                 currentState = GameState.GrabItems;
             }
         }
+
+        damagedItem = false;
     }
     
     // called when an item is grabbed
@@ -444,7 +456,7 @@ public class OrderPackerGameManager : MonoBehaviour
 
         currentItemTag = itemObj.gameObject.tag;
 
-        if(currentItemTag.Contains("Damaged")){
+        if(currentItemTag.Contains(" Damaged")){
             damagedItem = true;
         }
         else{
@@ -492,4 +504,6 @@ public class OrderPackerGameManager : MonoBehaviour
     public void ScanItem(string uuid){
         itemScanned = true;
     }
+
+    // 
 }

@@ -2,15 +2,25 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-public class OrderPackerTimerDisplay : MonoBehaviour
+public class OrderPackerUIManager : MonoBehaviour
 {
     public TextMeshProUGUI timerText; // Reference to the Text component
+    public TextMeshProUGUI countText; // Reference to the Text component
     private float startTime;
     private bool timerActive = false;
 
+    void Start(){
+        if(timerText == null){
+            Debug.LogWarning("No Timer TMP Loaded");
+        }
+        if(countText == null){
+            Debug.LogWarning("No Counter TMP Loaded");
+        }
+    }
+
     void Update()
     {
-        if (timerActive)
+        if (timerText != null && timerActive)
         {
             float t = Time.time - startTime;
             t = Mathf.FloorToInt(t);
@@ -33,5 +43,12 @@ public class OrderPackerTimerDisplay : MonoBehaviour
 
     public void AddTime(float seconds){
         startTime += seconds;
+    }
+
+    //
+    public void SetCountText(string countText){
+        if(this.countText != null){
+            this.countText.text = countText;
+        }
     }
 }

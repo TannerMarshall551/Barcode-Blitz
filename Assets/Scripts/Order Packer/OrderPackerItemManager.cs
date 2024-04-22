@@ -43,7 +43,8 @@ public class OrderPackerItemManager : MonoBehaviour
             DropZone curDZ = dropZone.GetComponent<DropZone>();
             if(curDZ != null){
 
-                bool isDamaged = Random.value < 0.1f;
+                bool isDamaged = Random.value < 0.5f;
+                // bool isDamaged = Random.value < 0.1f;
 
                 GameObject selectedObjectPrefab;
                 GameObject instantiatedObject;

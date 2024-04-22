@@ -145,10 +145,10 @@ public class DropZone : MonoBehaviour
 
 
         Collider c = GetComponent<Collider>();
-        if (c != null)
-        { 
-            c.enabled = isVisible;
-        }
+        // if (c != null)
+        // { 
+        //     c.enabled = isVisible;
+        // }
         Renderer r;
         foreach (Transform child in this.transform)
         {
