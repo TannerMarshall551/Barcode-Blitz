@@ -127,7 +127,7 @@ public class ObjectGrabbableWithZones : ObjectGrabbable
                 }
 
                 float objectHeight = objectCollider.bounds.size.y;
-                this.transform.position += new Vector3(0, objectHeight / 2, 0);
+                // this.transform.position += new Vector3(0, objectHeight / 2, 0);
 
                 holdingObject = false;
             }

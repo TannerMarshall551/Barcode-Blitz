@@ -53,7 +53,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6820311935969207995, guid: 0fe616b0f3a91c345899827fea84c05e, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 7.2085657
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6820311935969207995, guid: 0fe616b0f3a91c345899827fea84c05e, type: 3}
       propertyPath: m_LocalRotation.w
@@ -167,19 +167,6 @@ MonoBehaviour:
   currentDropZone: {fileID: 0}
   canPlaceOutsideDropZones: 0
   holdingObject: 0
---- !u!114 &8815122838872437267
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4118880041333560233}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 68cefc37af34d471fa79e22aba24f9e5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  manualUUID: 
 --- !u!114 &1180936394005525094
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -194,3 +181,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rpGameManager: {fileID: 0}
   opGameManager: {fileID: 0}
+--- !u!114 &8815122838872437267
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4118880041333560233}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 68cefc37af34d471fa79e22aba24f9e5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  manualUUID: 

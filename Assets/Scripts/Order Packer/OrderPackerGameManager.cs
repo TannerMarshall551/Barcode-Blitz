@@ -253,7 +253,7 @@ public class OrderPackerGameManager : MonoBehaviour
                     LockAllDropZones();
                     boxManager.SetLockedBox(BoxState.Completed, true, false);
                     uiManager.SetCountText((MAXBOXES - boxManager.GetAllUnopenBoxes().Count()) + "/" + MAXBOXES);
-                    
+
                     if(boxManager.GetAllUnopenBoxes().Count > 0){ // check if there are more unopened boxes
                         Debug.Log("Back to StartPackage, next package");
                         currentState = GameState.StartPackage;
@@ -373,7 +373,7 @@ public class OrderPackerGameManager : MonoBehaviour
         int numNextItems;
         
         if(numBoxesRemaining > 1){ // not last box
-            numNextItems = UnityEngine.Random.Range(1, Math.Min(numItemsRemaining - numBoxesRemaining, MAXITEMS + 1));
+            numNextItems = UnityEngine.Random.Range(Math.Max((- (numBoxesRemaining - 1) * MAXITEMS + numItemsRemaining), 1), Math.Min(numItemsRemaining - numBoxesRemaining, MAXITEMS + 1));
         }
         else{ // last box
             numNextItems = numItemsRemaining;

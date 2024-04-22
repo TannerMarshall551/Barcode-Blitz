@@ -14,6 +14,8 @@ public class OrderPackerItemManager : MonoBehaviour
 
     public Transform itemHolder; // Envirnment container to hold all spawned items
 
+    public float damagedChance = 0.1f; // probability of having a damaged item spawn
+
     // Game manager
     public OrderPackerGameManager gameManager;
 
@@ -43,8 +45,7 @@ public class OrderPackerItemManager : MonoBehaviour
             DropZone curDZ = dropZone.GetComponent<DropZone>();
             if(curDZ != null){
 
-                bool isDamaged = Random.value < 0.5f;
-                // bool isDamaged = Random.value < 0.1f;
+                bool isDamaged = Random.value < damagedChance;
 
                 GameObject selectedObjectPrefab;
                 GameObject instantiatedObject;
@@ -56,8 +57,6 @@ public class OrderPackerItemManager : MonoBehaviour
                     selectedObjectPrefab = objectsToSpawnDamaged[Random.Range(0, objectsToSpawnDamaged.Count)];
                 }
 
-                // Select a random object to spawn
-                // GameObject selectedObjectPrefab = objectsToSpawn[Random.Range(0, objectsToSpawn.Count)];
                 // Correctly use the prefab to instantiate and adjust its position
                 if(itemHolder != null){
                     instantiatedObject = Instantiate(selectedObjectPrefab, dropZone.transform.position, dropZone.transform.rotation, itemHolder);
