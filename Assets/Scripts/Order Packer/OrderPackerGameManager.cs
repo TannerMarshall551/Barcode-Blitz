@@ -121,6 +121,7 @@ public class OrderPackerGameManager : MonoBehaviour
             case GameState.Tutorial:
                 if(TutorialComplete())
                 {
+                    
                     Debug.Log("Tutorial Completed");
                     currentState = GameState.StartPackage;
 
