@@ -41,7 +41,7 @@ public class OrderPackerUIManager : MonoBehaviour
         "It looks like this item isn’t damaged! You can scan and pack this item in the box.",
         "It looks like this item doesn’t match the item currently on the scanner! Find the correct item and scan and pack it.",
         "It looks like you can’t place the item there! Make sure it is the correct item or that you have scanned the item beforehand."
-    }
+    };
 
     void Start(){
         if(timerText == null){
