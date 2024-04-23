@@ -6,7 +6,6 @@ using System;
 
 public enum GameState
 {
-    Tutorial, // Tutorial TODO
     StartPackage, // Click the scanner to start package
     MakeBox, // Make the box
     GrabItems, // Pick up items
@@ -52,11 +51,13 @@ public class OrderPackerGameManager : MonoBehaviour
     private bool damagedItem = false; // if the current item being held is damaged
     private bool itemScanned = false;
     private string currentItemTag = ""; // the tag for the current item
+    private bool firstIter = true;
+
 
     // Start is called before the first frame update
     void Start()
     {
-        currentState = GameState.Tutorial;
+        currentState = GameState.StartPackage;
 
         // Get the item manager, box manager, and scanner manager in scene
         GameObject boxManagerObj = GameObject.Find("BoxManager");
@@ -80,7 +81,7 @@ public class OrderPackerGameManager : MonoBehaviour
         if(uiManagerObj == null){
             Debug.LogError("No UIManager Object");
         }
-        
+
         
         boxManager = boxManagerObj.GetComponent<OrderPackerBoxManager>();
         itemManager = itemManagerObj.GetComponent<OrderPackerItemManager>();
@@ -107,34 +108,30 @@ public class OrderPackerGameManager : MonoBehaviour
 
         // spawn items and boxes
         itemManager.SpawnObjectsOnShelf();
-        boxManager.SpawnBoxes(MAXBOXES);    
-
-        LockAllDropZones();
+        boxManager.SpawnBoxes(MAXBOXES); 
     }
 
     // Update is called once per frame
     void Update()
     {
+        if(firstIter){
+            scannerManager.StartPage();
+            dropZoneManager.UpdateDZVisability(false);
+            LockAllDropZones();
+            firstIter = false;
+        }
+
         // find the current state of the game
         switch (currentState)
         {
-            case GameState.Tutorial:
-                if(TutorialComplete())
-                {
-                    
-                    Debug.Log("Tutorial Completed");
-                    currentState = GameState.StartPackage;
-
-                    scannerManager.StartPage();
-                    dropZoneManager.UpdateDZVisability(false); 
-
-                    uiManager.StartTimer();
-
-                }
-                break;
             case GameState.StartPackage:
                 if(StartPackageComplete())
                 {
+                    // start timer after first package TODO
+                    if(boxManager.GetAllUnopenBoxes().Count == MAXBOXES){
+                        uiManager.StartTimer();
+                    }
+
                     Debug.Log("StartPackage Completed");
                     currentState = GameState.MakeBox;
 
@@ -150,6 +147,7 @@ public class OrderPackerGameManager : MonoBehaviour
             case GameState.MakeBox:
                 if(MakeBoxComplete())
                 {
+                    
                     Debug.Log("MakeBox Completed");
                     currentState = GameState.GrabItems;
 
@@ -291,18 +289,6 @@ public class OrderPackerGameManager : MonoBehaviour
         return false;
     }
 
-    // checks if space is pressed (temporary)
-    public bool SpacePressed(){
-        if(Input.GetKeyDown(KeyCode.Space)){
-            return true;
-        }
-        return false;
-    }
-
-    // tutorial completed
-    public bool TutorialComplete(){
-        return SpacePressed(); // TODO
-    }
     // start button pressed
     public bool StartPackageComplete(){
         return StateComplete();
@@ -441,7 +427,7 @@ public class OrderPackerGameManager : MonoBehaviour
             }
         }
         else{ // item placed back on shelf
-            if(currentState != GameState.Tutorial){
+            if(currentState != GameState.StartPackage){
                 Debug.Log("Item placed back on shelf, back to GrabItems");
                 currentState = GameState.GrabItems;
             }
