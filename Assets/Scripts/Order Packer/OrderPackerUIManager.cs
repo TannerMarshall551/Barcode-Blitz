@@ -9,66 +9,12 @@ public class OrderPackerUIManager : MonoBehaviour
     public TextMeshProUGUI countText; // Reference to the Text component
     public TextMeshProUGUI tutorialText; // Reference to the Tutorial Text
     public TextMeshProUGUI instructionsText;
+    public TextBackgroundBubble instructionsTextBackground;
     public GameObject tutorialBubble; // Reference to a UI object that contains the tutorial text
+
     private float startTime;
     private bool timerActive = false;
     private int currentTutorialIndex = 0;
-
-
-
-    // Show or hide tutorial bubble
-    public void ShowTutorialText(bool show)
-    {
-        if (tutorialBubble != null)
-        {
-            if(show){
-                instructionsText.text = "Press < > to navigate tutorial";
-            }
-            else{
-                instructionsText.text = "Press I for Tutorial";
-            }
-
-            tutorialBubble.SetActive(show); // Control the visibility of the tutorial text bubble
-        }
-    }
-
-    // Change tutorial text
-    public void GetNextText()
-    {
-        if (tutorialText != null && currentTutorialIndex < tutorialMessages.Length-1)
-        {
-            tutorialText.text = tutorialMessages[++currentTutorialIndex];
-        }
-        else{
-            ShowTutorialText(false);
-        }
-
-    }
-
-    // Change tutorial text
-    public void GetPrevText()
-    {
-        if (tutorialText != null && currentTutorialIndex > 0)
-        {
-            tutorialText.text = tutorialMessages[--currentTutorialIndex];
-        }
-        else{
-            ShowTutorialText(false);
-        }
-
-    }
-
-    public void GetCurText()
-    {
-        if (tutorialText != null)
-        {
-            tutorialText.text = tutorialMessages[currentTutorialIndex];
-        }
-        else{
-            ShowTutorialText(false);
-        }
-
-    }
 
     private string[] tutorialMessages = {
         "Hello! I'm the manager! I'll be explaining how things work around here.",
@@ -88,7 +34,6 @@ public class OrderPackerUIManager : MonoBehaviour
         "Place the packing label on the open box to close the box. Place the closed box on the conveyor belt and continue on to the next package!",
         "Great! You’ve completed your first package! Now you can do the rest on your own, if you have any questions press I to restart the tutorial. Good luck!"
     };
-    
 
     void Start(){
         if(timerText == null){
@@ -135,6 +80,69 @@ public class OrderPackerUIManager : MonoBehaviour
         {
             GetPrevText();
         }
+    }
+
+
+    // Show or hide tutorial bubble
+    public void ShowTutorialText(bool show)
+    {
+        if (tutorialBubble != null)
+        {
+            if(show){
+                instructionsText.text = "Press < > to navigate tutorial";
+            }
+            else{
+                instructionsText.text = "Press I for Tutorial";
+            }
+
+            tutorialBubble.SetActive(show); // Control the visibility of the tutorial text bubble
+        }
+    }
+
+    public void UpdateTutorialBubble(){
+        if(instructionsTextBackground != null)
+            instructionsTextBackground.UpdateBubble();
+    }
+
+    // Change tutorial text
+    public void GetNextText()
+    {
+        if (tutorialText != null && currentTutorialIndex < tutorialMessages.Length-1)
+        {
+            tutorialText.text = tutorialMessages[++currentTutorialIndex];
+            UpdateTutorialBubble();
+        }
+        else{
+            ShowTutorialText(false);
+        }
+
+    }
+
+    // Change tutorial text
+    public void GetPrevText()
+    {
+        if (tutorialText != null && currentTutorialIndex > 0)
+        {
+            tutorialText.text = tutorialMessages[--currentTutorialIndex];
+            UpdateTutorialBubble();
+        }
+        else{
+            ShowTutorialText(false);
+        }
+
+    }
+
+    public void GetCurText()
+    {
+        if (tutorialText != null)
+        {
+            tutorialText.text = tutorialMessages[currentTutorialIndex];
+            UpdateTutorialBubble();
+        }
+        else{
+            ShowTutorialText(false);
+        }
+
     }
 
     public void StartTimer(){
