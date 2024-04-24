@@ -308,20 +308,34 @@ public class OrderPackerGameManager : MonoBehaviour
 
             itemScanned = false;
 
-            if(currentItemTag == scannerManager.GetCurrentItemPageID() && currentItems.Contains(currentItemTag)){
-                return true; 
+            if(currentItemTag.Replace(" Damaged","") == scannerManager.GetCurrentItemPageID()){
+                if(currentItems.Contains(currentItemTag.Replace(" Damaged",""))){
+                    if(!damagedItem){
+                        return true;
+                    }
+                    else{
+                        uiManager.ShowErrorText(0);
+                        Debug.Log("Item damaged!");
+                    }
+                }
+                else{
+                    uiManager.ShowErrorText(4);
+                    Debug.Log("Item fuffiled!");
+                }
             }
             else{
-                Debug.Log("Item doesn't match item page or item quantity already fulfilled!");
+                uiManager.ShowErrorText(2);
+                Debug.Log("Item doesn't match scanner page");
             }
         }
         return false;
     }
+    
     //
     public bool MarkTrashItemsComplete(){
-        if(ScanItemsComplete()){ // tried to scan trash item
-            Debug.Log("Item is damaged! Mark as damaged and throw in trash.");
-        }
+
+        ScanItemsComplete();
+
         return StateComplete();
     }
     // all items in next drop zone
@@ -383,16 +397,37 @@ public class OrderPackerGameManager : MonoBehaviour
     //
     public void MarkTrashPressed(string itemPageTag){
 
-
-        if(currentState != GameState.MarkTrashItems){
-            Debug.Log("Cannot mark as damaged, not correct game state!");
-        }
-        else if(itemPageTag == currentItemTag.Replace(" Damaged","") && currentItemTag.Contains(" Damaged")){ // item must be damaged at this point so just need to check if id's match
-            stateComplete = true;
+        if(currentItemTag.Replace(" Damaged","") == scannerManager.GetCurrentItemPageID()){
+            if(currentItems.Contains(currentItemTag.Replace(" Damaged",""))){
+                if(damagedItem){
+                    stateComplete = true;
+                }
+                else{
+                    uiManager.ShowErrorText(1);
+                    Debug.Log("Item not damaged!");
+                }
+            }
+            else{
+                uiManager.ShowErrorText(4);
+                Debug.Log("Item fuffiled!");
+            }
         }
         else{
-            Debug.Log("Fix this");
+            uiManager.ShowErrorText(2);
+            Debug.Log("Item doesn't match scanner page");
         }
+
+
+        // if(currentState != GameState.MarkTrashItems){
+        //     uiManager.ShowErrorText(1);
+        //     Debug.Log("Cannot mark as damaged, not correct game state!");
+        // }
+        // else if(itemPageTag == currentItemTag.Replace(" Damaged","") && currentItemTag.Contains(" Damaged")){ // item must be damaged at this point so just need to check if id's match
+        //     stateComplete = true;
+        // }
+        // else{
+        //     Debug.Log("Fix this");
+        // }
     }
 
     // Called when a box is placed

@@ -73,6 +73,28 @@ public class OrderPackerScannerManager : MonoBehaviour
         scannerItemManager.SetNewItems(itemPages, index);
     }
 
+    // Resets scanner to start page
+    public void EndPage(){
+
+        ScannerUIItem newItem = new ScannerUIItem();
+        newItem.id = "end";
+        newItem.pageColor = ScannerColorState.Default;
+
+        newItem.rows = new List<Row>();
+        Row newRow = new Row();
+
+        newRow.type = RowType.Button;
+        newRow.buttonRow = new ButtonRow();
+        newRow.buttonRow.bodyText = "Complete Package";
+        newRow.buttonRow.isPressed = false;
+
+        newItem.rows.Add(newRow);
+        itemPages.Add(newItem);
+
+        int index = scannerItemManager.GetIndex();
+        scannerItemManager.SetNewItems(itemPages, index);
+    }
+
     // Get new items
     public void SetItems(List<string> newItems){
         allItems = new List<string>(newItems);

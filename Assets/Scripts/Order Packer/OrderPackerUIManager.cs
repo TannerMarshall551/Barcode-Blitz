@@ -35,9 +35,9 @@ public class OrderPackerUIManager : MonoBehaviour
         "Great! You’ve completed your first package! Now you can do the rest on your own, if you have any questions press I to restart the tutorial. Good luck!"
     };
 
+    // using 0, 1, 2, 4
     private string[] errorMessages = {
         "This item looks like it's damaged and can’t be packed! Press the damaged button on the barcode scanner and throw it in the trash.",
-        "It looks like this item doesn’t belong! Check the barcode scanner to see what items need to be packed.",
         "It looks like this item isn’t damaged! You can scan and pack this item in the box.",
         "It looks like this item doesn’t match the item currently on the scanner! Find the correct item and scan and pack it.",
         "It looks like you can’t place the item there! Make sure it is the correct item or that you have scanned the item beforehand.",
@@ -88,6 +88,17 @@ public class OrderPackerUIManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Comma)) // Check if the space bar is pressed
         {
             GetPrevText();
+        }
+    }
+
+    // Logs the error message
+    public void ShowErrorText(int index){
+        if (tutorialBubble != null)
+        {
+            tutorialText.text = errorMessages[index];
+            UpdateTutorialBubble();
+
+            tutorialBubble.SetActive(true); // Control the visibility of the tutorial text bubble
         }
     }
 
