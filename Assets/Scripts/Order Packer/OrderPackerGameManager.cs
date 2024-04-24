@@ -198,6 +198,8 @@ public class OrderPackerGameManager : MonoBehaviour
                     boxManager.SetLockedBox(BoxState.Open, false, true);
                     itemManager.LockAllItems(false, false, false);
                     dropZoneManager.UpdateDZVisability(true); 
+
+                    itemScanned = false;
                 }
                 break;
             case GameState.DropItems:
@@ -350,7 +352,7 @@ public class OrderPackerGameManager : MonoBehaviour
     }
     // all items in next drop zone
     public bool ScanItemsComplete(){
-        if(itemScanned){ // TODO scan item
+        if(itemScanned){
 
             itemScanned = false;
 
@@ -573,7 +575,9 @@ public class OrderPackerGameManager : MonoBehaviour
 
     //
     public void ScanItem(string uuid){
-        itemScanned = true;
+        //Debug.Log("hehe");
+        if(currentState == GameState.ScanItems)
+            itemScanned = true;
     }
 
     // 
