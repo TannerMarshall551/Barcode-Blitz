@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using System;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 public enum GameState
 {
@@ -52,6 +55,7 @@ public class OrderPackerGameManager : MonoBehaviour
     private bool itemScanned = false;
     private string currentItemTag = ""; // the tag for the current item
     private bool firstIter = true;
+    private bool restart = false;
 
 
     // Start is called before the first frame update
@@ -115,6 +119,7 @@ public class OrderPackerGameManager : MonoBehaviour
     void Update()
     {
         if(firstIter){
+            uiManager.SetCountText("0/" + MAXBOXES);
             scannerManager.StartPage();
             dropZoneManager.UpdateDZVisability(false);
             LockAllDropZones();
@@ -266,18 +271,59 @@ public class OrderPackerGameManager : MonoBehaviour
                         dropZoneManager.UpdateDZVisability(false); 
 
                         uiManager.StopTimer();
+                        uiManager.ShowEndText();
+                        scannerManager.EndPage();
                     }
                 }
                 break;
             case GameState.End:
                 if(EndComplete()){
-                    // Prompt to start again or end TODO
+
+                    Debug.Log("End Completed");
+
+                    if(restart){
+                        Debug.Log("Restarting game, to Start");
+
+                        boxManager.SetLockedBox(BoxState.Unmade, true, true);
+                        boxManager.SetLockedPrinter(true, true);
+                        itemManager.LockAllItems(true, true, false);
+
+                        itemManager.SpawnObjectsOnShelf();
+                        boxManager.SpawnBoxes(MAXBOXES);
+
+                        scannerManager.StartPage();
+                        dropZoneManager.UpdateDZVisability(false);
+
+                        uiManager.RestartTimer();
+                        uiManager.SetCountText("0/" + MAXBOXES);
+                        uiManager.HideTutorial();
+
+                        currentState = GameState.StartPackage;
+                        LockAllDropZones();
+                    }
+                    else{
+                        Debug.Log("Ending game");
+                        Exit();
+                    }
+
+                    restart = false;
                 }
                 break;
             default:
                 Debug.LogWarning("Unknown GameState");
                 break;
         } 
+    }
+
+    //
+    public void Exit(){
+        #if UNITY_EDITOR
+            // This stops the Unity Editor from playing
+            EditorApplication.isPlaying = false;
+        #else
+            // This quits the built game
+            Application.Quit();
+        #endif
     }
 
     // checks if the state is complete and resets it
@@ -330,7 +376,7 @@ public class OrderPackerGameManager : MonoBehaviour
         }
         return false;
     }
-    
+
     //
     public bool MarkTrashItemsComplete(){
 
@@ -352,11 +398,11 @@ public class OrderPackerGameManager : MonoBehaviour
     }
     // open box moved into completed drop zone
     public bool SendPackageComplete(){
-         return StateComplete();
+        return StateComplete();
     }
     // end game pressed
     public bool EndComplete(){
-        return false; // TODO
+        return StateComplete(); // TODO
     }
 
     // sets currentItems to the next set of items
@@ -395,6 +441,21 @@ public class OrderPackerGameManager : MonoBehaviour
     }
 
     //
+    public void EndPressed(ScannerUIItem newScannerUIItem){
+        foreach(var row in newScannerUIItem.rows){
+            if(row.type == RowType.Selector){
+                if(row.selectorRow.yesPressed){
+                    restart = true;
+                }
+            }
+        }
+
+        if(currentState == GameState.End){
+            stateComplete = true;
+        }
+    }
+
+    //
     public void MarkTrashPressed(string itemPageTag){
 
         if(currentItemTag.Replace(" Damaged","") == scannerManager.GetCurrentItemPageID()){
@@ -416,18 +477,6 @@ public class OrderPackerGameManager : MonoBehaviour
             uiManager.ShowErrorText(2);
             Debug.Log("Item doesn't match scanner page");
         }
-
-
-        // if(currentState != GameState.MarkTrashItems){
-        //     uiManager.ShowErrorText(1);
-        //     Debug.Log("Cannot mark as damaged, not correct game state!");
-        // }
-        // else if(itemPageTag == currentItemTag.Replace(" Damaged","") && currentItemTag.Contains(" Damaged")){ // item must be damaged at this point so just need to check if id's match
-        //     stateComplete = true;
-        // }
-        // else{
-        //     Debug.Log("Fix this");
-        // }
     }
 
     // Called when a box is placed

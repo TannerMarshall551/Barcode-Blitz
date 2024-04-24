@@ -161,6 +161,10 @@ PrefabInstance:
       value: ItemSpawnDZ14
       objectReference: {fileID: 0}
     - target: {fileID: 8529489532226607306, guid: cb1215deb2f46497fbc1fa832bf35db6, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8529489532226607306, guid: cb1215deb2f46497fbc1fa832bf35db6, type: 3}
       propertyPath: m_TagString
       value: ItemDZ
       objectReference: {fileID: 0}
@@ -616,6 +620,10 @@ PrefabInstance:
     - target: {fileID: 8529489532226607306, guid: cb1215deb2f46497fbc1fa832bf35db6, type: 3}
       propertyPath: m_Name
       value: ItemSpawnDZ17
+      objectReference: {fileID: 0}
+    - target: {fileID: 8529489532226607306, guid: cb1215deb2f46497fbc1fa832bf35db6, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8529489532226607306, guid: cb1215deb2f46497fbc1fa832bf35db6, type: 3}
       propertyPath: m_TagString
@@ -1158,6 +1166,10 @@ PrefabInstance:
     - target: {fileID: 8529489532226607306, guid: cb1215deb2f46497fbc1fa832bf35db6, type: 3}
       propertyPath: m_Name
       value: ItemSpawnDZ6
+      objectReference: {fileID: 0}
+    - target: {fileID: 8529489532226607306, guid: cb1215deb2f46497fbc1fa832bf35db6, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8529489532226607306, guid: cb1215deb2f46497fbc1fa832bf35db6, type: 3}
       propertyPath: m_TagString
@@ -1870,6 +1882,10 @@ PrefabInstance:
       value: ItemSpawnDZ12
       objectReference: {fileID: 0}
     - target: {fileID: 8529489532226607306, guid: cb1215deb2f46497fbc1fa832bf35db6, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8529489532226607306, guid: cb1215deb2f46497fbc1fa832bf35db6, type: 3}
       propertyPath: m_TagString
       value: ItemDZ
       objectReference: {fileID: 0}
@@ -2134,6 +2150,10 @@ PrefabInstance:
       value: ItemSpawnDZ16
       objectReference: {fileID: 0}
     - target: {fileID: 8529489532226607306, guid: cb1215deb2f46497fbc1fa832bf35db6, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8529489532226607306, guid: cb1215deb2f46497fbc1fa832bf35db6, type: 3}
       propertyPath: m_TagString
       value: ItemDZ
       objectReference: {fileID: 0}
@@ -2246,6 +2266,10 @@ PrefabInstance:
     - target: {fileID: 8529489532226607306, guid: cb1215deb2f46497fbc1fa832bf35db6, type: 3}
       propertyPath: m_Name
       value: ItemSpawnDZ3
+      objectReference: {fileID: 0}
+    - target: {fileID: 8529489532226607306, guid: cb1215deb2f46497fbc1fa832bf35db6, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8529489532226607306, guid: cb1215deb2f46497fbc1fa832bf35db6, type: 3}
       propertyPath: m_TagString
@@ -2924,6 +2948,10 @@ PrefabInstance:
       value: ItemSpawnDZ2
       objectReference: {fileID: 0}
     - target: {fileID: 8529489532226607306, guid: cb1215deb2f46497fbc1fa832bf35db6, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8529489532226607306, guid: cb1215deb2f46497fbc1fa832bf35db6, type: 3}
       propertyPath: m_TagString
       value: ItemDZ
       objectReference: {fileID: 0}
@@ -3278,6 +3306,10 @@ PrefabInstance:
       value: ItemSpawnDZ11
       objectReference: {fileID: 0}
     - target: {fileID: 8529489532226607306, guid: cb1215deb2f46497fbc1fa832bf35db6, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8529489532226607306, guid: cb1215deb2f46497fbc1fa832bf35db6, type: 3}
       propertyPath: m_TagString
       value: ItemDZ
       objectReference: {fileID: 0}
@@ -3622,6 +3654,10 @@ PrefabInstance:
       value: ItemSpawnDZ5
       objectReference: {fileID: 0}
     - target: {fileID: 8529489532226607306, guid: cb1215deb2f46497fbc1fa832bf35db6, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8529489532226607306, guid: cb1215deb2f46497fbc1fa832bf35db6, type: 3}
       propertyPath: m_TagString
       value: ItemDZ
       objectReference: {fileID: 0}
@@ -3857,6 +3893,10 @@ PrefabInstance:
       value: ItemSpawnDZ15
       objectReference: {fileID: 0}
     - target: {fileID: 8529489532226607306, guid: cb1215deb2f46497fbc1fa832bf35db6, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8529489532226607306, guid: cb1215deb2f46497fbc1fa832bf35db6, type: 3}
       propertyPath: m_TagString
       value: ItemDZ
       objectReference: {fileID: 0}
@@ -3924,6 +3964,10 @@ PrefabInstance:
     - target: {fileID: 8529489532226607306, guid: cb1215deb2f46497fbc1fa832bf35db6, type: 3}
       propertyPath: m_Name
       value: ItemSpawnDZ8
+      objectReference: {fileID: 0}
+    - target: {fileID: 8529489532226607306, guid: cb1215deb2f46497fbc1fa832bf35db6, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8529489532226607306, guid: cb1215deb2f46497fbc1fa832bf35db6, type: 3}
       propertyPath: m_TagString
@@ -4219,6 +4263,10 @@ PrefabInstance:
       value: ItemSpawnDZ9
       objectReference: {fileID: 0}
     - target: {fileID: 8529489532226607306, guid: cb1215deb2f46497fbc1fa832bf35db6, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8529489532226607306, guid: cb1215deb2f46497fbc1fa832bf35db6, type: 3}
       propertyPath: m_TagString
       value: ItemDZ
       objectReference: {fileID: 0}
@@ -4288,6 +4336,10 @@ PrefabInstance:
       value: ItemSpawnDZ13
       objectReference: {fileID: 0}
     - target: {fileID: 8529489532226607306, guid: cb1215deb2f46497fbc1fa832bf35db6, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8529489532226607306, guid: cb1215deb2f46497fbc1fa832bf35db6, type: 3}
       propertyPath: m_TagString
       value: ItemDZ
       objectReference: {fileID: 0}
@@ -4355,6 +4407,10 @@ PrefabInstance:
     - target: {fileID: 8529489532226607306, guid: cb1215deb2f46497fbc1fa832bf35db6, type: 3}
       propertyPath: m_Name
       value: ItemSpawnDZ10
+      objectReference: {fileID: 0}
+    - target: {fileID: 8529489532226607306, guid: cb1215deb2f46497fbc1fa832bf35db6, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8529489532226607306, guid: cb1215deb2f46497fbc1fa832bf35db6, type: 3}
       propertyPath: m_TagString
@@ -4777,6 +4833,10 @@ PrefabInstance:
       value: ItemSpawnDZ1
       objectReference: {fileID: 0}
     - target: {fileID: 8529489532226607306, guid: cb1215deb2f46497fbc1fa832bf35db6, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8529489532226607306, guid: cb1215deb2f46497fbc1fa832bf35db6, type: 3}
       propertyPath: m_TagString
       value: ItemDZ
       objectReference: {fileID: 0}
@@ -5023,6 +5083,10 @@ PrefabInstance:
       value: ItemSpawnDZ7
       objectReference: {fileID: 0}
     - target: {fileID: 8529489532226607306, guid: cb1215deb2f46497fbc1fa832bf35db6, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8529489532226607306, guid: cb1215deb2f46497fbc1fa832bf35db6, type: 3}
       propertyPath: m_TagString
       value: ItemDZ
       objectReference: {fileID: 0}
@@ -5160,6 +5224,10 @@ PrefabInstance:
     - target: {fileID: 8529489532226607306, guid: cb1215deb2f46497fbc1fa832bf35db6, type: 3}
       propertyPath: m_Name
       value: ItemSpawnDZ4
+      objectReference: {fileID: 0}
+    - target: {fileID: 8529489532226607306, guid: cb1215deb2f46497fbc1fa832bf35db6, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8529489532226607306, guid: cb1215deb2f46497fbc1fa832bf35db6, type: 3}
       propertyPath: m_TagString

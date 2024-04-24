@@ -76,6 +76,7 @@ public class OrderPackerScannerManager : MonoBehaviour
     // Resets scanner to start page
     public void EndPage(){
 
+        itemPages = new List<ScannerUIItem>();
         ScannerUIItem newItem = new ScannerUIItem();
         newItem.id = "end";
         newItem.pageColor = ScannerColorState.Default;
@@ -83,16 +84,27 @@ public class OrderPackerScannerManager : MonoBehaviour
         newItem.rows = new List<Row>();
         Row newRow = new Row();
 
-        newRow.type = RowType.Button;
-        newRow.buttonRow = new ButtonRow();
-        newRow.buttonRow.bodyText = "Complete Package";
-        newRow.buttonRow.isPressed = false;
+        // row 1
+        newRow.type = RowType.Text;
+        newRow.textRow = new TextRow();
+        newRow.textRow.headerText = "You win!";
+        newRow.textRow.bodyText = "";
 
         newItem.rows.Add(newRow);
-        itemPages.Add(newItem);
 
-        int index = scannerItemManager.GetIndex();
-        scannerItemManager.SetNewItems(itemPages, index);
+        newRow = new Row();
+
+        // row 2
+        newRow.type = RowType.Selector;
+        newRow.selectorRow = new SelectorRow();
+        newRow.selectorRow.headerText = "Play again?";
+        newRow.selectorRow.yesPressed = false;
+        newRow.selectorRow.noPressed = false;
+
+        newItem.rows.Add(newRow);
+
+        itemPages.Add(newItem);
+        scannerItemManager.SetNewItems(itemPages);
     }
 
     // Get new items
@@ -204,15 +216,13 @@ public class OrderPackerScannerManager : MonoBehaviour
         itemPages.Add(newItem);
     }
 
-    // method that is called when the start or complete package button is pressed
-    public void StartCompletePressed(){
-        gameManager.StartCompletePressed();
-    }
-
     //
     public void ItemUpdated(ScannerUIItem newScannerUIItem){
         if(newScannerUIItem.id == "start" || newScannerUIItem.id == "complete"){
-            StartCompletePressed();
+            gameManager.StartCompletePressed();
+        }
+        else if(newScannerUIItem.id == "end"){
+            gameManager.EndPressed(newScannerUIItem);
         }
         else{
             gameManager.MarkTrashPressed(newScannerUIItem.id);

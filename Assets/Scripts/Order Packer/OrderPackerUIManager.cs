@@ -13,6 +13,7 @@ public class OrderPackerUIManager : MonoBehaviour
     public GameObject tutorialBubble; // Reference to a UI object that contains the tutorial text
 
     private float startTime;
+    private bool restartTimer;
     private bool timerActive = false;
     private int currentTutorialIndex = 0;
 
@@ -44,7 +45,7 @@ public class OrderPackerUIManager : MonoBehaviour
         "It looks like you've finished packing these items! Use the arrows on the barcode scanner to see what other items need to be packed."
     };
 
-    private string endMessage = "Congradulations! You've packed all the boxes! Great Work!";
+    private string endMessage = "Congratulations! You've packed all the boxes! Great Work!";
 
     void Start(){
         if(timerText == null){
@@ -65,8 +66,9 @@ public class OrderPackerUIManager : MonoBehaviour
 
     void Update()
     {
-        if (timerText != null && timerActive)
+        if (timerText != null && (timerActive || restartTimer))
         {
+            restartTimer = false;
             float t = Time.time - startTime;
             t = Mathf.FloorToInt(t);
             string minutes = ((int) t / 60).ToString("00");
@@ -131,6 +133,11 @@ public class OrderPackerUIManager : MonoBehaviour
         }
     }
 
+    // 
+    public void HideTutorial(){
+        tutorialBubble.SetActive(false);
+    }
+
     public void UpdateTutorialBubble(){
         if(instructionsTextBackground != null)
             instructionsTextBackground.UpdateBubble();
@@ -186,6 +193,12 @@ public class OrderPackerUIManager : MonoBehaviour
     public void StopTimer()
     {
         timerActive = false;
+    }
+
+    public void RestartTimer(){
+        restartTimer = true;
+        timerActive = false;
+        startTime = Time.time;
     }
 
     public void AddTime(float seconds){
