@@ -44,6 +44,8 @@ public class OrderPackerUIManager : MonoBehaviour
         "It looks like you've finished packing these items! Use the arrows on the barcode scanner to see what other items need to be packed."
     };
 
+    private string endMessage = "Congradulations! You've packed all the boxes! Great Work!";
+
     void Start(){
         if(timerText == null){
             Debug.LogWarning("No Timer TMP Loaded");
@@ -102,6 +104,16 @@ public class OrderPackerUIManager : MonoBehaviour
         }
     }
 
+    // Logs the error message
+    public void ShowEndText(){
+        if (tutorialBubble != null)
+        {
+            tutorialText.text = endMessage;
+            UpdateTutorialBubble();
+
+            tutorialBubble.SetActive(true); // Control the visibility of the tutorial text bubble
+        }
+    }
 
     // Show or hide tutorial bubble
     public void ShowTutorialText(bool show)
