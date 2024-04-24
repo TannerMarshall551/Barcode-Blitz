@@ -11,7 +11,7 @@ public class ConveyorBelt : MonoBehaviour
     {
         // Move items on the conveyor belt
         // Adjusting the half-extents to match the desired box size
-        Collider[] colliders = Physics.OverlapBox(transform.position, transform.localScale * 9 );
+        Collider[] colliders = Physics.OverlapBox(transform.position, transform.localScale * 9);
         foreach (Collider collider in colliders)
         {
             Rigidbody rb = collider.GetComponent<Rigidbody>();
