@@ -145,5 +145,4 @@ public class ScannerItemManager : MonoBehaviour
     public string GetItemID(){
         return itemPage.GetItem().id;
     }
-    
 }

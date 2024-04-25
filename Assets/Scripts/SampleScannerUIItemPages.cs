@@ -118,8 +118,8 @@ public class SampleScannerUIItemPages : MonoBehaviour
 
         newRow.type = RowType.Text;
         newRow.textRow = new TextRow();
-        newRow.textRow.headerText = "Product:";
-        newRow.textRow.bodyText = "Hair Brush";
+        newRow.textRow.headerText = "Package:";
+        newRow.textRow.bodyText = "1M3PL6";
 
         newItem.rows.Add(newRow);
 
@@ -128,29 +128,8 @@ public class SampleScannerUIItemPages : MonoBehaviour
 
         newRow.type = RowType.Text;
         newRow.textRow = new TextRow();
-        newRow.textRow.headerText = "To Pick:";
-        newRow.textRow.bodyText = "2";
-
-        newItem.rows.Add(newRow);
-
-        // row 3
-        newRow = new Row();
-
-        newRow.type = RowType.Text;
-        newRow.textRow = new TextRow();
-        newRow.textRow.headerText = "Location:";
-        newRow.textRow.bodyText = "ABC";
-
-        newItem.rows.Add(newRow);
-
-        // row 4
-        newRow = new Row();
-
-        newRow.type = RowType.Selector;
-        newRow.selectorRow = new SelectorRow();
-        newRow.selectorRow.headerText = "Damaged?:";
-        newRow.selectorRow.yesPressed = false;
-        newRow.selectorRow.noPressed = false;
+        newRow.textRow.headerText = "UUID:";
+        newRow.textRow.bodyText = "2kjs-dfoey8294-y928ehr29892839hf-28efh20";
 
         newItem.rows.Add(newRow);
 

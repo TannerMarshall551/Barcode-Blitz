@@ -8,8 +8,11 @@ public class OrderPickerGameManager : MonoBehaviour
 {
     public List<Bin> bins;
     public List<Package> packages = new();
-    private Dictionary<string, string> targetPackagesUUIDToDisplayLabel = new(); // <UUID, DisplayLabel>
+    private Dictionary<string, string> targetPackagesUUIDToDisplayLabel = new();
+    public ScannerItemManager scannerItemManager;
+    public List<ScannerUIItem> scannerItems = new List<ScannerUIItem>();
     public int numPackagesToPick = 3;
+    private List<string> ScannedUUIDs = new();
 
     void Start()
     {
@@ -17,6 +20,8 @@ public class OrderPickerGameManager : MonoBehaviour
         bins.AddRange(binArray);
         AssignLabels();
         SelectRandomLabels(numPackagesToPick);
+        PopulateScanner();
+        scannerItemManager.SetNewItems(scannerItems);
     }
 
     void AssignLabels()
@@ -129,6 +134,53 @@ public class OrderPickerGameManager : MonoBehaviour
         return resultList;
     }
 
+    public void PopulateScanner()
+    {
+        scannerItems.Clear();
+
+        foreach (KeyValuePair<string, string> packageInfo in targetPackagesUUIDToDisplayLabel)
+        {
+            ScannerUIItem newItem = new ScannerUIItem();
+            newItem.id = packageInfo.Key;
+
+            if (ScannedUUIDs.Contains(packageInfo.Key))
+            {
+                newItem.pageColor = ScannerColorState.Complete;
+            }
+            else
+            {
+                newItem.pageColor = ScannerColorState.Default;
+            }
+
+            newItem.rows = new List<Row>();
+            Row labelRow = new Row
+            {
+                type = RowType.Text,
+                textRow = new TextRow
+                {
+                    headerText = "Package:",
+                    bodyText = packageInfo.Value
+                }
+            };
+
+            newItem.rows.Add(labelRow);
+            Row uuidRow = new Row
+            {
+                type = RowType.Text,
+                textRow = new TextRow
+                {
+                    headerText = "UUID:",
+                    bodyText = packageInfo.Key
+                }
+            };
+
+            newItem.rows.Add(uuidRow);
+            scannerItems.Add(newItem);
+        }
+
+        scannerItemManager.SetNewItems(scannerItems);
+    }
+
     public List<string> GetTargetUUIDs()
     {
         return targetPackagesUUIDToDisplayLabel.Keys.ToList();
@@ -137,6 +189,52 @@ public class OrderPickerGameManager : MonoBehaviour
     public int AcknowledgeSuccessfulDelivery(string packageUUID)
     {
         targetPackagesUUIDToDisplayLabel.Remove(packageUUID);
+        PopulateScanner();
         return numPackagesToPick - targetPackagesUUIDToDisplayLabel.Count();
+    }
+
+    public void ScanPackage(string packageUUID)
+    {
+        AddToScannedUUIDs(packageUUID);
+        PopulateScanner();
+        GoToLastScannedPackagePage(packageUUID);
+    }
+
+    private void GoToLastScannedPackagePage(string lastScannedPackageUUID)
+    {
+        int startIndex = scannerItemManager.GetIndex(); // Store the starting index to detect a full cycle
+        string currentID = scannerItemManager.GetItemID();
+
+        if (!GetTargetUUIDs().Contains(lastScannedPackageUUID))
+        {
+            return;
+        }
+
+        // If the first item is the target, no need to loop
+        if (currentID == lastScannedPackageUUID)
+        {
+            return;
+        }
+
+        // Continue to the next item until we find the target or cycle through all items
+        do
+        {
+            scannerItemManager.nextItem(); // Move to the next item
+            currentID = scannerItemManager.GetItemID(); // Update the current ID
+
+            if (currentID == lastScannedPackageUUID)
+            {
+                return;
+            }
+
+            // Check if we've returned to the start
+        } while (scannerItemManager.GetIndex() != startIndex);
+
+        Debug.LogWarning("Target package UUID not found in the current list after a full cycle.");
+    }
+
+    private void AddToScannedUUIDs(string UUID)
+    {
+        ScannedUUIDs.Add(UUID);
     }
 }
