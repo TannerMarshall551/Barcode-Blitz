@@ -576,9 +576,10 @@ public class OrderPackerGameManager : MonoBehaviour
     //
     public void ScanItem(string uuid){
         //Debug.Log("hehe");
-        if(currentState == GameState.ScanItems)
+        if(currentState == GameState.ScanItems || currentState == GameState.MarkTrashItems)
             itemScanned = true;
     }
+
 
     // 
 }
