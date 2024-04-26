@@ -6,6 +6,7 @@ using UnityEngine;
 
 public class OrderPickerGameManager : MonoBehaviour
 {
+    public GameObject tutorialModal;
     public List<Bin> bins;
     public List<Package> packages = new();
     private Dictionary<string, string> targetPackagesUUIDToDisplayLabel = new();
@@ -16,12 +17,28 @@ public class OrderPickerGameManager : MonoBehaviour
 
     void Start()
     {
+        tutorialModal.SetActive(true);
         Bin[] binArray = FindObjectsOfType<Bin>();
         bins.AddRange(binArray);
         AssignLabels();
         SelectRandomLabels(numPackagesToPick);
         PopulateScanner();
         scannerItemManager.SetNewItems(scannerItems);
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.H))
+        {
+            if (tutorialModal.activeSelf)
+            {
+                tutorialModal.SetActive(false);
+            }
+            else
+            {
+                tutorialModal.SetActive(true);
+            }
+        }
     }
 
     void AssignLabels()
