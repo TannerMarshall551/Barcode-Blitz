@@ -1,7 +1,8 @@
 using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class OrderPickerUIManager : MonoBehaviour
 {
@@ -11,9 +12,12 @@ public class OrderPickerUIManager : MonoBehaviour
     public GameObject completedInText;
     public GameObject timerText;
     public GameObject deliveryStatusText;
+    public GameObject tryAgainButton;
+    public GameObject exitButton;
 
     public float remainingTime = 300f;
     public float delayBeforeDisabling = 3f;
+    private float buttonDelay = 0.5f;
 
     public string successText = "Correct Package Delivered!";
     public string gameSuccessText = "Success!";
@@ -28,6 +32,7 @@ public class OrderPickerUIManager : MonoBehaviour
 
     void Start()
     {
+        SetCursorState(false);
         endGameModal.SetActive(false);
         Cursor.visible = false; // Hide cursor initially
         orderPickerGameManager = GameObject.Find("OrderPickerGameManager").GetComponent<OrderPickerGameManager>();
@@ -45,6 +50,23 @@ public class OrderPickerUIManager : MonoBehaviour
             if (remainingTime <= 0)
             {
                 TimerEnded();
+            }
+        }
+
+        if (endGameModal.activeSelf)
+        {
+            if (Input.GetKeyDown(KeyCode.Alpha1))
+            {
+                tryAgainButton.GetComponentInChildren<Button>().interactable = false;
+                ButtonDelay(buttonDelay);
+                Scene currentScene = SceneManager.GetActiveScene();
+                SceneManager.LoadScene(currentScene.name);
+            }
+            if (Input.GetKeyDown(KeyCode.Alpha2))
+            {
+                exitButton.GetComponentInChildren<Button>().interactable = false;
+                ButtonDelay(buttonDelay);
+                Debug.Log("Exit Game Here");
             }
         }
     }
@@ -88,7 +110,7 @@ public class OrderPickerUIManager : MonoBehaviour
     private void ShowEndScreen(bool completedSuccessfuly)
     {
         endGameModal.SetActive(true);
-        Cursor.visible = true; // Show cursor in popup view
+        SetCursorState(true);
         timerActive = false; // Stop the timer when showing the end screen
         UpdateCaptions(); // Ensure captions are updated at game end
         gameCompletedText.GetComponentInChildren<TextMeshProUGUI>().text = completedSuccessfuly ? gameSuccessText : gameFailureText;
@@ -124,5 +146,17 @@ public class OrderPickerUIManager : MonoBehaviour
         int minutes = (int)elapsedTime / 60;
         int seconds = (int)elapsedTime % 60;
         return $"{minutes:0}:{seconds:00}";
+    }
+
+    private void SetCursorState(bool visible)
+    {
+        Cursor.visible = visible;
+        Cursor.lockState = visible ? CursorLockMode.None : CursorLockMode.Locked; // Unlock when visible, lock when not visible
+    }
+
+    private IEnumerator ButtonDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        Debug.Log("Restarting Game");
     }
 }
